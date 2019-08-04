@@ -1,0 +1,3 @@
+/home/reneaas/Documents/skole/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/reneaas/Documents/skole/cmake-build-debug/CMakeFiles/skole.dir
+/home/reneaas/Documents/skole/cmake-build-debug/CMakeFiles/edit_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/skole.dir/main.cpp.o  -o skole 
