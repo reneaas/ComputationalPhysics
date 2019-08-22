@@ -9,4 +9,10 @@
 /home/reneaas/Documents/skole/fys3150/main.cpp
 iostream
 -
+cmath
+-
+cstdlib
+-
+armadillo
+-
 

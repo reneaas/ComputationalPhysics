@@ -1,25 +1,32 @@
 #include <iostream>
+#include <cmath>
+#include <cstdlib>
+#include <armadillo>
+
 using namespace std;
+using namespace arma;
 
 int main(int argc, char * argv[]){
-    int i, npts;
-    double *x;      //Declaration of pointer variable 'x'
-    double dx;
+    mat A =  mat(3,3);
+    A.fill(1);
+    A(0,0) = 1;
+    A(0,1) = 2;
+    A(0,2) = -1;
+    A(1,0) = 2;
+    A(1,1) = 3;
+    A(1,2) = -3;
+    A(2,0) = -1;
+    A(2,1) = 2;
+    A(2,2) = 3;
+    cout << A << endl;
 
-    cout << "Enter the number of points in [0,1]: ";
-    cin >> npts;
-
-    x = new double[npts];         //Dynamic allocation of npts doubles
-    dx = 1.0/(npts-1);
-
-    for (int i = 0; i < npts; i++){
-        x[i] = i*dx;
+    for (int m = 0; m < 3; m++){
+        for (int j = m; j < 3; j++){
+            for (int k = m; k < 3; k++){
+                A(j,k) = A(j,k) - (A(j,m)*A(k,m))/A(m,m);
+            }
+        }
     }
-
-    for (int i = 0; i < npts; i++){
-        cout << "x [" << i << "] = " << x[i] << endl;
-    }
-
-    delete[] x;     //deallocation of dynamically allocated memory.
+    cout << A << endl;
     return 0;
 }
