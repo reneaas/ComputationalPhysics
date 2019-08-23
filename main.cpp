@@ -19,9 +19,8 @@ int main(int argc, char * argv[]){
     A(2,1) = 2;
     A(2,2) = 3;
     cout << A << endl;
-
     for (int m = 0; m < 3; m++){
-        for (int j = m; j < 3; j++){
+        for (int j = m; j < 3;  j++){
             for (int k = m; k < 3; k++){
                 A(j,k) = A(j,k) - (A(j,m)*A(k,m))/A(m,m);
             }

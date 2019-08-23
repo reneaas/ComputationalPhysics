@@ -125,7 +125,7 @@ From \eqref{approx_1} we can write
 	\end{pmatrix}
 \end{equation}
 
-Suppose we've got a tri-diagonal matrix $A$ and want to decompose it using LU-decomposition such that $A = LU$ where $L$ is a lower-triangular matrix with ones on its diagonal and $U$ is an upper-triangular matrix. Suppose that $A,L,U \in \mathbb{R}^{n\times n}$ such that 
+To this end we want to develop a general algorithm to solve the equation above. Suppose we've got a tri-diagonal matrix $A$ and want to decompose it using LU-decomposition such that $A = LU$ where $L$ is a lower-triangular matrix with ones on its diagonal and $U$ is an upper-triangular matrix. Suppose that $A,L,U \in \mathbb{R}^{n\times n}$ such that 
 \begin{equation} A= 
 	\begin{pmatrix}
 	b_1 & c_1 & 0 & \cdots & \cdots & \cdots \\
@@ -171,4 +171,7 @@ which yields in combination with \eqref{LU_decomp}
 	A_{ij} = 0 \qquad \text{otherwise}\\
 	A_{ij} = 0 \qquad \text{for} \qquad (i,j) \neq (i,i) \qquad  \text{or} \qquad (i,j) \neq (i,i+1) \qquad \text{or} \qquad (i,j) \neq (i+1,i)
 \end{gather}
+
+
+
 \end{document}
