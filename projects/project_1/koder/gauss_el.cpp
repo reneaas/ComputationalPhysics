@@ -7,33 +7,25 @@ using namespace std;
 using namespace arma;
 
 int main(int argc, char * argv[]){
-  mat A =  mat(3,3);
-  A.fill(1.0);
-  A(0,0) = 1.0;
-  A(0,1) = 2.0;
-  A(0,2) = -1.0;
-  A(1,0) = 2.0;
-  A(1,1) = 3.0;
-  A(1,2) = -3.0;
-  A(2,0) = -1.0;
-  A(2,1) = 2.0;
-  A(2,2) = 3.0;
-  cout << A << endl;
-  cout << det(A)<< endl;
-  vec b = vec(3);
-  b.fill(3.0);
-  cout << b << endl;
-
-  for (int m = 0; m < 3; m++){
-    for (int j = m+1; j < 3; j++){
+  int n = atoi(argv[1]); //First argument in terminal should to specify the size of the matrix.
+  mat A =  mat(n,n);
+  for (int i = 0; i < n-1; i++){
+    A(i,i) = 2.0;
+    A(i,i+1) = -1.0;
+    A(i+1,i) = -1.0;
+  }
+  A(n-1,n-1) = 2.0;
+  cout << "A = " << A << endl;
+  cout << "det(A) = " << det(A) << endl;
+  for (int m = 0; m < n; m++){
+    for (int j = m+1; j < n; j++){
 
 
-      for (int k = m; k < 3; k++){
+      for (int k = m; k < n; k++){
         A(j,k) = A(j,k) - (A(j,m)*A(k,m))/A(m,m);
           }
       }
   }
   cout << A  << endl;
-  cout << b << endl;
   return 0;
 }
