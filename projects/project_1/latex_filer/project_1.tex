@@ -82,13 +82,13 @@
 
 \begin{document}
 \title{Project 1 - FYS3150}      % self-explanatory
-\author{René Ask}          % self-explanatory
+\author{René Ask and Benedicte Nyheim}          % self-explanatory
 \date{\today}                             % self-explanatory
 \noaffiliation                            % ignore this
                                           % marks the end of the abstracthttps://github.com/reneaas/fys2160.git
 \maketitle                                % creates the title, author, date & abstract
 
-\section{Theory}
+\section{Method}
 We're going to solve the differential equation 
 \begin{equation}\label{diff_eq}
 	-u''(x) = f(x), \quad x \in (0,1), \quad u(0)=u(1)=0.
@@ -100,7 +100,7 @@ approximation scheme
 \end{equation}
 which may be rearranged into 
 \begin{equation}\label{approx_1}
-	2v_i - v_{i+1} - v_{i-1} = f_ih^2 \equiv b_i.
+	2v_i - v_{i+1} - v_{i-1} = f_ih^2 \equiv \tilde{b_i}.
 \end{equation}
 From \eqref{approx_1} we can write 
 \begin{equation}
@@ -121,11 +121,11 @@ From \eqref{approx_1} we can write
 	v_1 \\ v_2 \\ \vdots \\ v_n
 	\end{pmatrix}
 	= \begin{pmatrix}
-	b_1 \\ b_2 \\ \vdots \\ b_n
+	\tilde{b_1} \\ \tilde{b_2} \\ \vdots \\ \tilde{b_n}
 	\end{pmatrix}
 \end{equation}
 
-To this end we want to develop a general algorithm to solve the equation above. Suppose we've got a tri-diagonal matrix $A$ and want to decompose it using LU-decomposition such that $A = LU$ where $L$ is a lower-triangular matrix with ones on its diagonal and $U$ is an upper-triangular matrix. Suppose that $A,L,U \in \mathbb{R}^{n\times n}$ such that 
+To this end we will develop an algorithm based on the LU-decomposition $A = LU$:
 \begin{equation} A= 
 	\begin{pmatrix}
 	b_1 & c_1 & 0 & \cdots & \cdots & \cdots \\
@@ -137,41 +137,47 @@ To this end we want to develop a general algorithm to solve the equation above. 
 	\end{pmatrix}
 	= 
 	\begin{pmatrix}
-	1 & 0 & \cdots & 0\\
-	l_{21} & 1 &  \cdots & 0 \\ 
-	\vdots  & \ddots & \vdots & \vdots  \\
-	l_{n1} & l_{n2} & \cdots & 1  
+	1 & 0 & \cdots &  \cdots & \cdots & 0 \\
+	\ell_2 & 1 & \cdots & \cdots & \cdots & 0 \\
+	0 & \ell_3 & 1 & \cdots & \cdots & 0 \\
+	\vdots & \vdots & \vdots & \ddots & \vdots \\
+	0 & 0 & \cdots & \ell_{n-1} & 1 & 0 \\
+	0 & 0 & \cdots &\cdots & \ell_n & 1  
 	\end{pmatrix}
 	\begin{pmatrix}
-	u_{11} & u_{12} & \cdots & u_{1n} \\ 
-	u_{21} & u_{22} & \cdots & u_{2n} \\
-	\vdots & \vdots & \ddots & \vdots \\
-	u_{n1} & u_{n2} & \cdots & u_{nn}
+	d_1 & u_1 & \cdots & \cdots &\cdots & 0 \\ 
+	0 & d_2 & u_2 & \cdots & \cdots & 0 \\
+	0 & 0 & d_3 & u_3 & \cdots & 0 \\
+	\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+	0 & 0 & \cdots & \cdots & d_{n-1} & u_{n-1} \\
+	0 & 0 & \cdots & \cdots & 0 & d_n
 	\end{pmatrix}
-	= LU.
+	= LU,
 \end{equation}
-Performing matrix multiplication yields 
-\begin{equation}\label{LU_decomp}
-	LU = \begin{pmatrix}
-	u_{11} & u_{12} & \cdots & u_{1n} \\
-	l_{21}u_{11} + u_{21} & l_{21}u_{12} + u_{22} & \cdots & l_{21}u_{1n} + u_{2n} \\
-	\vdots & \vdots & \ddots & \vdots \\
-	l_{n1}u_{11} + l_{n2}u_{21} + \cdots + u_{n1} & l_{n1}u_{12} + l_{n2}u_{22} + \cdots + u_{n2} & \cdots & l_{n1}u_{1n} + l_{n2}u_{2n} + \cdots + u_{nn}
+and performing matrix multiplication we get 
+\begin{equation}
+	LU = 
+	\begin{pmatrix}
+	d_1 & u_1 & \cdots & \cdots &\cdots & 0 \\ 
+	\ell_2d_1 & \ell_2u_1 + d_2 & u_2 & \cdots & \cdots & 0 \\
+	0 & \ell_3d_2 & \ell_3u_2 + d_3 & u_3 & \cdots & 0 \\
+	\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+	0 & 0 & \cdots & \ell_{n-1}d_{n-2} & \ell_{n-1}u_{n-2} + d_{n-1} & u_{n-1} \\
+	0 & 0 & \cdots & \cdots & \ell_nd_{n-1} & \ell_n u_{n-1} + d_n
 	\end{pmatrix},
 \end{equation}
-thus each matrix element of $A$ which we'll denote $A_{ij}$ may be computed by the general formula 
-\begin{equation}\label{matrix_elements}
-	A_{ij} = u_{ji} + \sum_{k = 1}^{i-1} l_{ik}u_{kj},
-\end{equation}
-which yields in combination with \eqref{LU_decomp}
+which yields the following general relations: 
 \begin{gather}
-	b_i = A_{ii} \qquad \text{for} \qquad i = 1,2,...,n \\
-	a_i = A_{i+1,i} \qquad \text{for} \qquad i = 1,2,...,n-1 \\
-	c_i = A_{i, i+1} \qquad \text{for} \qquad i = 1,2,...,n-1\\ 
-	A_{ij} = 0 \qquad \text{otherwise}\\
-	A_{ij} = 0 \qquad \text{for} \qquad (i,j) \neq (i,i) \qquad  \text{or} \qquad (i,j) \neq (i,i+1) \qquad \text{or} \qquad (i,j) \neq (i+1,i)
+	b_i = d_i, \qquad c_i = u_i, \qquad \text{for} \qquad i = 1,\\
+	\ell_i = \frac{a_{i-1}}{d_{i-1}}, \qquad \text{for} \qquad 1 < i < n, \\
+	d_i = b_i - \ell_iu_{i-1}, \qquad \text{for} \qquad 1 < i < n, \\
+	\ell_n = \frac{a_{n-1}}{d_{n-1}}, \qquad d_n = b_n - \ell_n u_{n-1}, \qquad \text{for} \qquad i = n.
 \end{gather}
 
+Now, assuming that $b_1 = b_2 = \cdots = b_n$ and $a_1 = c_1$, $a_2 = c_2,  \cdots, a_{n-1} = c_{n-1}$, we can simplify the relations as 
+\begin{gather}
+	
+\end{gather}
 
 
 \end{document}
