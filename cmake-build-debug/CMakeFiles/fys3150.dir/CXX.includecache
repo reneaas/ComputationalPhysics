@@ -13,6 +13,8 @@ cmath
 -
 cstdlib
 -
-armadillo
+fstream
+-
+iomanip
 -
 
