@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
   h = new double[n];
   error = new double[n];
   derivative = new double[n];
-  double x = 0.0;
+  double x = M_PI_2;
 
   //Fill h with a range of stepsizes.
   for (int i = 0; i < n; i++){
@@ -42,11 +42,11 @@ int main(int argc, char* argv[]){
 
 
 double f(double x){
-  return exp(-x);
+  return sin(x);
 }
 
 void compute_error(double derivative, double& error){
-  error = log10(abs((1.0 - derivative)/1.0));
+  error = log10(abs((-1.0 - derivative)/(-1.0)));
 }
 
 void differentiate1(double x, double h, double& derivative){
