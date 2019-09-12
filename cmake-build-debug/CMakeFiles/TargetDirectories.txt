@@ -1,3 +1,0 @@
-/home/reneaas/Documents/skole/fys3150/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/reneaas/Documents/skole/fys3150/cmake-build-debug/CMakeFiles/fys3150.dir
-/home/reneaas/Documents/skole/fys3150/cmake-build-debug/CMakeFiles/edit_cache.dir
