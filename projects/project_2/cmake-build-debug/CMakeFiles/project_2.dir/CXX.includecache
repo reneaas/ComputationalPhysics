@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/reneaas/Documents/skole/fys3150/projects/project_2/main.cpp
+iostream
+-
+cmath
+-
+cstdlib
+-
+iomanip
+-
+cstdlib
+-
+
