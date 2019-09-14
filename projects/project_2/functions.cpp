@@ -1,108 +1,86 @@
+//Specification of functions.
+
 #include <iostream>
 #include <cmath>
-#include <iomanip>
-#include <fstream>
-#include <armadillo>
 #include <cstdlib>
+#include <iomanip>
+#include <cstdlib>
+#include <armadillo>
 
 using namespace std;
 using namespace arma;
 
-void CreateMatrix(int m, int n){
-  mat = new double*[n];
-  for (int i = 0; i < n; i++){
-    mat[i] = new double[n];
-  }
-  return;
-}
 
-void DestroyMatrix(double **mat, int n){
-  for (int i = 0; i < n; i++){
-    delete[] mat[i];
-  }
-  delete[] mat;
-  return;
-}
-
-void MatrixMultiplication(double **C, double **A, double **B, int n){
-  for (int i = 0; i < n; i++){
-    for (int j = 0; j < n; j++){
-      for (int k = 0; k < n; k++){
-        C[i][j] += A[i][k]*B[k][j];
-      }
-    }
-  }
-  return;
-}
-
-void FillUnitaryMatrix(double **S, double **S_transpose, int k, int l, int n, double c, double t){
-  //First make the matrix the identity matrix.
-  for (int i = 0; i < n; i++){
-    for (int j = 0; j < n; j++){
-      if (i == j){
-        S[i][j] = 1.0;
-        S_transpose[i][j] = 1.0;
-      }
-      else{
-        S[i][j] = 0.0;
-        S_transpose[i][j] = 0.0;
-      }
-    }
-  }
-  //Fill in the rest of the elements to make it into a rotation matrix.
-  S[k][k] = c;
-  S[l][l] = c;
-  S[k][l] = -s;
-  S[l][k] = s;
-
-  //Fill the transposed unitary matrix.
-  S_transpose[k][k] = c;
-  S_transpose[l][l] = c;
-  S_transpose[l][k] = -s;
-  S_transpose[k][l] = s;
-  return;
-}
-
-void compute_squared_elements(double **matrix, double **A, int n){
-  for (int i = 0; i < n; i++){
-    for (int j = 0; j < n; j++){
-      if (i != j){
-        matrix[i,j] = A[i,j]*A[i,j]
-      }
-      else{
-        matrix[i,j] = 0.0;
-      }
-    }
-  }
-  return;
-}
-
-void find_maxelement_and_maxindices(int &row_index, int &column_index, double &max_element, double **A, int n){
+void Find_MaxElement_and_MaxIndices(int &RowIndex, int &ColumnIndex, double &max_element, mat A, int n){
   max_element = 0.0;
   for (int i = 0; i < n; i++){
-    for (int j = 0; j < n; i++){
-      if (abs(A[i,j]) > max_element && i != j){
-        row_index = i;
-        column_index = j;
-        max_element = abs(A[i,j]);
+    for (int j = 0; j < n; j++){
+      if (abs(A(i,j)) > max_element && i != j){
+        RowIndex = i;
+        ColumnIndex = j;
+        max_element = abs(A(i,j));
       }
     }
   }
-  return;
 }
 
-void compute_trigonometric_functions(int row_index, int column_index, double **A, int n, double &tau, double &tan, double &cos, double &sin){
-  tau = (A[row_index, row_index] - A[column_index, column_index])/(2*A[row_index, column_index]);
 
-  double t1 = -tau + sqrt(1+tau*tau);
-  double t2 = -tau - sqrt(1+tau*tau)
-  if (t1 > t2){
-    tan = t2;
+void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int n, double &tau, double &tangens, double &cosinus, double &sinus){
+  double k = row_index;
+  double l = column_index;
+  if (A(k,l) != 0.0) {
+    tau =  ( A(l,l) - A(k,k) ) / (2.0 * A(k,l));
+    if (tau >= 0) {
+      tangens = 1.0/(tau + sqrt(1.0 + tau * tau));
+    } else {
+      tangens = -1.0/(-tau + sqrt(1.0 + tau * tau));
+    }
+    cosinus = 1.0 / sqrt(1.0 + tangens * tangens);
+    sinus = tangens*cosinus;
   }
   else{
-    tan = t1;
+    cosinus = 1.0;
+    sinus = 0.0;
   }
-  cos = 1/sqrt(1+tan*tan);
-  sin = tan*cos;
-  return;
+}
+
+mat FillUnitaryMatrix(int k, int l, int n, double cosinus, double sinus){
+  mat S = mat(n,n);
+  S.eye();
+  //Fill in the rest of the elements to make it into a rotation matrix.
+  S(k,k) = cosinus;
+  S(l,l) = cosinus;
+  S(k,l) = -sinus;
+  S(l,k) = sinus;
+  return S;
+}
+
+string OrthonormalityPreservationTest(mat A, mat S, vec initial_eigenvalues, int n){
+  string message;
+  double norm;
+  double tolerance = 1e-4;
+  vec eigenvalues;
+  mat eigenvectors;
+  eig_sym(eigenvalues, eigenvectors, A);
+  eigenvectors = normalise(eigenvectors);
+  for (int i = 0; i < n; i++){
+    //eigenvectors(i) = normli;
+  }
+
+  for (int i = 0; i < n; i++){
+    for (int j = 0; j < n; j++){
+      norm = dot(trans(S*eigenvectors(i)), S*eigenvectors(i));
+      if (i == j &&  abs(norm - 1) >= tolerance){
+        message = "Ortonormality is not preserved., An eigenvector is not normalized to unity";
+        return message;
+      }
+      if ( i != j && abs(norm-0) >= tolerance){
+        message = "Orthonormality is not preserved. A pair eigenvectors aren't orthogonal.";
+        return message;
+      }
+    }
+  }
+  message = "OK";
+
+  return message;
 }
