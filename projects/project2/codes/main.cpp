@@ -81,12 +81,17 @@ int main(int argc, char* argv[]){
 
     //This part needs to be fixed before it's included in the program.
     //Check if orthonormality is preserved.
-    message = OrthonormalityPreservationTest(A, S, initial_eigenvalues, n);
+    message = OrthonormalityPreservationTest(A, S, n);
     if (message != "OK"){
       cout << message << endl;
       exit(1);
     }
 
+    message = ConservationOfEigenvalues(A, initial_eigenvalues, n);
+    if (message != "OK"){
+      cout << message << endl;
+      exit(2);
+    }
     //Then compute the similary matrix and implement the whole charade in a while loop.
     A = trans(S)*A*S;
     //A = B;

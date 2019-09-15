@@ -56,7 +56,7 @@ mat FillUnitaryMatrix(int k, int l, int n, double cosinus, double sinus){
   return S;
 }
 
-string OrthonormalityPreservationTest(mat A, mat S, vec initial_eigval, int n){
+string OrthonormalityPreservationTest(mat A, mat S, int n){
   /*
   Units test that check that Orthonormality is preserved by the matrix unitary rotation matrix S.
   */
@@ -95,5 +95,26 @@ string OrthonormalityPreservationTest(mat A, mat S, vec initial_eigval, int n){
   }
   message = "OK";
 
+  return message;
+}
+
+string ConservationOfEigenvalues(mat A, vec initial_eigval, int n){
+  /*
+  Units test that checks if the eigenvalues of the newly computed similarity matrix
+  is the same as the initial matrix A.
+  */
+  double tolerance = 1e-8;
+  string message;
+  vec eigval;
+  mat eigvec;
+  eig_sym(eigval, eigvec, A);
+  for (int i = 0; i < n; i++){
+    if (abs(eigval(i) - initial_eigval(i)) > tolerance){
+      message = "Conservation of some eigenvalue has failed.";
+    }
+    else{
+      message = "OK";
+    }
+  }
   return message;
 }
