@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <armadillo>
+#include <string>
 
 using namespace std;
 using namespace arma;
@@ -55,27 +56,39 @@ mat FillUnitaryMatrix(int k, int l, int n, double cosinus, double sinus){
   return S;
 }
 
-string OrthonormalityPreservationTest(mat A, mat S, vec initial_eigenvalues, int n){
+string OrthonormalityPreservationTest(mat A, mat S, vec initial_eigval, int n){
+  /*
+  Units test that check that Orthonormality is preserved by the matrix unitary rotation matrix S.
+  */
   string message;
   double norm;
   double tolerance = 1e-4;
-  vec eigenvalues;
-  mat eigenvectors;
-  eig_sym(eigenvalues, eigenvectors, A);
-  eigenvectors = normalise(eigenvectors);
+  vec eigval;
+  mat eigvec;
+  vec eigvec1, eigvec2;
+  eigvec1 = vec(n);
+  eigvec2 = vec(n);
+  eig_sym(eigval, eigvec, A);
   for (int i = 0; i < n; i++){
-    //eigenvectors(i) = normli;
+    //eigvec(i) = normli;
   }
 
   for (int i = 0; i < n; i++){
     for (int j = 0; j < n; j++){
-      norm = dot(trans(S*eigenvectors(i)), S*eigenvectors(i));
+      for (int k = 0; k < n; k++){
+        eigvec1(k) = eigvec(i,k);
+        eigvec2(k) = eigvec(j,k);
+      }
+      //norm = dot(eigvec1,eigvec2);
+      norm = dot(trans(S*eigvec1), (S*eigvec2));
       if (i == j &&  abs(norm - 1) >= tolerance){
         message = "Ortonormality is not preserved., An eigenvector is not normalized to unity";
+        cout << "norm = " << norm << endl;
         return message;
       }
       if ( i != j && abs(norm-0) >= tolerance){
-        message = "Orthonormality is not preserved. A pair eigenvectors aren't orthogonal.";
+        message = "Orthonormality is not preserved. A pair eigvec aren't orthogonal.";
+        cout << "norm = " << norm << endl;
         return message;
       }
     }

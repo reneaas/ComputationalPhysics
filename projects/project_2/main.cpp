@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <armadillo>
 #include "functions.h"
+#include <string>
 
 using namespace std;
 using namespace arma;
@@ -64,7 +65,9 @@ int main(int argc, char* argv[]){
   eig_sym(initial_eigenvalues, initial_eigenvectors, A);
   //normalise(initial_eigenvectors);
   //normalise(initial_eigenvectors);
-  initial_eigenvectors.print("Initial normalized eigenvectors =");
+  initial_eigenvectors.print("Initial eigenvectors =");
+
+  initial_eigenvectors.print("Initial normalised eigenvectors = ");
   //double length = dot(trans(initial_eigenvectors(0)),initial_eigenvectors(0));
   initial_eigenvalues.print("Eigenvalues = ");
 
@@ -75,15 +78,15 @@ int main(int argc, char* argv[]){
     k = RowIndex;
     l = ColumnIndex;
     S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
-    /*
-    This part needs to be fixed before it's included in the program.
+
+    //This part needs to be fixed before it's included in the program.
     //Check if orthonormality is preserved.
     message = OrthonormalityPreservationTest(A, S, initial_eigenvalues, n);
     if (message != "OK"){
       cout << message << endl;
       exit(1);
     }
-    */
+
     //Then compute the similary matrix and implement the whole charade in a while loop.
     A = trans(S)*A*S;
     //A = B;

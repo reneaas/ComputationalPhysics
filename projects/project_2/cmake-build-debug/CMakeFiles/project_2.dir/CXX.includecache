@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+/home/reneaas/Documents/skole/fys3150/projects/project_2/functions.h
+
 /home/reneaas/Documents/skole/fys3150/projects/project_2/main.cpp
 iostream
 -
@@ -19,4 +21,6 @@ cstdlib
 -
 armadillo
 -
+functions.h
+/home/reneaas/Documents/skole/fys3150/projects/project_2/functions.h
 
