@@ -1,5 +1,12 @@
+Analytical eigenvalues:
 6.69873
-41.9593
+25
 50
-58.0407
+75
+93.3013
+Computed eigenvalues:
+25
+37.6687
+44.03
+50
 93.3013

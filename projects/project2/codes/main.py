@@ -15,6 +15,7 @@ N = int(sys.argv[1])
 max_iterations = int(sys.argv[2])
 Number_of_Gridpoints = [int(i) for i in range(3,N)]
 for n in Number_of_Gridpoints:
+    print("Running code for n = " + str(n))
     filename = "computed_eigenvalues_" + "n_" + str(n) + ".txt"
     os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename)
     path = "results/computed_eigenvalues";

@@ -97,6 +97,12 @@ int main(int argc, char* argv[]){
   //Write the computed eigenvalues to file.
   computed_eigenvalues = sort(computed_eigenvalues, "ascend");
   ofile.open(outfilename);
+  ofile << "Analytical eigenvalues:" << endl;
+  for (int i = 0; i < n; i++){
+    ofile << initial_eigenvalues(i) << endl;
+  }
+
+  ofile << "Computed eigenvalues:" << endl;
   for (int i = 0; i < n; i++){
     ofile << computed_eigenvalues(i) << endl;
   }
