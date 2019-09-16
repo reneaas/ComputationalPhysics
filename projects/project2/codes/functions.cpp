@@ -13,6 +13,9 @@ using namespace arma;
 
 
 void Find_MaxElement_and_MaxIndices(int &RowIndex, int &ColumnIndex, double &max_element, mat A, int n){
+  /*
+  Finds the maximum element in the matrix A and which indices this element correspond to.
+  */
   max_element = 0.0;
   for (int i = 0; i < n; i++){
     for (int j = 0; j < n; j++){
@@ -27,6 +30,9 @@ void Find_MaxElement_and_MaxIndices(int &RowIndex, int &ColumnIndex, double &max
 
 
 void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int n, double &tau, double &tangens, double &cosinus, double &sinus){
+  /*
+  Computes all the necessary values need to fill the Unitary matrix S.
+  */
   double k = row_index;
   double l = column_index;
   if (A(k,l) != 0.0) {
@@ -46,6 +52,9 @@ void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int
 }
 
 mat FillUnitaryMatrix(int k, int l, int n, double cosinus, double sinus){
+  /*
+  Fills the unitary matrix with the correct values.
+  */
   mat S = mat(n,n);
   S.eye();
   //Fill in the rest of the elements to make it into a rotation matrix.
@@ -58,7 +67,7 @@ mat FillUnitaryMatrix(int k, int l, int n, double cosinus, double sinus){
 
 string OrthonormalityPreservationTest(mat A, mat S, int n){
   /*
-  Units test that check that Orthonormality is preserved by the matrix unitary rotation matrix S.
+  Units test that check that orthonormality is conserved by application of unitary rotation matrix S.
   */
   string message;
   double norm;
@@ -111,10 +120,9 @@ string ConservationOfEigenvalues(mat A, vec initial_eigval, int n){
   for (int i = 0; i < n; i++){
     if (abs(eigval(i) - initial_eigval(i)) > tolerance){
       message = "Conservation of some eigenvalue has failed.";
-    }
-    else{
-      message = "OK";
+      return message;
     }
   }
+  message = "OK";
   return message;
 }
