@@ -9,7 +9,7 @@
 
 using namespace std;
 using namespace arma;
-
+ofstream ofile;
 
 //Main program
 
@@ -20,12 +20,14 @@ int main(int argc, char* argv[]){
   double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element;      //Floating points.
   mat A, B, S;      //Matrices.
   string message;
+  char *outfilename;
 
   //Specify integers:
   //n = atoi(argv[1]);
   //cin >> n; //Temporary solution to specify the number n from "terminal".
   n = atoi(argv[1]);
   max_iterations = atoi(argv[2]);
+  outfilename = argv[3];
 
   //Specify floats:
   h = 1.0/((double) n);
@@ -90,5 +92,14 @@ int main(int argc, char* argv[]){
   cout << "Results after " << iterations << " iterations" << endl;
   //A.print(" A = ");
   sort(computed_eigenvalues, "ascend").print("computed_eigenvalues = ");                        //Print the computed eigenvalues.
+
+
+  //Write the computed eigenvalues to file.
+  computed_eigenvalues = sort(computed_eigenvalues, "ascend");
+  ofile.open(outfilename);
+  for (int i = 0; i < n; i++){
+    ofile << computed_eigenvalues(i) << endl;
+  }
+  ofile.close();
   return 0;
 }
