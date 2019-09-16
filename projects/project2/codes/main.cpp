@@ -56,51 +56,39 @@ int main(int argc, char* argv[]){
       A(i,i) = d;
     }
   }
-  cout << "Initial matrix A" << endl;
-  A.print(" A  = ");
+  //A.print(" Initial matrix A  = ");
 
-  //Find "analytical eigenvalues and eigenvectors"
+  //Here we find the initial eigenvalues and eigenvectors of the matrix A.
   vec initial_eigenvalues;
   mat initial_eigenvectors;
   eig_sym(initial_eigenvalues, initial_eigenvectors, A);
-  //normalise(initial_eigenvectors);
-  //normalise(initial_eigenvectors);
-  initial_eigenvectors.print("Initial eigenvectors =");
-
-  initial_eigenvectors.print("Initial normalised eigenvectors = ");
-  //double length = dot(trans(initial_eigenvectors(0)),initial_eigenvectors(0));
-  initial_eigenvalues.print("Eigenvalues = ");
+  initial_eigenvalues.print("Eigenvalues of A = ");
 
   int iterations = 0;
+
+  //Main algorithm
   while (max_element*max_element > tolerance && iterations < max_iterations){
     Find_MaxElement_and_MaxIndices(RowIndex, ColumnIndex, max_element, A, n);
     Compute_Trigonometric_Functions(RowIndex, ColumnIndex, A, n, tau, tangens, cosinus, sinus);
     k = RowIndex;
     l = ColumnIndex;
     S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
-
-    //This part needs to be fixed before it's included in the program.
-    //Check if orthonormality is preserved.
-    message = OrthonormalityPreservationTest(A, S, n);
+    message = OrthonormalityPreservationTest(A, S, n);                          //Units test to check if orthonormality is preserved.
     if (message != "OK"){
       cout << message << endl;
       exit(1);
     }
-
-    message = ConservationOfEigenvalues(A, initial_eigenvalues, n);
+    A = trans(S)*A*S;                                                           //Computes the similarity matrix, essentially setting A to be the new similar matrix.
+    message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Units test to check if eigenvalues of matrix A are conserved through the unitary transformation.
     if (message != "OK"){
       cout << message << endl;
       exit(2);
     }
-    //Then compute the similary matrix and implement the whole charade in a while loop.
-    A = trans(S)*A*S;
-    //A = B;
-
     iterations += 1;
   }
-  vec computed_eigenvalues = A.diag();
+  vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
   cout << "Results after " << iterations << " iterations" << endl;
-  A.print(" A = ");
-  computed_eigenvalues.print("computed_eigenvalues = ");
+  //A.print(" A = ");
+  sort(computed_eigenvalues, "ascend").print("computed_eigenvalues = ");                        //Print the computed eigenvalues.
   return 0;
 }
