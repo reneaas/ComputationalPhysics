@@ -78,9 +78,6 @@ string OrthonormalityPreservationTest(mat A, mat S, int n){
   eigvec1 = vec(n);
   eigvec2 = vec(n);
   eig_sym(eigval, eigvec, A);
-  for (int i = 0; i < n; i++){
-    //eigvec(i) = normli;
-  }
 
   for (int i = 0; i < n; i++){
     for (int j = 0; j < n; j++){
