@@ -64,7 +64,7 @@ int main(int argc, char* argv[]){
   }
 
   if (problemtype == "QM"){
-    double rho_max = 100;
+    double rho_max = 1;
     h = rho_max/((double) n);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
