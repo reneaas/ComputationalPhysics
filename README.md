@@ -12,6 +12,6 @@ is known as a Toeplitz matrix. It's solved through three different algorithms: a
 combines the generalized one with LU-decomposition.
 
 ## Project 2: Buckling Beam and Schrödinger's equation
-In [project 2] (https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2), the Buckling Beam problem and
+In [project 2](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2), the Buckling Beam problem and
 Schrödingers equation is solved by conversion of the second order DEs to eigenvalue equations. This project is currently
 being solved, so an update on the project will soon come.
