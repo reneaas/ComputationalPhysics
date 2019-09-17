@@ -11,14 +11,22 @@ os.system("c++ -O3 -o main.exe main.o functions.o -larmadillo")
 print("Executing...")
 
 
-N = int(sys.argv[1])
+n = int(sys.argv[1])
 max_iterations = int(sys.argv[2])
-Number_of_Gridpoints = [int(i) for i in range(3,N)]
-for n in Number_of_Gridpoints:
-    print("Running code for n = " + str(n))
-    filename = "computed_eigenvalues_" + "n_" + str(n) + ".txt"
-    os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename)
-    path = "results/computed_eigenvalues";
-    if not os.path.exists(path):
-        os.makedirs(path)
-    os.system("mv" + " " +  filename + " " + path)
+problemtype = str(sys.argv[3])
+
+if problemtype == "bb":
+    problemtype = "BucklingBeam"
+    print("Solving the Buckling Beam problem...")
+if problemtype == "qm":
+    problemtype = "QM"
+    print("Solving Schrödingers eq in 3D...")
+
+
+print("Running code for n = " + str(n))
+filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
+os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype)
+path = "results/" + problemtype + "/computed_eigenvalues";
+if not os.path.exists(path):
+    os.makedirs(path)
+os.system("mv" + " " +  filename + " " + path)

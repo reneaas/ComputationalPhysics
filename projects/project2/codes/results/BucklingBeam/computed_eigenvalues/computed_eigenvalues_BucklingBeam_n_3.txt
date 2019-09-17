@@ -4,5 +4,5 @@ Analytical eigenvalues:
 30.7279
 Computed eigenvalues:
 5.27208
-18
-30.7279
+18.4453
+30.2826

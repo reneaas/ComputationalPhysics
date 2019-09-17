@@ -21,6 +21,8 @@ int main(int argc, char* argv[]){
   mat A, B, S;      //Matrices.
   string message;
   char *outfilename;
+  string problemtype;
+
 
   //Specify integers:
   //n = atoi(argv[1]);
@@ -28,11 +30,10 @@ int main(int argc, char* argv[]){
   n = atoi(argv[1]);
   max_iterations = atoi(argv[2]);
   outfilename = argv[3];
+  problemtype = string(argv[4]);
+
 
   //Specify floats:
-  h = 1.0/((double) n);
-  d = 2.0/(h*h);
-  a = -1.0/(h*h);
   tolerance = 1e-8;
   max_element = 1.0;    //initial value to pass first check in while loop.
 
@@ -44,27 +45,54 @@ int main(int argc, char* argv[]){
   B.fill(0.0);
   A.fill(0.0);
   S.fill(0.0);
-  //----------------Test zone ahead!--------------------
 
-  //Fill matrices with random values to test function:
-  //Fill up the tridiagonal matrix A:
-  for (int i = 0; i < n; i++){
-    if (i < n-1){
-      A(i,i) = d;
-      A(i,i+1) = a;
-      A(i+1,i) = a;
-    }
-    else{
-      A(i,i) = d;
+  if (problemtype == "BucklingBeam"){
+    h = 1.0/((double) n);
+    d = 2.0/(h*h);
+    a = -1.0/(h*h);
+    //Fill up the tridiagonal matrix A:
+    for (int i = 0; i < n; i++){
+      if (i < n-1){
+        A(i,i) = d;
+        A(i,i+1) = a;
+        A(i+1,i) = a;
+      }
+      else{
+        A(i,i) = d;
+      }
     }
   }
+
+  if (problemtype == "QM"){
+    double rho_max = 100;
+    h = rho_max/((double) n);
+    d = 2.0/(h*h);
+    a = -1.0/(h*h);
+    double V;
+    double rho;
+    //Now A plays the role of the Hamiltonian matrix
+    for (int i = 0; i < n; i++){
+      if (i < n-1){
+        rho = (i+1)*h;
+        V = rho*rho;
+        A(i,i) = d + V;
+        A(i,i+1) = a;
+        A(i+1,i) = a;
+      }
+      else{
+        A(i,i) = d;
+      }
+    }
+  }
+
+
   //A.print(" Initial matrix A  = ");
 
   //Here we find the initial eigenvalues and eigenvectors of the matrix A.
   vec initial_eigenvalues;
   mat initial_eigenvectors;
   eig_sym(initial_eigenvalues, initial_eigenvectors, A);
-  initial_eigenvalues.print("Eigenvalues of A = ");
+  //initial_eigenvalues.print("Eigenvalues of A = ");
 
   int iterations = 0;
 
@@ -91,7 +119,7 @@ int main(int argc, char* argv[]){
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
   cout << "Results after " << iterations << " iterations" << endl;
   //A.print(" A = ");
-  sort(computed_eigenvalues, "ascend").print("computed_eigenvalues = ");                        //Print the computed eigenvalues.
+  //sort(computed_eigenvalues, "ascend").print("computed_eigenvalues = ");                        //Print the computed eigenvalues.
 
 
   //Write the computed eigenvalues to file.
