@@ -1,6 +1,7 @@
 # FYS3150 - Computational Physics
 
-This repo contains my work in the course FYS3150 at the University of Oslo, UiO.
+This repository contains all my work in the course [FYS3150 - Computational Physics](https://www.uio.no/studier/emner/matnat/fys/FYS3150/)
+at UiO.
 
 # Projects
 All my coursework is found under [projects](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/).
