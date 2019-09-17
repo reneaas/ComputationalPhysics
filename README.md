@@ -3,7 +3,7 @@
 This repo contains my work in the course FYS3150 at the University of Oslo, UiO.
 
 # Projects
-All my coursework on the [projects](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/)
+All my coursework is found under [projects](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/).
 
 ## Project 1: 1D-Possions equation
 In [project 1](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project1). the 1-dimensional Poisson equation is
