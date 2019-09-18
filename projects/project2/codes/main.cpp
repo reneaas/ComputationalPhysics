@@ -104,13 +104,26 @@ int main(int argc, char* argv[]){
     message = OrthonormalityPreservationTest(A, S, n);                          //Units test to check if orthonormality is preserved.
     if (message != "OK"){
       cout << message << endl;
-      exit(1);
+      //exit(1);
     }
-    A = trans(S)*A*S;                                                           //Computes the similarity matrix, essentially setting A to be the new similar matrix.
+    A = trans(S)*A*S;
+
+    /*
+    for (int i = 0; i < n; i++){
+      if ( i!= k && i != l){
+        A(i,k) = A(i,k)*cosinus - A(i,l)*sinus;
+        A(i,l) = A(i,l)*cosinus + A(i,k)*sinus;
+      }
+    }
+    A(k,k) = A(k,k)*cosinus*cosinus - 2*A(k,l)*cosinus*sinus + A(l,l)*sinus*sinus;
+    A(l,l) = A(l,l)*cosinus*cosinus + 2*A(k,l)*cosinus*sinus + A(k,k)*sinus*sinus;
+    A(k,l) = (A(k,k) - A(l,l))*cosinus*sinus + A(k,l)*(cosinus*cosinus - sinus*sinus);
+    */
+
     message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Units test to check if eigenvalues of matrix A are conserved through the unitary transformation.
     if (message != "OK"){
       cout << message << endl;
-      exit(2);
+      //exit(2);
     }
     cout << "iteration = " << iterations << endl;
     iterations += 1;
@@ -118,7 +131,9 @@ int main(int argc, char* argv[]){
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
   cout << "Results after " << iterations << " iterations" << endl;
   //A.print(" A = ");
-  //sort(computed_eigenvalues, "ascend").print("computed_eigenvalues = ");                        //Print the computed eigenvalues.
+  initial_eigenvalues.print("True eigenvalues = ");
+  sort(computed_eigenvalues, "ascend").print("computed_eigenvalues = ");                        //Print the computed eigenvalues.
+  A.print("A = ");
 
 
   //Write the computed eigenvalues to file.
