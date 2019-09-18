@@ -9,7 +9,7 @@ To run the codes of the project, I advise to clone the repository pertaining to 
 This is the main code of the project. It essentially automates everything, all we need to do is write:
 
 '''
-python3 main.py Number_of_gridpoints Max_number_of_iterations> problemtype
+python3 main.py Number_of_gridpoints Max_number_of_iterations problemtype
 '''
 
 You can choose between the solution for two problem types:
