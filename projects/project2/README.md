@@ -1,4 +1,4 @@
-#Project 2: Working title
+# Project 2: Working title
 
 
 
@@ -16,4 +16,8 @@ You can choose between the solution for two problem types:
 1. For the Buckling Beam problem, then problemtype = bb
 2. For the quantum mechanics problem, the problemtype = qm
 
-##
+### main.cpp
+Contains the main program to solve the eigenvalue problems.
+
+### functions.cpp and functions.h
+Contains all the necessary functions for main.cpp to work. It's essentially a package deal.
