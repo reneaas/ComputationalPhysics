@@ -64,7 +64,7 @@ int main(int argc, char* argv[]){
   }
 
   if (problemtype == "QM"){
-    double rho_max = 1000;
+    double rho_max = 10;
     h = rho_max/((double) n);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -113,6 +113,7 @@ int main(int argc, char* argv[]){
       cout << message << endl;
       exit(2);
     }
+    cout << "iteration = " << iterations << endl;
     iterations += 1;
   }
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
