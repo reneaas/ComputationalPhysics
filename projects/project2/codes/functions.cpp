@@ -38,9 +38,9 @@ void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int
   if (A(k,l) != 0.0) {
     tau =  ( A(l,l) - A(k,k) ) / (2.0 * A(k,l));
     if (tau >= 0) {
-      tangens = 1.0/(tau + sqrt(1.0 + tau * tau));
+      tangens = tau + sqrt(1.0 + tau * tau);
     } else {
-      tangens = -1.0/(-tau + sqrt(1.0 + tau * tau));
+      tangens = -tau - sqrt(1.0 + tau * tau);
     }
     cosinus = 1.0 / sqrt(1.0 + tangens * tangens);
     sinus = tangens*cosinus;
