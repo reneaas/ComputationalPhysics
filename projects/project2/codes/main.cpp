@@ -64,7 +64,7 @@ int main(int argc, char* argv[]){
   }
 
   if (problemtype == "QM"){
-    double rho_max = 1;
+    double rho_max = 1000;
     h = rho_max/((double) n);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -74,8 +74,7 @@ int main(int argc, char* argv[]){
     for (int i = 0; i < n; i++){
       if (i < n-1){
         rho = (i+1)*h;
-        V = rho*rho;
-        A(i,i) = d + V;
+        A(i,i) = d + rho*rho;
         A(i,i+1) = a;
         A(i+1,i) = a;
       }
