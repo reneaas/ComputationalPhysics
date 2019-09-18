@@ -10,8 +10,8 @@ This is the main code of the project. It essentially automates everything, all w
 
 ```console
 python3 main.py Number_of_gridpoints Max_number_of_iterations problemtype
-
 ```
+
 
 You can choose between the solution for two problem types:
 1. For the Buckling Beam problem, then problemtype = bb
