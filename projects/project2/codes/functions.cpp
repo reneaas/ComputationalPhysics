@@ -30,9 +30,9 @@ void Find_MaxElement_and_MaxIndices(int &RowIndex, int &ColumnIndex, double &max
 
 
 void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int n, double &tau, double &tangens, double &cosinus, double &sinus){
-  /*
-  Computes all the necessary values need to fill the Unitary matrix S.
-  */
+
+  //Computes all the necessary values need to fill the Unitary matrix S.
+
   double k = row_index;
   double l = column_index;
   if (A(k,l) != 0.0) {
@@ -50,6 +50,7 @@ void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int
     sinus = 0.0;
   }
 }
+
 
 mat FillUnitaryMatrix(int k, int l, int n, double cosinus, double sinus){
   /*

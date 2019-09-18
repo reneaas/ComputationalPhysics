@@ -14,10 +14,11 @@ combines the generalized one with LU-decomposition.
 Here are the [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project1/codes) and the
 [report](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project1/report/project1.pdf)
 
-### Project 2: Buckling Beam and Schrödinger's equation
+### Project 2: Eigenvalue problems
 In [project 2](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2) the Buckling Beam problem and
-Schrödingers equation is solved by conversion of the second order DEs to eigenvalue equations. This project is currently
-being solved, so an update on the project will soon come.
+Schrödingers equation is solved by recasting the DEs into eigenvalue problems through
+discretization.
+The project is still being solved, so an update on the project will soon come.
 
 Here are the [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes) and the
 [report](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/report/project2.pdf)
