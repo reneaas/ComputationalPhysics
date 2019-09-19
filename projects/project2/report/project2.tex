@@ -1,0 +1,170 @@
+\documentclass[english,notitlepage,reprint]{revtex4-1}  % defines the basic parameters of the documentl
+%For preview: skriv i terminal: latexmk -pdf -pvc filnavn
+
+
+
+% if you want a single-column, remove reprint
+
+% allows special characters (including æøå)
+\usepackage[utf8]{inputenc}
+%\usepackage[english]{babel}
+
+%% note that you may need to download some of these packages manually, it depends on your setup.
+%% I recommend downloading TeXMaker, because it includes a large library of the most common packages.
+
+\usepackage{physics,amssymb}  % mathematical symbols (physics imports amsmath)
+\usepackage{graphicx}         % include graphics such as plots
+\usepackage{xcolor}           % set colors
+\usepackage{hyperref}         % automagic cross-referencing (this is GODLIKE)
+\usepackage{tikz}             % draw figures manually
+\usepackage{listings}         % display code
+\usepackage{subfigure}        % imports a lot of cool and useful figure commands
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+% defines the color of hyperref objects
+% Blending two colors:  blue!80!black  =  80% blue and 20% black
+\hypersetup{ % this is just my personal choice, feel free to change things
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
+
+%% Defines the style of the programming listing
+%% This is actually my personal template, go ahead and change stuff if you want
+\lstset{ %
+	inputpath=,
+	backgroundcolor=\color{white!88!black},
+	basicstyle={\ttfamily\scriptsize},
+	commentstyle=\color{magenta},
+	language=Python,
+	morekeywords={True,False},
+	tabsize=4,
+	stringstyle=\color{green!55!black},
+	frame=single,
+	keywordstyle=\color{blue},
+	showstringspaces=false,
+	columns=fullflexible,
+	keepspaces=true}
+
+
+%% USEFUL LINKS:
+%%
+%%   UiO LaTeX guides:        https://www.mn.uio.no/ifi/tjenester/it/hjelp/latex/
+%%   mathematics:             https://en.wikibooks.org/wiki/LaTeX/Mathematics
+
+%%   PHYSICS !                https://mirror.hmc.edu/ctan/macros/latex/contrib/physics/physics.pdf
+
+%%   the basics of Tikz:       https://en.wikibooks.org/wiki/LaTeX/PGF/TikZ
+%%   all the colors!:          https://en.wikibooks.org/wiki/LaTeX/Colors
+%%   how to draw tables:       https://en.wikibooks.org/wiki/LaTeX/Tables
+%%   code listing styles:      https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings
+%%   \includegraphics          https://en.wikibooks.org/wiki/LaTeX/Importing_Graphics
+%%   learn more about figures  https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions
+%%   automagic bibliography:   https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management  (this one is kinda difficult the first time)
+%%   REVTeX Guide:             http://www.physics.csbsju.edu/370/papers/Journal_Style_Manuals/auguide4-1.pdf
+%%
+%%   (this document is of class "revtex4-1", the REVTeX Guide explains how the class works)
+
+
+%% CREATING THE .pdf FILE USING LINUX IN THE TERMINAL
+%%
+%% [terminal]$ pdflatex template.tex
+%%
+%% Run the command twice, always.
+%% If you want to use \footnote, you need to run these commands (IN THIS SPECIFIC ORDER)
+%%
+%% [terminal]$ pdflatex template.tex
+%% [terminal]$ bibtex template
+%% [terminal]$ pdflatex template.tex
+%% [terminal]$ pdflatex template.tex
+%%
+%% Don't ask me why, I don't know.
+
+\begin{document}
+\title{Project 2 - working title}      % self-explanatory
+\author{René Ask}          % self-explanatory
+\date{\today}                             % self-explanatory
+\noaffiliation                            % ignore this
+                                          % marks the end of the abstracthttps://github.com/reneaas/fys2160.git
+\maketitle                                % creates the title, author, date & abstract
+
+\section{Introduction}
+Differential equations (DEs) show up in all branches of physics, and many of them can be recast into a eigenvalue problem. 
+\section{Method}
+\subsection{A Buckling Beam problem}
+We'll first study the differential equation of the form 
+\begin{equation}
+	\gamma \dv[2]{u(x)}{x} = -Fu(x),
+\end{equation}
+which essentially is a 1-dimensional wave equation. Assume here that $ x\in [0,L]$ for some known length $L$ and suppose we know the exact value of $F$. Defining a new variable $\rho \equiv x/L$,, we can recast the DE as
+\begin{equation}\label{DE_BB_dimensionless}
+	\dv[2]{u(\rho)}{\rho} = -\frac{FL^2}{\gamma}u(\rho) \equiv -\lambda u(\rho),
+\end{equation}
+where $\rho \in [\rho_0, \rho_N] = [0,1]$. We can discretize the second derivative here as 
+\begin{equation}
+	\dv[2]{u}{\rho} \approx \frac{u_{i+1} - 2u_i + u_{i-1}}{h^2},
+\end{equation}
+where $u_i \equiv u(\rho_i)$, $\rho_i \equiv \rho_0 + ih$ for $i=1,2,..,N$ for $N$ grid points and some step size $h$. Then equation \eqref{DE_BB_dimensionless} can be written as 
+\begin{equation}\label{Discretized_BB_eigenvalue}
+	\frac{u_{i+1} - 2u_i + u_{i-1}}{h^2} = - \lambda u_i
+\end{equation}
+Eq. \eqref{Discretized_BB_eigenvalue} can easily be recast into the following matrix equation.
+\begin{equation}\label{matrix_eq_1}
+\frac{1}{h^2}
+\begin{bmatrix}
+2 & -1 & 0 & \cdots & 0 \\
+-1 & 2 & -1 & \cdots& 0  \\
+0 & -1 & 2 & \cdots & 0\\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & -1 & 2
+\end{bmatrix}
+\begin{bmatrix}
+u_1 \\ u_2 \\ \vdots \\ u_{n-2} \\ u_{n-1}
+\end{bmatrix}
+ = \lambda 
+ \begin{bmatrix}
+ u_1 \\ u_2 \\ \vdots \\ u_{n-2} \\ u_{n-1}
+ \end{bmatrix}
+\end{equation}
+
+\subsection*{Quantum dots in 3D - one electron}
+
+Here we'll study Schrödinger's equation for one electron. The radial equation of any spherically symmetric potential $V(r)$ can be written as 
+\begin{equation}\label{radial_eq_u}
+	-\frac{\hbar^2}{2m}\dv[2]{u(r)}{r} + \left[V(r) + \frac{\hbar^2}{2m}\frac{\ell(\ell + 1)}{r^2}\right]u(r) = Eu(r),
+\end{equation}
+where the radial function $R(r)$ is related to the eq. \eqref{radial_eq_u} by the definition $u(r) \equiv rR(r)$. In this article we'll restrict ourselves to the case $\ell = 0$, that is, the electron has no angular momentum. To recast this equation into a simpler form, we'll define $\rho \equiv r/\alpha$ where $\alpha$ is some parameter with units length. Then eq. \eqref{radial_eq_u} can be rewritten as 
+\begin{equation}\label{SL_scaled}
+	-\dv[2]{u(\rho)}{\rho} + \rho^2 u(\rho) = \lambda u(\rho),
+\end{equation}
+as derived in the appendix (MAKE THIS DERIVATION LATER). Here $\alpha \equiv (\hbar^2/mk)^{1/4}$ and $\lambda \equiv (2m\alpha^2/\hbar^2)E$. The boundary conditions here are $u(0) = 0$ and $u(\infty) = 0$, which follows from the requirement that the resulting radial function must obey $\int r^2\abs{R(r)}dr < \infty$ such that $R(r) \in L^2(0,\infty)$ and is thus normalizable. 
+Discretization of eq. (\ref{SL_scaled}) in the same manner as done with the buckling beam equation, we obtain 
+\begin{equation}
+	\frac{-u_{i+1} + 2u_i - u_{i-1}}{h^2} + \rho_i^2u_i = \lambda u_i,
+\end{equation}
+which we can easily recast into a matrix equation as follows.
+
+\begin{equation}\label{matrix_eq_1}
+\frac{1}{h^2}
+\begin{bmatrix}
+U_1 & -1 & 0 & \cdots & 0 \\
+-1 & U_2 & -1 & \cdots& 0  \\
+0 & -1 & U_3 & \cdots & 0\\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & -1 & U_{n-1}
+\end{bmatrix}
+\begin{bmatrix}
+u_1 \\ u_2 \\ \vdots \\ u_{n-2} \\ u_{n-1}
+\end{bmatrix}
+= \lambda 
+\begin{bmatrix}
+u_1 \\ u_2 \\ \vdots \\ u_{n-2} \\ u_{n-1}
+\end{bmatrix},
+\end{equation}
+where we define $U_i \equiv 2 + \rho_i^2h^2$.
+\section{Results}
+\section{Discussion}
+\section{Conclusion}
+\end{document}
