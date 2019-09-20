@@ -5,7 +5,7 @@ import sys
 
 
 print("Compiling...")
-os.system("c++ -O3 -Wall -c main.cpp functions.cpp -larmadillo")
+os.system("c++ -O3 -Wall -c main.cpp functions.cpp")
 print("Creating executable...")
 os.system("c++ -O3 -Wall -o main.exe main.o functions.o -larmadillo")
 print("Executing...")
@@ -18,9 +18,12 @@ problemtype = str(sys.argv[3])
 if problemtype == "bb":
     problemtype = "BucklingBeam"
     print("Solving the Buckling Beam problem...")
-if problemtype == "qm":
-    problemtype = "QM"
-    print("Solving Schrödingers eq in 3D...")
+if problemtype == "qm1":
+    problemtype = "QM1"
+    print("Solving Schrödingers eq in 3D with one electron.")
+if problemtype == "qm2":
+    problemtype = "QM2"
+    print("Solving Schrödingers eq in 3D with two electrons.")
 
 
 print("Running code for n = " + str(n))

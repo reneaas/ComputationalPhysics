@@ -16,7 +16,7 @@ ofstream ofile;
 int main(int argc, char* argv[]){
 
   //Declaration of variables:
-  int n, RowIndex, ColumnIndex, k, l, max_iterations;         //Integers
+  int n, N, RowIndex, ColumnIndex, k, l, max_iterations;         //Integers
   double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element;      //Floating points.
   mat A, B, S;      //Matrices.
   string message;
@@ -27,7 +27,8 @@ int main(int argc, char* argv[]){
   //Specify integers:
   //n = atoi(argv[1]);
   //cin >> n; //Temporary solution to specify the number n from "terminal".
-  n = atoi(argv[1]);
+  N = atoi(argv[1]);
+  n = N-1;
   max_iterations = atoi(argv[2]);
   outfilename = argv[3];
   problemtype = string(argv[4]);
@@ -47,7 +48,7 @@ int main(int argc, char* argv[]){
   S.fill(0.0);
 
   if (problemtype == "BucklingBeam"){
-    h = 1.0/((double) n);
+    h = 1.0/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
     //Fill up the tridiagonal matrix A:
@@ -63,9 +64,9 @@ int main(int argc, char* argv[]){
     }
   }
 
-  if (problemtype == "QM"){
-    double rho_max = 30;
-    h = rho_max/((double) n);
+  if (problemtype == "QM1"){
+    double rho_max = 5;
+    h = rho_max/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
     double rho;
@@ -78,10 +79,35 @@ int main(int argc, char* argv[]){
         A(i+1,i) = a;
       }
       else{
-        A(i,i) = d;
+        A(i,i) = d + (i+1)*h;
       }
     }
   }
+
+  if (problemtype == "QM2"){
+    double rho_max = 4;
+    double oscillator_frequency;
+    cout << "Specify oscillator frequency" << endl;
+    cin >> oscillator_frequency;
+    h = rho_max/((double) N);
+    d = 2.0/(h*h);
+    a = -1.0/(h*h);
+    double rho;
+    //Now A plays the role of the Hamiltonian matrix
+    for (int i = 0; i < n; i++){
+      if (i < n-1){
+        rho = (i+1)*h;
+        A(i,i) = d + rho*rho*oscillator_frequency*oscillator_frequency + 1/rho;
+        A(i,i+1) = a;
+        A(i+1,i) = a;
+      }
+      else{
+        rho = (i+1)*h;
+        A(i,i) = d + rho*rho*oscillator_frequency*oscillator_frequency + 1/rho;
+      }
+    }
+  }
+
 
 
   //A.print(" Initial matrix A  = ");
@@ -95,48 +121,43 @@ int main(int argc, char* argv[]){
   int iterations = 0;
 
   //Main algorithm
-  while (max_element*max_element > tolerance && iterations < max_iterations){
+  while (max_element*max_element >= tolerance && iterations < max_iterations){
     Find_MaxElement_and_MaxIndices(RowIndex, ColumnIndex, max_element, A, n);
     Compute_Trigonometric_Functions(RowIndex, ColumnIndex, A, n, tau, tangens, cosinus, sinus);
     k = RowIndex;
     l = ColumnIndex;
+
     S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
+    /*
     message = OrthonormalityPreservationTest(A, S, n);                          //Units test to check if orthonormality is preserved.
     if (message != "OK"){
       cout << message << endl;
-      //exit(1);
+      exit(1);
     }
-    A = trans(S)*A*S;
-
-    /*
-    for (int i = 0; i < n; i++){
-      if ( i!= k && i != l){
-        A(i,k) = A(i,k)*cosinus - A(i,l)*sinus;
-        A(i,l) = A(i,l)*cosinus + A(i,k)*sinus;
-      }
-    }
-    A(k,k) = A(k,k)*cosinus*cosinus - 2*A(k,l)*cosinus*sinus + A(l,l)*sinus*sinus;
-    A(l,l) = A(l,l)*cosinus*cosinus + 2*A(k,l)*cosinus*sinus + A(k,k)*sinus*sinus;
-    A(k,l) = (A(k,k) - A(l,l))*cosinus*sinus + A(k,l)*(cosinus*cosinus - sinus*sinus);
     */
-
+    A = trans(S)*A*S;
+    /*
     message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Units test to check if eigenvalues of matrix A are conserved through the unitary transformation.
     if (message != "OK"){
       cout << message << endl;
-      //exit(2);
+      exit(2);
     }
+    */
     cout << "iteration = " << iterations << endl;
     iterations += 1;
   }
+
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
   cout << "Results after " << iterations << " iterations" << endl;
   //A.print(" A = ");
-  initial_eigenvalues.print("True eigenvalues = ");
+  //initial_eigenvalues.print("True eigenvalues = ");
   sort(computed_eigenvalues, "ascend").print("computed_eigenvalues = ");                        //Print the computed eigenvalues.
-  A.print("A = ");
+  //A.print("A = ");
 
 
   //Write the computed eigenvalues to file.
+
+  vec difference_in_eigenvalues = vec(n);
   computed_eigenvalues = sort(computed_eigenvalues, "ascend");
   ofile.open(outfilename);
   ofile << "Analytical eigenvalues:" << endl;
