@@ -67,6 +67,5 @@ A python script that reads data and creates a plot of a wavefunction.
 The [results](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results) are organized as follows:
 1. [Buckling beam](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/BucklingBeam)
 2. [Quantum dot with one electron](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_OneElectron)
-3. [Quantum dot with two electron](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons)
-  - [With repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/Repulsion)
-  - [No repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/NoRepulsion)
+3. [Quantum dot with two electron with electron-electron repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/Repulsion)
+4. [Quantum dot without electron-electron repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/NoRepulsion)
