@@ -57,17 +57,6 @@ Here we give a summary of the other codes:
 - [make_plot.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/make_plot.py): Creates a plot of the ground state wavefunction based on the computations done in main.cpp
 - [plot_wavefunctions.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/plot_wavefunctions.py): plots several wavefunctions together where the only parameter that differs is the angular frequency
 
-
-### main.cpp
-Contains the main program to solve the eigenvalue problems.
-
-### functions.cpp and functions.h
-Contains all the necessary functions for main.cpp to work. It's essentially a package deal.
-
-### make_plot.py
-A python script that reads data and creates a plot of a wavefunction.
-
-
 ## Results
 
 The [results](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results) are organized as follows:
