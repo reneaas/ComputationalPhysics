@@ -1,5 +1,8 @@
 # Project 2: Eigenvalue problems
 
+## The report
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/project2.pdf).
+
 ## Codes (Documentation)
 To run the codes of the project, I advise to clone the repository pertaining to this project and run the codes in the following way:
 
@@ -65,5 +68,5 @@ The [results](https://github.com/reneaas/ComputationalPhysics/tree/master/projec
 1. [Buckling beam](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/BucklingBeam)
 2. [Quantum dot with one electron](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_OneElectron)
 3. [Quantum dot with two electron](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons)
-  1. [With repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/Repulsion)
-  2. [No repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/NoRepulsion)
+  - [With repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/Repulsion)
+  - [No repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/NoRepulsion)
