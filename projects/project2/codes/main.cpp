@@ -144,25 +144,23 @@ int main(int argc, char* argv[]){
     Compute_Trigonometric_Functions(RowIndex, ColumnIndex, A, n, tau, tangens, cosinus, sinus);
     k = RowIndex;
     l = ColumnIndex;
-
     S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
-    /*
-    message = OrthonormalityPreservationTest(A, S, n);                          //Units test to check if orthonormality is preserved.
-    if (message != "OK"){
-      cout << message << endl;
-      exit(1);
-    }
-    */
     A = trans(S)*A*S;
-    /*
-    message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Units test to check if eigenvalues of matrix A are conserved through the unitary transformation.
-    if (message != "OK"){
-      cout << message << endl;
-      exit(2);
-    }
-    */
     cout << "iteration = " << iterations << endl;
     iterations += 1;
+  }
+
+  //Unit tests to check if mathematical properties are conserved.
+  message = OrthonormalityPreservationTest(A, S, n);                          //Units test to check if orthonormality is preserved.
+  if (message != "OK"){
+    cout << message << endl;
+    exit(1);
+  }
+
+  message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Units test to check if eigenvalues of matrix A are conserved through the unitary transformation.
+  if (message != "OK"){
+    cout << message << endl;
+    exit(2);
   }
 
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
