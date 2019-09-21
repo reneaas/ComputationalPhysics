@@ -53,7 +53,7 @@ Give the angular frequency: 0.5
 Here we give a summary of the other codes:
 - [main.cpp](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/main.cpp): is the main program where computations happen. It facilitates the use of functions from functions.cpp to run the main algorithms.
 - [functions.cpp](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/functions.cpp): contains all functions written to make the main program run.
-- [functions.h](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/functions.h): Header-file for functions.cpp 
+- [functions.h](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/functions.h): Header-file
 - [make_plot.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/make_plot.py): Creates a plot of the ground state wavefunction based on the computations done in main.cpp
 - [plot_wavefunctions.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/plot_wavefunctions.py): plots several wavefunctions together where the only parameter that differs is the angular frequency
 
