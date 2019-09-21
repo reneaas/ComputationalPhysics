@@ -22,7 +22,7 @@
 \usepackage{float}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
-\usepackage{times}
+%\usepackage{times}
 
 % defines the color of hyperref objects
 % Blending two colors:  blue!80!black  =  80% blue and 20% black
@@ -165,7 +165,10 @@ u_1 \\ u_2 \\ \vdots \\ u_{n-2} \\ u_{n-1}
 \end{bmatrix},
 \end{equation}
 where we define $U_i \equiv 2 + \rho_i^2h^2$.
+\subsection*{Algorithm}
+We shall apply Jacobi's method for finding the eigenvalues of the matrices discussed hitherto. The algorithm is based on the following mathematical idea: suppose you have a matrix $A$ represented with respect to some initial basis $\mathcal{B}$. To find the eigenvalues of $A$, one can do a change of basis and represent the matrix $A$ with respect to a basis consisting of its own eigenvectors. In this basis, $A$ will be a diagonal matrix with its eigenvalues on the diagonal. The change of basis is done by successive similarity transformations $A' = S^TA S$, where $S$ is a orthogonal rotation matrix (or more generally, a unitary matrix).
 \section{Results}
 \section{Discussion}
 \section{Conclusion}
+
 \end{document}

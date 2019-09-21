@@ -9,7 +9,7 @@
 
 using namespace std;
 using namespace arma;
-ofstream ofile;
+ofstream ofile_eigenvalues, ofile_wavefunction;
 
 //Main program
 
@@ -18,9 +18,9 @@ int main(int argc, char* argv[]){
   //Declaration of variables:
   int n, N, RowIndex, ColumnIndex, k, l, max_iterations;         //Integers
   double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element;      //Floating points.
-  mat A, B, S;      //Matrices.
+  mat A, B, S, Hamiltonian;      //Matrices.
   string message;
-  char *outfilename;
+  char *outfilename_eigenvalues, *outfilename_wavefunction;
   string problemtype;
 
 
@@ -28,9 +28,9 @@ int main(int argc, char* argv[]){
   //n = atoi(argv[1]);
   //cin >> n; //Temporary solution to specify the number n from "terminal".
   N = atoi(argv[1]);
-  n = N-1;
+  n = N;
   max_iterations = atoi(argv[2]);
-  outfilename = argv[3];
+  outfilename_eigenvalues = argv[3];
   problemtype = string(argv[4]);
 
 
@@ -64,8 +64,8 @@ int main(int argc, char* argv[]){
     }
   }
 
-  if (problemtype == "QM1"){
-    double rho_max = 5;
+  if (problemtype == "QM_OneElectron"){
+    double rho_max = 30;
     h = rho_max/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -84,26 +84,45 @@ int main(int argc, char* argv[]){
     }
   }
 
-  if (problemtype == "QM2"){
-    double rho_max = 4;
+  if (problemtype == "QM_TwoElectrons"){
     double oscillator_frequency;
-    cout << "Specify oscillator frequency" << endl;
-    cin >> oscillator_frequency;
+    oscillator_frequency = atof(argv[5]);
+    outfilename_wavefunction = argv[6];
+    string repulsion = string(argv[7]);
+    double rho_max = 30;
+    //cout << "Specify oscillator frequency" << endl;
+    //cin >> oscillator_frequency;
     h = rho_max/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
     double rho;
     //Now A plays the role of the Hamiltonian matrix
-    for (int i = 0; i < n; i++){
-      if (i < n-1){
-        rho = (i+1)*h;
-        A(i,i) = d + rho*rho*oscillator_frequency*oscillator_frequency + 1/rho;
-        A(i,i+1) = a;
-        A(i+1,i) = a;
+    if (repulsion == "yes"){
+      for (int i = 0; i < n; i++){
+        if (i < n-1){
+          rho = (i+1)*h;
+          A(i,i) = d + rho*rho*oscillator_frequency*oscillator_frequency + 1/rho;
+          A(i,i+1) = a;
+          A(i+1,i) = a;
+        }
+        else{
+          rho = (i+1)*h;
+          A(i,i) = d + rho*rho*oscillator_frequency*oscillator_frequency + 1/rho;
+        }
       }
-      else{
-        rho = (i+1)*h;
-        A(i,i) = d + rho*rho*oscillator_frequency*oscillator_frequency + 1/rho;
+    }
+    else{
+      for (int i = 0; i < n; i++){
+        if (i < n-1){
+          rho = (i+1)*h;
+          A(i,i) = d + rho*rho*oscillator_frequency*oscillator_frequency;
+          A(i,i+1) = a;
+          A(i+1,i) = a;
+        }
+        else{
+          rho = (i+1)*h;
+          A(i,i) = d + rho*rho*oscillator_frequency*oscillator_frequency;
+        }
       }
     }
   }
@@ -116,7 +135,6 @@ int main(int argc, char* argv[]){
   vec initial_eigenvalues;
   mat initial_eigenvectors;
   eig_sym(initial_eigenvalues, initial_eigenvectors, A);
-  //initial_eigenvalues.print("Eigenvalues of A = ");
 
   int iterations = 0;
 
@@ -148,27 +166,40 @@ int main(int argc, char* argv[]){
   }
 
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
-  cout << "Results after " << iterations << " iterations" << endl;
-  //A.print(" A = ");
-  //initial_eigenvalues.print("True eigenvalues = ");
-  sort(computed_eigenvalues, "ascend").print("computed_eigenvalues = ");                        //Print the computed eigenvalues.
-  //A.print("A = ");
-
+  cout << "Completed computations in " << iterations << " iterations" << endl;
 
   //Write the computed eigenvalues to file.
 
   vec difference_in_eigenvalues = vec(n);
   computed_eigenvalues = sort(computed_eigenvalues, "ascend");
-  ofile.open(outfilename);
-  ofile << "Analytical eigenvalues:" << endl;
+  ofile_eigenvalues.open(outfilename_eigenvalues);
+  ofile_eigenvalues << "Analytical eigenvalues:" << endl;
   for (int i = 0; i < n; i++){
-    ofile << initial_eigenvalues(i) << endl;
+    ofile_eigenvalues << initial_eigenvalues(i) << endl;
   }
 
-  ofile << "Computed eigenvalues:" << endl;
+  ofile_eigenvalues << "Computed eigenvalues:" << endl;
   for (int i = 0; i < n; i++){
-    ofile << computed_eigenvalues(i) << endl;
+    ofile_eigenvalues << computed_eigenvalues(i) << endl;
   }
-  ofile.close();
+  ofile_eigenvalues.close();
+
+
+
+  if (problemtype == "QM_TwoElectrons"){
+    vec ground_state = vec(n);
+    for (int i = 0; i < n; i++){
+      ground_state(i) = initial_eigenvectors(0,i);
+    }
+
+    double rho;
+    ofile_wavefunction.open(outfilename_wavefunction);
+    for (int i = 0; i < n; i++){
+      rho = (i+1)*h;
+      ofile_wavefunction << ground_state(i)*ground_state(i) << " ";
+      ofile_wavefunction << rho << endl;
+    }
+    ofile_wavefunction.close();
+  }
   return 0;
 }
