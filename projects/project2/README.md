@@ -20,7 +20,7 @@ python3 main.py Number_of_gridpoints Max_number_of_iterations bb
 python3 main.py Number_of_gridpoints Max_number_of_iterations qm1
 ```
 
-3. Quantum dots with two-electrons:
+3. Quantum dots with two electrons:
 
 ```console
 python3 main.py Number_of_gridpoints Max_number_of_iterations qm2
