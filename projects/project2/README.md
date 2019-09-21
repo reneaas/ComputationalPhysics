@@ -43,11 +43,11 @@ python3 main.py 100 100000 qm2
 Now assume we do not want to compile the code, we want to include repulsion and run the code with angular frequency set to 0.5. Then the console would look like this:
 
 ```console
-Compile anew? Type yes or no: *no*
+Compile anew? Type yes or no: no
 Solving Schrödingers eq in 3D with two electrons.
 Running code for n = 100
-Include electron repulsion?, type yes or no: *yes*
-Give the angular frequency: *0.5*
+Include electron repulsion?, type yes or no: yes
+Give the angular frequency: 0.5
 ```
 
 
