@@ -32,6 +32,25 @@ python3 main.py Number_of_gridpoints Max_number_of_iterations qm2
 
 On every run, you'll be prompted with whether you want to compile the code again. If no changes has been made to the code, then type "no". Otherwise type "yes".
 
+As an example, say you want to solve the quantum mechanics problem involving two electrons with repulsion and let's say we use the following parameters:
+* Number_of_gridpoints = 100
+* Max_number_of_iterations = 100000
+Then you can run the code as
+
+```console
+python3 main.py 100 100000 qm2
+```
+Now assume we do not want to compile the code, we want to include repulsion and run the code with angular frequency set to 0.5. Then the console would look like this:
+
+```console
+Compile anew? Type yes or no: *no*
+Solving Schrödingers eq in 3D with two electrons.
+Running code for n = 100
+Include electron repulsion?, type yes or no: *yes*
+Give the angular frequency: *0.5*
+```
+
+
 ### main.cpp
 Contains the main program to solve the eigenvalue problems.
 
