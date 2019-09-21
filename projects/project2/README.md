@@ -56,3 +56,6 @@ Contains the main program to solve the eigenvalue problems.
 
 ### functions.cpp and functions.h
 Contains all the necessary functions for main.cpp to work. It's essentially a package deal.
+
+### make_plot.py
+A python script that reads data and creates a plot of a wavefunction.

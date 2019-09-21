@@ -27,8 +27,8 @@ int main(int argc, char* argv[]){
   //Specify integers:
   //n = atoi(argv[1]);
   //cin >> n; //Temporary solution to specify the number n from "terminal".
-  N = atoi(argv[1]);
-  n = N;
+  n = atoi(argv[1]);
+  N = n+1;
   max_iterations = atoi(argv[2]);
   outfilename_eigenvalues = argv[3];
   problemtype = string(argv[4]);
