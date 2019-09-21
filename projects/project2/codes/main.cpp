@@ -16,9 +16,9 @@ ofstream ofile_eigenvalues, ofile_wavefunction;
 int main(int argc, char* argv[]){
 
   //Declaration of variables:
-  int n, N, RowIndex, ColumnIndex, k, l, max_iterations;         //Integers
+  int n, N, RowIndex, ColumnIndex, k, l, max_iterations;                      //Integers
   double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element;      //Floating points.
-  mat A, B, S, Hamiltonian;      //Matrices.
+  mat A, S;      //Matrices.
   string message;
   char *outfilename_eigenvalues, *outfilename_wavefunction;
   string problemtype;
@@ -42,10 +42,11 @@ int main(int argc, char* argv[]){
   //Create matrices:
   A = mat(n,n);
   S = mat(n,n);
-  B = mat(n,n);
-  B.fill(0.0);
   A.fill(0.0);
   S.fill(0.0);
+
+
+  //This part fills the matrix A depending on which problem to solve.
 
   if (problemtype == "BucklingBeam"){
     h = 1.0/((double) N);
@@ -90,13 +91,14 @@ int main(int argc, char* argv[]){
     outfilename_wavefunction = argv[6];
     string repulsion = string(argv[7]);
     double rho_max = 30;
-    //cout << "Specify oscillator frequency" << endl;
-    //cin >> oscillator_frequency;
     h = rho_max/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
     double rho;
-    //Now A plays the role of the Hamiltonian matrix
+    /*
+    The potential energy is different depending on repulsion is included or not. Therefore
+    the Hamiltonian matrix A is computed differently depending on inclusion of repulsion or not.
+    */
     if (repulsion == "yes"){
       for (int i = 0; i < n; i++){
         if (i < n-1){
@@ -127,18 +129,14 @@ int main(int argc, char* argv[]){
     }
   }
 
-
-
-  //A.print(" Initial matrix A  = ");
-
-  //Here we find the initial eigenvalues and eigenvectors of the matrix A.
+  //Here we find the initial eigenvalues and eigenvectors of the matrix H.
   vec initial_eigenvalues;
   mat initial_eigenvectors;
   eig_sym(initial_eigenvalues, initial_eigenvectors, A);
 
   int iterations = 0;
 
-  //Main algorithm
+  //Main algorithm - Jacobi's method
   while (max_element*max_element >= tolerance && iterations < max_iterations){
     Find_MaxElement_and_MaxIndices(RowIndex, ColumnIndex, max_element, A, n);
     Compute_Trigonometric_Functions(RowIndex, ColumnIndex, A, n, tau, tangens, cosinus, sinus);
@@ -151,13 +149,13 @@ int main(int argc, char* argv[]){
   }
 
   //Unit tests to check if mathematical properties are conserved.
-  message = OrthonormalityPreservationTest(A, S, n);                          //Units test to check if orthonormality is preserved.
+  message = OrthonormalityPreservationTest(A, S, n);                          //Unit test to check if orthonormality is preserved.
   if (message != "OK"){
     cout << message << endl;
     exit(1);
   }
 
-  message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Units test to check if eigenvalues of matrix A are conserved through the unitary transformation.
+  message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Unit test to check if eigenvalues of matrix A are conserved through the unitary transformation(s).
   if (message != "OK"){
     cout << message << endl;
     exit(2);
@@ -166,7 +164,7 @@ int main(int argc, char* argv[]){
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
   cout << "Completed computations in " << iterations << " iterations" << endl;
 
-  //Write the computed eigenvalues to file.
+  //Here we write the computed eigenvalues to a file.
 
   vec difference_in_eigenvalues = vec(n);
   computed_eigenvalues = sort(computed_eigenvalues, "ascend");
@@ -183,18 +181,20 @@ int main(int argc, char* argv[]){
   ofile_eigenvalues.close();
 
 
+  //If we're solving the two electron problem, we compute the ground state wavefunction and write it to a file.
 
   if (problemtype == "QM_TwoElectrons"){
-    vec ground_state = vec(n);
+    vec ground_state = vec(n);                          //GS wavefunction
     for (int i = 0; i < n; i++){
-      ground_state(i) = initial_eigenvectors(0,i);
+      ground_state(i) = initial_eigenvectors(0,i);      //Fills the GS wavefunction.
     }
 
+    //Writes the GS wavefunction to file.
     double rho;
     ofile_wavefunction.open(outfilename_wavefunction);
     for (int i = 0; i < n; i++){
       rho = (i+1)*h;
-      ofile_wavefunction << ground_state(i)*ground_state(i) << " ";
+      ofile_wavefunction << ground_state(i)*ground_state(i) << " ";       //It's squared because we want the probability density.
       ofile_wavefunction << rho << endl;
     }
     ofile_wavefunction.close();

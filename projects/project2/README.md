@@ -50,7 +50,8 @@ Include electron repulsion? Type yes or no: yes
 Give the angular frequency: 0.5
 ```
 
-Here we give a summary of the other codes:
+Here we give a summary of the codes:
+- [main.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/main.py): main code that runs the necessary codes to perform computations, and organizes and moves files around. 
 - [main.cpp](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/main.cpp): is the main program where computations happen. It facilitates the use of functions from functions.cpp to run the main algorithms.
 - [functions.cpp](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/functions.cpp): contains all functions written to make the main program run.
 - [functions.h](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/functions.h): Header file
