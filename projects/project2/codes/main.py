@@ -37,7 +37,7 @@ if problemtype != "QM_TwoElectrons":
 
 else:
     print("Running code for n = " + str(n))
-    repulsion = str(input("Include electron repulsion?, type yes or no: "))
+    repulsion = str(input("Include electron repulsion? Type yes or no: "))
     angular_frequency = float(input("Give the angular frequency: "))
     filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + "_omega_" + str(angular_frequency) + "_repulsion_" + repulsion + ".txt"
     filename_wavefunction = "ground_state_n_" + str(n) + "_omega_" + str(angular_frequency) + "_repulsion_" + repulsion + ".txt"

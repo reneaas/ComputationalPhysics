@@ -46,7 +46,7 @@ Now assume we do not want to compile the code, we want to include repulsion and 
 Compile anew? Type yes or no: no
 Solving Schrödingers eq in 3D with two electrons.
 Running code for n = 100
-Include electron repulsion?, type yes or no: yes
+Include electron repulsion? Type yes or no: yes
 Give the angular frequency: 0.5
 ```
 
