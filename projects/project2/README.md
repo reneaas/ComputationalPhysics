@@ -6,8 +6,7 @@ The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/project
 ## Codes (Documentation)
 To run the codes of the project, I advise to clone the repository pertaining to this project and run the codes in the following way:
 
-### main.py
-This is the main code of the project. It essentially automates everything. What you need to write in a standard Unix console is:
+The primary code of the numerical project is [main.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/main.py). It automates pretty much everything. A call to this can be done in the following way with respect to which problem one wants to solve:
 
 1. Buckling Beam problem:
 
@@ -50,6 +49,13 @@ Running code for n = 100
 Include electron repulsion? Type yes or no: yes
 Give the angular frequency: 0.5
 ```
+
+Here we give a summary of the other codes:
+- [main.cpp](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/main.cpp): is the main program where computations happen. It facilitates the use of functions from functions.cpp to run the main algorithms.
+- [functions.cpp](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/functions.cpp): contains all functions written to make the main program run.
+- [functions.h](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/functions.h): Header-file for functions.cpp
+- [make_plot.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/make_plot.py): Creates a plot of the ground state wavefunction based on the computations done in main.cpp
+- [plot_wavefunctions.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/plot_wavefunctions.py): plots several wavefunctions together where the only parameter that differs is the angular frequency 
 
 
 ### main.cpp
