@@ -30,7 +30,7 @@ python3 main.py Number_of_gridpoints Max_number_of_iterations qm2
     1. Repulsion: Whether to include electron repulsion or not.
     2. Angular frequency: A double floating point number.
 
-On every run, you'll be prompted with whether you want to compile the code again. If no changes has been made to the code, then type "no". Otherwise type "yes".
+On every run, you'll be prompted with whether you want to compile the code again. If no changes has been made to the code, type "no". Otherwise type "yes".
 
 As an example, say you want to solve the quantum mechanics problem involving two electrons with repulsion and let's say we use the following parameters:
 * Number_of_gridpoints = 100
