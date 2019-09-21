@@ -2,7 +2,7 @@
 
 
 
-## Codes
+## Codes (Documentation)
 To run the codes of the project, I advise to clone the repository pertaining to this project and run the codes in the following way:
 
 ### main.py
