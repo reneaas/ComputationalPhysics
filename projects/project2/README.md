@@ -26,9 +26,9 @@ python3 main.py Number_of_gridpoints Max_number_of_iterations qm1
 python3 main.py Number_of_gridpoints Max_number_of_iterations qm2
 ```
 
-* Here you will be prompted to insert additional values for :
-1. Repulsion: Whether to include electron repulsion or not.
-2. Angular frequency: A double floating point number.
+  * Here you will be prompted to insert additional values for :
+    1. Repulsion: Whether to include electron repulsion or not.
+    2. Angular frequency: A double floating point number.
 
 On every run, you'll be prompted with whether you want to compile the code again. If no changes has been made to the code, then type "no". Otherwise type "yes".
 
