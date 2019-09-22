@@ -13,7 +13,7 @@ rho_max = float(input("rho_max = "))
 angular_frequencies = [0.01, 0.05, 0.1, 0.5, 1.0]
 
 if repulsion == "yes":
-    figurename = "ground_state_wavefunctions_with_repulsion_rho_max_" + str(rho_max) + ".png"
+    figurename = "ground_state_wavefunctions_with_repulsion_rho_max_" + str(rho_max) + ".eps"
     for angular_frequency in angular_frequencies:
         outfilename = "results/QM_TwoElectrons/Repulsion/wavefunctions/ground_state_n_"\
                     + str(n) + "_omega_" + str(angular_frequency) + "_repulsion_yes.txt"
@@ -41,7 +41,7 @@ if repulsion == "yes":
     os.system("mv" + " " + figurename + " " + path)
 
 if repulsion == "no":
-    figurename = "ground_state_wavefunctions_no_repulsion_rho_max_" + str(rho_max) + ".png"
+    figurename = "ground_state_wavefunctions_no_repulsion_rho_max_" + str(rho_max) + ".eps"
     for angular_frequency in angular_frequencies:
         outfilename = "results/QM_TwoElectrons/NoRepulsion/wavefunctions/ground_state_n_"\
                     + str(n) + "_omega_" + str(angular_frequency) + "_repulsion_no.txt"
