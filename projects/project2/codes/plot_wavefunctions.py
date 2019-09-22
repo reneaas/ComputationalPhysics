@@ -32,7 +32,7 @@ if repulsion == "yes":
     plt.xlabel(r"$\rho$", fontsize = 18)
     plt.legend()
     #plt.title(r"Ground states (including repulsion) for different angular angular_frequencies")
-    plt.savefig(figurename, dpi = 1000)
+    plt.savefig(figurename, dpi = 400)
     plt.close()
 
     path = "results/QM_TwoElectrons/Repulsion/plots"
