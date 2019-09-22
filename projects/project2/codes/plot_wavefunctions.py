@@ -10,7 +10,7 @@ rc('text', usetex=True)
 n = int(sys.argv[1])
 repulsion = str(sys.argv[2])
 rho_max = float(input("rho_max = "))
-angular_frequencies = [0.01, 0.5, 1.0, 5.0]
+angular_frequencies = [0.01, 0.05, 0.1, 0.5, 1.0]
 
 if repulsion == "yes":
     figurename = "ground_state_wavefunctions_with_repulsion_rho_max_" + str(rho_max) + ".png"
@@ -60,7 +60,7 @@ if repulsion == "no":
     plt.xlabel(r"$\rho$", fontsize = 18)
     plt.legend()
     #plt.title("Ground states (no repulsion) for different angular angular_frequencies")
-    plt.savefig(figurename, dpi = 1000)
+    plt.savefig(figurename, dpi = 400)
     plt.close()
 
     path = "results/QM_TwoElectrons/NoRepulsion/plots"
