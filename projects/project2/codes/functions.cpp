@@ -120,14 +120,13 @@ string OrthonormalityPreservationTest(mat A, mat S, int n){
         return message;
       }
       if ( i != j && abs(norm-0) >= tolerance){
-        message = "Orthonormality is not preserved. A pair eigvec aren't orthogonal.";
+        message = "Orthonormality is not preserved. A pair of eigvectors aren't orthogonal.";
         cout << "norm = " << norm << endl;
         return message;
       }
     }
   }
   message = "OK";
-
   return message;
 }
 

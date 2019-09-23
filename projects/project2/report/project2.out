@@ -3,7 +3,12 @@
 \BOOKMARK [1][-]{section*.3}{Method}{section*.1}% 3
 \BOOKMARK [2][-]{section*.4}{A Buckling Beam problem}{section*.3}% 4
 \BOOKMARK [2][-]{section*.5}{Quantum dots in 3D - one electron}{section*.3}% 5
-\BOOKMARK [2][-]{section*.6}{Algorithm}{section*.3}% 6
-\BOOKMARK [1][-]{section*.7}{Results}{section*.1}% 7
-\BOOKMARK [1][-]{section*.8}{Discussion}{section*.1}% 8
-\BOOKMARK [1][-]{section*.9}{Conclusion}{section*.1}% 9
+\BOOKMARK [2][-]{section*.6}{Quantum dots in 3D - two electrons}{section*.3}% 6
+\BOOKMARK [2][-]{section*.7}{Algorithm}{section*.3}% 7
+\BOOKMARK [2][-]{section*.8}{Important mathematical properties}{section*.3}% 8
+\BOOKMARK [3][-]{section*.9}{Unitary transformations conserve orthonormality}{section*.8}% 9
+\BOOKMARK [3][-]{section*.10}{Similar matrices share eigenvalue spectrum}{section*.8}% 10
+\BOOKMARK [3][-]{section*.11}{The eigenvectors a similar matrix is orthogonal}{section*.8}% 11
+\BOOKMARK [1][-]{section*.12}{Results}{section*.1}% 12
+\BOOKMARK [1][-]{section*.13}{Discussion}{section*.1}% 13
+\BOOKMARK [1][-]{section*.14}{Conclusion}{section*.1}% 14

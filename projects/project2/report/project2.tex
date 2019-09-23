@@ -165,8 +165,38 @@ u_1 \\ u_2 \\ \vdots \\ u_{n-2} \\ u_{n-1}
 \end{bmatrix},
 \end{equation}
 where we define $U_i \equiv 2 + \rho_i^2h^2$.
-\subsection*{Algorithm}
-We shall apply Jacobi's method for finding the eigenvalues of the matrices discussed hitherto. The algorithm is based on the following mathematical idea: suppose you have a matrix $A$ represented with respect to some initial basis $\mathcal{B}$. To find the eigenvalues of $A$, one can do a change of basis and represent the matrix $A$ with respect to a basis consisting of its own eigenvectors. In this basis, $A$ will be a diagonal matrix with its eigenvalues on the diagonal. The change of basis is done by successive similarity transformations $A' = S^TA S$, where $S$ is a orthogonal rotation matrix (or more generally, a unitary matrix).
+
+
+\subsection*{Quantum dots in 3D - two electrons}
+
+
+ 
+
+\subsection{Algorithm}
+\subsection{Important mathematical properties}
+\subsubsection{Unitary transformations conserve orthonormality}
+Suppose $A$ is a symmetric matrix and $S$ is a unitary matrix, such that $S^\dagger S = S S^\dagger = 1$. Suppose further that $\{\vb*{v}_i\}$ are a orthonormal set of eigenvectors of $A$. It then follows that 
+\begin{equation}
+\begin{split}
+\langle S\vb*{v}_i, S\vb*{v}_j \rangle & = \left(S \vb*{v}_i\right)^\dagger (S\vb*{v}_j) = \vb*{v}_i^T (S^\dagger S) \vb*{v}_j \\
+& = \langle \vb*{v}_i, \vb*{v}_j \rangle = \delta_{ij},
+\end{split}
+\end{equation}
+where $\delta_{ij}$ is the Kronecker delta.
+
+\subsubsection{Similar matrices share eigenvalue spectrum}
+Suppose $B$ is similar to $A$, that is $B = S^TAS$ for a real unitary matrix $S$. We prove here that $B$ has the same eigenvalues as $A$. Let $\vb*{v}_i$ have the corresponding eigenvalue $\lambda_i$, then
+\begin{equation}
+	B(S^T\vb*{v}_i) = S^TA \vb*{v}_i = \lambda_i (S^T\vb*{v}_i),
+\end{equation}
+which proves that $B$ has eigenvalues $\lambda_i$ with corresponding eigenvectors $S^T\vb*{v}_i$.
+
+\subsubsection{The eigenvectors a similar matrix is orthogonal}
+Suppose $B = S^TA S$ and $A$ is symmetric, then
+\begin{equation}
+	B^T = \left(S^T A S\right)^T = S^T A^T (S^T)^T = S^T A S = B,
+\end{equation}
+By the spectral theorem for symmetric matrices, it then follows that the eigenvectors of $B$ are orthogonal as long as they span different eigenspaces.
 \section{Results}
 \section{Discussion}
 \section{Conclusion}

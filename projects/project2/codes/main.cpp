@@ -136,6 +136,7 @@ int main(int argc, char* argv[]){
 
   int iterations = 0;
 
+
   //Main algorithm - Jacobi's method
   while (max_element*max_element >= tolerance && iterations < max_iterations){
     Find_MaxElement_and_MaxIndices(RowIndex, ColumnIndex, max_element, A, n);
@@ -144,8 +145,8 @@ int main(int argc, char* argv[]){
     l = ColumnIndex;
     S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
     A = trans(S)*A*S;
-    cout << "iteration = " << iterations << endl;
-    //iterations += 1;
+    //cout << "iteration = " << iterations << endl;
+    iterations += 1;
   }
 
   //Unit tests to check if mathematical properties are conserved.
