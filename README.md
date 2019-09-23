@@ -1,10 +1,12 @@
 # FYS3150 - Computational Physics
 
-This repository contains all my work in the course [FYS3150 - Computational Physics](https://www.uio.no/studier/emner/matnat/fys/FYS3150/)
+This repository is a collaboration between
+Kaspara Skovli Gåsvær, Maria Linea Horgen and René Ask. This
+contains all our work in the course [FYS3150 - Computational Physics](https://www.uio.no/studier/emner/matnat/fys/FYS3150/)
 at UiO.
 
 ## Projects
-All my coursework is found under [projects](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/).
+All coursework is found under [projects](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/).
 
 ### Project 1: 1D-Possions equation
 In [project 1](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project1), the 1-dimensional Poisson equation is solved. The differential equation first recast into a linear tridiagonal matrix equation where the particular matrix we deal with
@@ -15,10 +17,7 @@ Here are the [codes](https://github.com/reneaas/ComputationalPhysics/tree/master
 [report](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project1/report/project1.pdf)
 
 ### Project 2: Eigenvalue problems
-In [project 2](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2) the Buckling Beam problem and
-Schrödingers equation is solved by recasting the DEs into eigenvalue problems through
-discretization.
-The project is still being solved, so an update on the project will soon come.
+In [project 2](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2) we solve second order differential equations (DEs) by recasting them into matrix equations and solving eigenvalue problems. These are solved by a direct method known as Jacobi's method.
 
 Here are the [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes) and the
 [report](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/report/project2.pdf)

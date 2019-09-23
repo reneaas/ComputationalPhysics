@@ -167,15 +167,8 @@ int main(int argc, char* argv[]){
 
   //Here we write the computed eigenvalues to a file.
 
-  vec difference_in_eigenvalues = vec(n);
   computed_eigenvalues = sort(computed_eigenvalues, "ascend");
   ofile_eigenvalues.open(outfilename_eigenvalues);
-  ofile_eigenvalues << "Analytical eigenvalues:" << endl;
-  for (int i = 0; i < n; i++){
-    ofile_eigenvalues << initial_eigenvalues(i) << endl;
-  }
-
-  ofile_eigenvalues << "Computed eigenvalues:" << endl;
   for (int i = 0; i < n; i++){
     ofile_eigenvalues << computed_eigenvalues(i) << endl;
   }
