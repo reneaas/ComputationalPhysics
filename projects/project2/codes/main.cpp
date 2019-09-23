@@ -145,7 +145,7 @@ int main(int argc, char* argv[]){
     S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
     A = trans(S)*A*S;
     cout << "iteration = " << iterations << endl;
-    iterations += 1;
+    //iterations += 1;
   }
 
   //Unit tests to check if mathematical properties are conserved.
