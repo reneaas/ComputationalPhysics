@@ -9,7 +9,7 @@
 
 using namespace std;
 using namespace arma;
-ofstream ofile_eigenvalues, ofile_wavefunction;
+ofstream ofile_eigenvalues, ofile_wavefunction, ofile_NumberOfIterations;
 
 //Main program
 
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]){
   }
 
   if (problemtype == "QM_OneElectron"){
-    double rho_max = 30;
+    double rho_max = 3.555;
     h = rho_max/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -143,24 +143,48 @@ int main(int argc, char* argv[]){
     Compute_Trigonometric_Functions(RowIndex, ColumnIndex, A, n, tau, tangens, cosinus, sinus);
     k = RowIndex;
     l = ColumnIndex;
-    S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
-    A = trans(S)*A*S;
+    //S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
+    //A = trans(S)*A*S;
     //cout << "iteration = " << iterations << endl;
     iterations += 1;
-  }
+    cout << "iteration = " << iterations << endl;
 
+    //Different version of the algorithm
+    double a_kk = A(k,k);
+    double a_ll = A(l,l);
+    double a_kl = A(k,l);
+    double a_lk = A(l,k);
+    A(k,k) = cosinus*cosinus*a_kk - 2.0*cosinus*sinus*a_kl + sinus*sinus*a_ll;
+    A(l,l) = sinus*sinus*a_kk + 2.0*cosinus*sinus*a_kl + cosinus*cosinus*a_ll;
+    A(l,k) = 0.0;
+    A(k,l) = 0.0;
+
+    for (int i = 0; i < n; i++){
+      if ( i != k && i != l){
+        double a_ik = A(i,k);
+        double a_il = A(i,l);
+        A(i,k) = cosinus*a_ik - sinus*a_il;
+        A(k,i) = A(i,k);
+        A(i,l) = cosinus*a_il + sinus*a_ik;
+        A(l,i) = A(i,l);
+      }
+    }
+  }
+  /*
   //Unit tests to check if mathematical properties are conserved.
   message = OrthonormalityPreservationTest(A, S, n);                          //Unit test to check if orthonormality is preserved.
   if (message != "OK"){
     cout << message << endl;
     exit(1);
   }
-
+  */
+  /*
   message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Unit test to check if eigenvalues of matrix A are conserved through the unitary transformation(s).
   if (message != "OK"){
     cout << message << endl;
     exit(2);
   }
+  */
 
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
   cout << "Completed computations in " << iterations << " iterations" << endl;

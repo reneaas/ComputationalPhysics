@@ -28,7 +28,7 @@ void Find_MaxElement_and_MaxIndices(int &RowIndex, int &ColumnIndex, double &max
   }
 }
 
-/*
+
 void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int n, double &tau, double &tangens, double &cosinus, double &sinus){
 
   //Computes all the necessary values need to fill the Unitary matrix S.
@@ -40,7 +40,7 @@ void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int
     if (tau >= 0) {
       tangens = 1.0 / (tau + sqrt(1 + tau*tau));
     } else {
-      tangens = 1.0 / (tau - sqrt(1 + tau*tau));
+      tangens = -1.0 / (-tau + sqrt(1 + tau*tau));
     }
     cosinus = 1.0 / sqrt(1.0 + tangens * tangens);
     sinus = tangens*cosinus;
@@ -51,9 +51,10 @@ void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int
     sinus = 0.0;
   }
 }
-*/
 
 
+
+/*
 void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int n, double &tau, double &tangens, double &cosinus, double &sinus){
   //This version of the program converges much faster.
   //Computes all the necessary values need to fill the Unitary matrix S.
@@ -76,6 +77,8 @@ void Compute_Trigonometric_Functions(int row_index, int column_index, mat A, int
     sinus = 0.0;
   }
 }
+
+*/
 
 
 mat FillUnitaryMatrix(int k, int l, int n, double cosinus, double sinus){
