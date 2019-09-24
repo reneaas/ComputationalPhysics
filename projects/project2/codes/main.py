@@ -6,9 +6,9 @@ import sys
 compile = input("Compile anew? Type yes or no: ")
 if compile == "yes":
     print("Compiling...")
-    os.system("c++ -O3 -Wall -c main.cpp functions.cpp")
+    os.system("c++ -O3 -c main.cpp functions.cpp")
     print("Creating executable...")
-    os.system("c++ -O3 -Wall -o main.exe main.o functions.o -larmadillo")
+    os.system("c++ -O3 -o main.exe main.o functions.o -larmadillo")
 print("Executing...")
 
 
@@ -26,7 +26,7 @@ if problemtype == "qm2":
     problemtype = "QM_TwoElectrons"
     print("Solving Schrödingers eq in 3D with two electrons.")
 
-if problemtype == "QM_OneElectrons":
+if problemtype == "QM_OneElectron":
     print("Running code for n = " + str(n))
     filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
     os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype)
@@ -41,7 +41,7 @@ if problemtype == "BucklingBeam":
     filename_NumberOfIterations = "n_vs_iterations_n_equals_" + str(n) + ".txt"
     os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype + " " + filename_NumberOfIterations)
     path = "results/" + problemtype + "/computed_eigenvalues";
-    path_NumberOfIterations = "results/" + problemtype + "/n_vs_iterations"
+    path_NumberOfIterations = "results/" + problemtype + "/benchmarks" + "/n_vs_iterations"
     if not os.path.exists(path):
         os.makedirs(path)
     if not os.path.exists(path_NumberOfIterations):
@@ -49,7 +49,7 @@ if problemtype == "BucklingBeam":
     os.system("mv" + " " +  filename + " " + path)
     os.system("mv" + " " + filename_NumberOfIterations + " " + path_NumberOfIterations)
 
-else:
+if problemtype == "QM_TwoElectrons":
     print("Running code for n = " + str(n))
     repulsion = str(input("Include electron repulsion? Type yes or no: "))
     angular_frequency = float(input("Give the angular frequency: "))

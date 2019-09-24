@@ -26,3 +26,24 @@ if not os.path.exists(path):
     os.makedirs(path)
 
 os.system("mv" + " " + filename + " " + path)
+
+NumberOfGridpoints = [10, 20, 50, 100, 150]
+outfilename = "n_vs_iterations_collected.txt"
+iterations = []
+for n in NumberOfGridpoints:
+    filename_NumberOfIterations = "results/BucklingBeam/benchmarks/n_vs_iterations/n_vs_iterations_n_equals_" + str(n) + ".txt"
+    with open(filename_NumberOfIterations, "r") as infile:
+        infile.readline()
+        line = infile.readline()
+        numbers = line.split()
+        iterations.append(float(numbers[-1]))
+    #os.system("rm" + " " + filename_NumberOfIterations)
+
+
+with open(outfilename, "w") as outfile:
+    outfile.write("n" + " " + "iterations" + "\n")
+    for n, iter in zip(NumberOfGridpoints, iterations):
+        outfile.write(str(n) + " " + str(iter) + "\n")
+
+path_n_vs_iterations = "results/BucklingBeam/benchmarks/n_vs_iterations"
+os.system("mv" + " " + outfilename + " " + path_n_vs_iterations)

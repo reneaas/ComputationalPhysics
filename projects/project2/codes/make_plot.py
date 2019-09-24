@@ -36,6 +36,9 @@ plt.xlabel(r"$\rho$", fontsize = myfontsize)
 plt.ylabel(r"$|\psi ( \rho )|^2$", fontsize = myfontsize)
 plt.savefig(figurename, dpi = 1000)
 
+
+
+
 if not os.path.exists(path):
     os.makedirs(path)
 os.system("mv" + " " + figurename + " " + path)
