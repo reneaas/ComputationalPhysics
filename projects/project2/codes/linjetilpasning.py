@@ -1,5 +1,18 @@
 import numpy as np
 class Linjetilpasning:
+    """
+    How to use this class:
+    Suppose we have to arrays x and y where y(x) = A*x + B.
+    An instance is then made as
+
+    Line = Linjetilpasning(x,y)
+
+    To compute the constanst A and B and their corresponding
+    standard deviations dA and dB, write the following:
+
+    A, B, dA, dB = Line.linjetilpasning()
+
+    """
     def __init__(self, x, y):
         self.x = x
         self.y = y
