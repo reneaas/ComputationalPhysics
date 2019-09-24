@@ -23,7 +23,7 @@ N = [np.log10(n) for n in N]
 N = np.array(N)
 Iterations = np.array(Iterations)
 Line = Linjetilpasning(N, Iterations)
-slope, dslope, I0, dI0 = Line.linjetilpasning()
+slope, I0, dslope, dI0 = Line.linjetilpasning()
 print(slope)
 
 figurename = "plot_n_vs_iterations.pdf"
@@ -33,9 +33,13 @@ if not os.path.exists(path):
 
 n = np.linspace(0.5, 2.5)
 I = slope*n + I0
+print("SDV I = ", dI0)
 
-plt.scatter(N,Iterations, c = "orange", label = "datapoints")
-plt.plot(n, I,c = "steelblue" ,label="slope = " + str("%.3f" % slope) + " $\pm$ " + str("%.3f" % dslope))
+y_error = np.sqrt(dI0**2 + dslope**2)*Iterations
+#y_error = np.sqrt(dI0**2 + dslope**2)
+
+plt.plot(n, I,c = "k" ,label="$\log_{10}(I) =$"  + " " + str("%.3f" % slope) + "$n$" + " $\pm$ " + str("%.3f" % dslope))
+plt.errorbar(N, Iterations, yerr = y_error, label='Datapoints', capsize = 5, fmt = ".r")
 plt.xlabel(r"$\log_{10} (n)$" ,fontsize = 18)
 plt.ylabel(r"$\log_{10} (I)$", fontsize = 18)
 plt.legend(fontsize = 14)

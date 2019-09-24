@@ -13,9 +13,12 @@ class Linjetilpasning:
     A, B, dA, dB = Line.linjetilpasning()
 
     """
-    def __init__(self, x, y):
+    def __init__(self, x, y, number_of_datasets):
         self.x = x
         self.y = y
+        self.number_of_datasets = number_of_datasets
+        if self.number_of_datasets != 1:
+
 
     def linjetilpasning(self):
         #linjetilpasning y = mx + c med usikkerheter dm og dc
@@ -30,9 +33,13 @@ class Linjetilpasning:
         x_mean = (1/n)*np.sum(x)
         y_mean = (1/n)*np.sum(y)
         m = E/D
-        c = y_mean - m*x_mean
+        self.c = y_mean - m*x_mean
         dm_squared = (1/(n-2))*(D*F-E**2)/D**2
         dc_squared = (1/(n-2))*(D/n + x_mean**2)*(D*F-E**2)/D**2
-        dm = np.sqrt(dm_squared)
-        dc = np.sqrt(dc_squared)
+        self.dm = np.sqrt(dm_squared)
+        self.dc = np.sqrt(dc_squared)
         return m, c, dm, dc
+
+    def make_plot(self, x_datapoints, y_datapoints):
+        self.X = x_datapoints
+        self.Y = y_datapoints
