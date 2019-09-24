@@ -26,7 +26,7 @@ if problemtype == "qm2":
     problemtype = "QM_TwoElectrons"
     print("Solving Schrödingers eq in 3D with two electrons.")
 
-if problemtype == "QM_OneElectrons":
+if problemtype == "QM_OneElectron":
     print("Running code for n = " + str(n))
     filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
     os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype)
@@ -39,17 +39,23 @@ if problemtype == "BucklingBeam":
     print("Running code for n = " + str(n))
     filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
     filename_NumberOfIterations = "n_vs_iterations_n_equals_" + str(n) + ".txt"
-    os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype + " " + filename_NumberOfIterations)
+    filename_Time = "bb_time_" + str(n) + ".txt"
+    os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype + " " + filename_NumberOfIterations + " "  + filename_Time)
     path = "results/" + problemtype + "/computed_eigenvalues";
-    path_NumberOfIterations = "results/" + problemtype + "/n_vs_iterations"
+    path_NumberOfIterations = "results/" + problemtype + "/benchmarks" + "/n_v_iterations"
+    path_time = "results/" + problemtype + "/benchmarks" + "/n_vs_time"
     if not os.path.exists(path):
         os.makedirs(path)
     if not os.path.exists(path_NumberOfIterations):
         os.makedirs(path_NumberOfIterations)
+    if not os.path.exists(path_time):
+        os.makedirs(path_time)
     os.system("mv" + " " +  filename + " " + path)
     os.system("mv" + " " + filename_NumberOfIterations + " " + path_NumberOfIterations)
+    os.system("mv" + " " + filename_Time + " " + path_time)
 
-else:
+
+if problemtype == "QM_TwoElectrons":
     print("Running code for n = " + str(n))
     repulsion = str(input("Include electron repulsion? Type yes or no: "))
     angular_frequency = float(input("Give the angular frequency: "))

@@ -6,10 +6,11 @@
 #include <armadillo>
 #include "functions.h"
 #include <string>
+#include "time.h"
 
 using namespace std;
 using namespace arma;
-ofstream ofile_eigenvalues, ofile_wavefunction, ofile_NumberOfIterations;
+ofstream ofile_eigenvalues, ofile_wavefunction, ofile_NumberOfIterations, ofile_Time;
 
 //Main program
 
@@ -20,7 +21,7 @@ int main(int argc, char* argv[]){
   double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element;      //Floating points.
   mat A, S;      //Matrices.
   string message;
-  char *outfilename_eigenvalues, *outfilename_wavefunction, *outfilename_NumberOfIterations;
+  char *outfilename_eigenvalues, *outfilename_wavefunction, *outfilename_NumberOfIterations, *outfilename_Time;
   string problemtype;
 
 
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]){
 
 
   //Specify floats:
-  tolerance = 1e-8;
+  tolerance = 1e-18;
   max_element = 1.0;    //initial value to pass first check in while loop.
 
 
@@ -50,6 +51,7 @@ int main(int argc, char* argv[]){
 
   if (problemtype == "BucklingBeam"){
     outfilename_NumberOfIterations = argv[5];
+    outfilename_Time = argv[6];
     h = 1.0/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -67,7 +69,7 @@ int main(int argc, char* argv[]){
   }
 
   if (problemtype == "QM_OneElectron"){
-    double rho_max = 3.555;
+    double rho_max = 4.1;
     h = rho_max/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -130,6 +132,23 @@ int main(int argc, char* argv[]){
     }
   }
 
+
+  //Measuring time for armadillo's eigenvalue function
+
+  time_t start, finish;
+
+  start = clock();
+
+  vec eigval = eig_sym(A);
+
+  finish = clock();
+
+  double time_armadillo = (double) (finish - start)/ (CLOCKS_PER_SEC);
+  cout<<"Time used for Armadillo's eigenvalue method:"<<endl;
+  cout << "Time used for n = "<< n << ": " << time_armadillo << " s" << endl;
+
+
+
   //Here we find the initial eigenvalues and eigenvectors of the matrix H.
   vec initial_eigenvalues;
   mat initial_eigenvectors;
@@ -137,6 +156,9 @@ int main(int argc, char* argv[]){
 
   int iterations = 0;
 
+  //Measuring time for the Jacobi method
+
+  start = clock();
 
   //Main algorithm - Jacobi's method
   while (max_element*max_element >= tolerance && iterations < max_iterations){
@@ -144,17 +166,13 @@ int main(int argc, char* argv[]){
     Compute_Trigonometric_Functions(RowIndex, ColumnIndex, A, n, tau, tangens, cosinus, sinus);
     k = RowIndex;
     l = ColumnIndex;
-    //S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
-    //A = trans(S)*A*S;
-    //cout << "iteration = " << iterations << endl;
     iterations += 1;
-    cout << "iteration = " << iterations << endl;
+    //cout << "iteration = " << iterations << endl;
 
     //Different version of the algorithm
     double a_kk = A(k,k);
     double a_ll = A(l,l);
     double a_kl = A(k,l);
-    double a_lk = A(l,k);
     A(k,k) = cosinus*cosinus*a_kk - 2.0*cosinus*sinus*a_kl + sinus*sinus*a_ll;
     A(l,l) = sinus*sinus*a_kk + 2.0*cosinus*sinus*a_kl + cosinus*cosinus*a_ll;
     A(l,k) = 0.0;
@@ -171,21 +189,36 @@ int main(int argc, char* argv[]){
       }
     }
   }
-  /*
+
+  finish = clock();
+
+
+  double time_jacobi = (double) (finish - start)/ (CLOCKS_PER_SEC);
+  cout<<"Time used for Jacobi's method:"<<endl;
+  cout << "Time used for n = "<< n << ": " << time_jacobi << " s" << endl;
+
+  ofile_Time.open(outfilename_Time);
+  ofile_Time<<"Jacobi_time"<<" " <<time_jacobi<< " "<<"Armadillo_time" << " "<<time_armadillo<<endl;
+  ofile_Time.close();
+
+
+  S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
+
+
   //Unit tests to check if mathematical properties are conserved.
   message = OrthonormalityPreservationTest(A, S, n);                          //Unit test to check if orthonormality is preserved.
   if (message != "OK"){
     cout << message << endl;
     exit(1);
   }
-  */
-  /*
+
+
   message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Unit test to check if eigenvalues of matrix A are conserved through the unitary transformation(s).
   if (message != "OK"){
     cout << message << endl;
     exit(2);
   }
-  */
+
 
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
   cout << "Completed computations in " << iterations << " iterations" << endl;
