@@ -1,8 +1,0 @@
-Analytical eigenvalues:
-5.27208
-18
-30.7279
-Computed eigenvalues:
-5.27208
-18
-30.7279

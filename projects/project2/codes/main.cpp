@@ -20,7 +20,7 @@ int main(int argc, char* argv[]){
   double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element;      //Floating points.
   mat A, S;      //Matrices.
   string message;
-  char *outfilename_eigenvalues, *outfilename_wavefunction;
+  char *outfilename_eigenvalues, *outfilename_wavefunction, *outfilename_NumberOfIterations;
   string problemtype;
 
 
@@ -49,6 +49,7 @@ int main(int argc, char* argv[]){
   //This part fills the matrix A depending on which problem to solve.
 
   if (problemtype == "BucklingBeam"){
+    outfilename_NumberOfIterations = argv[5];
     h = 1.0/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -217,5 +218,14 @@ int main(int argc, char* argv[]){
     }
     ofile_wavefunction.close();
   }
+
+  if (problemtype == "BucklingBeam"){
+    ofile_NumberOfIterations.open(outfilename_NumberOfIterations);
+    ofile_NumberOfIterations << "n" << " " << "iterations" << endl;
+    ofile_NumberOfIterations << n << " " << iterations << endl;
+    ofile_NumberOfIterations.close();
+  }
+
+
   return 0;
 }

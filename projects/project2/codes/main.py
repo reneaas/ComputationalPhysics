@@ -26,7 +26,7 @@ if problemtype == "qm2":
     problemtype = "QM_TwoElectrons"
     print("Solving Schrödingers eq in 3D with two electrons.")
 
-if problemtype != "QM_TwoElectrons":
+if problemtype == "QM_OneElectrons":
     print("Running code for n = " + str(n))
     filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
     os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype)
@@ -34,6 +34,20 @@ if problemtype != "QM_TwoElectrons":
     if not os.path.exists(path):
         os.makedirs(path)
     os.system("mv" + " " +  filename + " " + path)
+
+if problemtype == "BucklingBeam":
+    print("Running code for n = " + str(n))
+    filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
+    filename_NumberOfIterations = "n_vs_iterations_n_equals_" + str(n) + ".txt"
+    os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype + " " + filename_NumberOfIterations)
+    path = "results/" + problemtype + "/computed_eigenvalues";
+    path_NumberOfIterations = "results/" + problemtype + "/n_vs_iterations"
+    if not os.path.exists(path):
+        os.makedirs(path)
+    if not os.path.exists(path_NumberOfIterations):
+        os.makedirs(path_NumberOfIterations)
+    os.system("mv" + " " +  filename + " " + path)
+    os.system("mv" + " " + filename_NumberOfIterations + " " + path_NumberOfIterations)
 
 else:
     print("Running code for n = " + str(n))
