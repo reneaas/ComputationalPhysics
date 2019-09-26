@@ -36,7 +36,7 @@ int main(int argc, char* argv[]){
 
 
   //Specify floats:
-  tolerance = 1e-18;
+  tolerance = 1e-12;
   max_element = 1.0;    //initial value to pass first check in while loop.
 
 
@@ -206,14 +206,14 @@ int main(int argc, char* argv[]){
 
 
   //Unit tests to check if mathematical properties are conserved.
-  message = OrthonormalityPreservationTest(A, S, n);                          //Unit test to check if orthonormality is preserved.
+  message = OrthonormalityPreservationTest(A, S, n);
   if (message != "OK"){
     cout << message << endl;
     exit(1);
   }
 
-
-  message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Unit test to check if eigenvalues of matrix A are conserved through the unitary transformation(s).
+  //Unit test to check if eigenvalues of matrix A are conserved through the unitary transformation(s).
+  message = ConservationOfEigenvalues(A, initial_eigenvalues, n);
   if (message != "OK"){
     cout << message << endl;
     exit(2);
