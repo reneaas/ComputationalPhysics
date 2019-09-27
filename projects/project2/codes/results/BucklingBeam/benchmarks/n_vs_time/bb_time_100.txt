@@ -1,1 +1,1 @@
-Jacobi_time 0.495818 Armadillo_time 0.00205
+Jacobi_time 0.334414 Armadillo_time 0.006732

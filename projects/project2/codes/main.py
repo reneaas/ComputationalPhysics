@@ -27,9 +27,18 @@ if problemtype == "qm2":
     print("Solving Schrödingers eq in 3D with two electrons.")
 
 if problemtype == "QM_OneElectron":
+    rho_max = float(input("Define max. value of rho:"))
+    """
+    Endrer main.cpp til å ta rho_max fra terminalen
+
+    HJELP TIL Å ENDRE KODEN med filnavnet
+
+    """
+
     print("Running code for n = " + str(n))
-    filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
-    os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype)
+    #filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
+    filename = "computed_eigenvalues_" + problemtype + "_" + str(n) + "_" + str(rho_max) + ".txt"
+    os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype + " " + str(rho_max))
     path = "results/" + problemtype + "/computed_eigenvalues";
     if not os.path.exists(path):
         os.makedirs(path)

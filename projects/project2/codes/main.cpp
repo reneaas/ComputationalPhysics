@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
 
   //Declaration of variables:
   int n, N, RowIndex, ColumnIndex, k, l, max_iterations;                      //Integers
-  double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element;      //Floating points.
+  double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element, rho_max;      //Floating points.
   mat A, S;      //Matrices.
   string message;
   char *outfilename_eigenvalues, *outfilename_wavefunction, *outfilename_NumberOfIterations, *outfilename_Time;
@@ -69,7 +69,8 @@ int main(int argc, char* argv[]){
   }
 
   if (problemtype == "QM_OneElectron"){
-    double rho_max = 4.1;
+    rho_max = atoi(argv[5]);
+    //double rho_max = 8;
     h = rho_max/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -227,6 +228,7 @@ int main(int argc, char* argv[]){
 
   computed_eigenvalues = sort(computed_eigenvalues, "ascend");
   ofile_eigenvalues.open(outfilename_eigenvalues);
+  ofile_eigenvalues<<rho_max<<endl;
   for (int i = 0; i < n; i++){
     ofile_eigenvalues << computed_eigenvalues(i) << endl;
   }
