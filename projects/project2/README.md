@@ -30,20 +30,22 @@ python3 main.py Number_of_gridpoints Max_number_of_iterations qm2 compile_instru
     1. Repulsion: Whether to include electron repulsion or not.
     2. Angular frequency: A double floating point number.
 
-On every run, you'll be prompted with whether you want to compile the code again. If no changes has been made to the code, type "no". Otherwise type "yes".
 
-As an example, say you want to solve the quantum mechanics problem involving two electrons with repulsion and let's say we use the following parameters:
+By compilation_instruction, you simply type "yes" if you wish to recompile the code. If recompilation is undesired, type "no".
+
+
+As an example, say you want to solve the quantum mechanics problem involving two electrons with repulsion with the following parameters:
 * Number_of_gridpoints = 100
 * Max_number_of_iterations = 100000
-Then you can run the code as
+
+Furthermore assume that you want to compile the code, then the code can be run in the following way:
 
 ```console
-python3 main.py 100 100000 qm2
+python3 main.py 100 100000 qm2 yes
 ```
-Now assume we do not want to recompile the code, we want to include repulsion and run the executable with angular frequency set to 0.5. Then the console would look like this:
-
+The program will now prompt you with several inputs. The example below shows how we to correctly respond if repulsion is to be included and the angular
+frequency is to be set to 0.5:
 ```console
-Compile anew? Type yes or no: no
 Solving Schrödingers eq in 3D with two electrons.
 Running code for n = 100
 Include electron repulsion? Type yes or no: yes
@@ -57,11 +59,3 @@ Here we give a summary of the codes:
 - [functions.h](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/functions.h): Header file
 - [make_plot.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/make_plot.py): Creates a plot of the ground state wavefunction based on the computations done in main.cpp
 - [plot_wavefunctions.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/codes/plot_wavefunctions.py): plots several wavefunctions together where the only parameter that differs is the angular frequency
-
-## Results
-
-The [results](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results) are organized as follows:
-1. [Buckling beam](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/BucklingBeam)
-2. [Quantum dot with one electron](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_OneElectron)
-3. [Quantum dot with two electrons including electron-electron repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/Repulsion)
-4. [Quantum dot with two electrons without electron-electron repulsion](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project2/codes/results/QM_TwoElectrons/NoRepulsion)
