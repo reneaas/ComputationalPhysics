@@ -11,19 +11,19 @@ The primary code of the numerical project is [main.py](https://github.com/reneaa
 1. Buckling Beam problem:
 
 ```console
-python3 main.py Number_of_gridpoints Max_number_of_iterations bb
+python3 main.py Number_of_gridpoints Max_number_of_iterations bb compile_instruction
 ```
 
 2. Quantum dots with one electron:
 
 ```console
-python3 main.py Number_of_gridpoints Max_number_of_iterations qm1
+python3 main.py Number_of_gridpoints Max_number_of_iterations qm1 compile_instruction
 ```
 
 3. Quantum dots with two electrons:
 
 ```console
-python3 main.py Number_of_gridpoints Max_number_of_iterations qm2
+python3 main.py Number_of_gridpoints Max_number_of_iterations qm2 compile_instruction
 ```
 
   * Here you will be prompted to insert additional values for :
