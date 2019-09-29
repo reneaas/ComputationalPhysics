@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-compile = input("Compile anew? Type yes or no: ")
+#compile = input("Compile anew? Type yes or no: ")
+compile = str(sys.argv[4])
 if compile == "yes":
     print("Compiling...")
     os.system("c++ -O3 -Wall -c main.cpp functions.cpp")
@@ -12,9 +13,16 @@ if compile == "yes":
 print("Executing...")
 
 
+
 n = int(sys.argv[1])
 max_iterations = int(sys.argv[2])
 problemtype = str(sys.argv[3])
+
+rho_maxes = [2.0,3.0,3.1,3.2,3.3,3.4,3.5,3.6,3.7,3.8,3.9,4.0,4.1,4.2,4.3,4.4,4.5,4.6,4.7,4.8,4.9,5.0,5.1,\
+                5.2,5.3,5.4,5.5,5.6,5.7,5.8,5.9,6.0,6.1,6.2,6.3,6.4,6.5,6.6,6.7,6.8,6.9,7.0,8.0,9.0,10.0,11.0,\
+                12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,25.0,30.0,35.0,40.0,45.0,50.0,100.0,200.0]
+
+
 
 if problemtype == "bb":
     problemtype = "BucklingBeam"
@@ -27,22 +35,34 @@ if problemtype == "qm2":
     print("Solving Schrödingers eq in 3D with two electrons.")
 
 if problemtype == "QM_OneElectron":
-    rho_max = float(input("Define max. value of rho:"))
-    """
-    Endrer main.cpp til å ta rho_max fra terminalen
 
-    HJELP TIL Å ENDRE KODEN med filnavnet
+    run_several_iterations = str(input("Run code for several infinities? Type yes or no: "))
+    if run_several_iterations == "yes":
+        for rho_max in rho_maxes:
+            print("Running code for rho_max = " + str(rho_max))
+            #filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
+            filename = "computed_eigenvalues_" + problemtype + "_" + str(n) + "_" + str(rho_max) + ".txt"
+            os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype + " " + str(rho_max))
+            path = "results/" + problemtype + "/computed_eigenvalues";
+            if not os.path.exists(path):
+                os.makedirs(path)
+            os.system("mv" + " " +  filename + " " + path)
+        os.system("python3 error_eigen.py")
 
-    """
+    if run_several_iterations == "no":
+        rho_max = float(input("Define max. value of rho:"))
+        print("Running code for n = " + str(n))
+        #filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
+        filename = "computed_eigenvalues_" + problemtype + "_" + str(n) + "_" + str(rho_max) + ".txt"
+        os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype + " " + str(rho_max))
+        path = "results/" + problemtype + "/computed_eigenvalues";
+        if not os.path.exists(path):
+            os.makedirs(path)
+        os.system("mv" + " " +  filename + " " + path)
 
-    print("Running code for n = " + str(n))
-    #filename = "computed_eigenvalues_" + problemtype + "_n_" + str(n) + ".txt"
-    filename = "computed_eigenvalues_" + problemtype + "_" + str(n) + "_" + str(rho_max) + ".txt"
-    os.system("./main.exe" + " " + str(n) + " " + str(max_iterations) + " " + filename + " " + problemtype + " " + str(rho_max))
-    path = "results/" + problemtype + "/computed_eigenvalues";
-    if not os.path.exists(path):
-        os.makedirs(path)
-    os.system("mv" + " " +  filename + " " + path)
+
+
+
 
 if problemtype == "BucklingBeam":
     print("Running code for n = " + str(n))

@@ -69,7 +69,7 @@ int main(int argc, char* argv[]){
   }
 
   if (problemtype == "QM_OneElectron"){
-    rho_max = atoi(argv[5]);
+    rho_max = atof(argv[5]);
     //double rho_max = 8;
     h = rho_max/((double) N);
     d = 2.0/(h*h);
@@ -230,7 +230,7 @@ int main(int argc, char* argv[]){
   ofile_eigenvalues.open(outfilename_eigenvalues);
   ofile_eigenvalues<<rho_max<<endl;
   for (int i = 0; i < n; i++){
-    ofile_eigenvalues << computed_eigenvalues(i) << endl;
+    ofile_eigenvalues << setw(20) << setprecision(14) << computed_eigenvalues(i) << endl;
   }
   ofile_eigenvalues.close();
 

@@ -1,2 +1,2 @@
 n iterations
-20 681
+20 612
