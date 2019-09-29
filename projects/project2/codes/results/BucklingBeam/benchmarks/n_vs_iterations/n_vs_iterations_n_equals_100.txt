@@ -1,2 +1,0 @@
-n iterations
-100 14810
