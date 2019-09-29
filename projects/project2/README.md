@@ -20,6 +20,11 @@ python3 main.py Number_of_gridpoints Max_number_of_iterations bb compile_instruc
 python3 main.py Number_of_gridpoints Max_number_of_iterations qm1 compile_instruction
 ```
 
+  * Once this particular problem is run, you'll be promted with:
+    1. Do you wish to run this for several infinities? Type yes or no:
+      - If you type yes, you'll run the code for several predefined "infinities", which in this case is to be interpreted as the maximum value of rho.
+      - if you type no, you'll be prompted to manually insert a particular value of rho which you wish to run the simulation with.
+
 3. Quantum dots with two electrons:
 
 ```console
