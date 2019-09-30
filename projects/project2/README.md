@@ -1,7 +1,7 @@
 # Project 2: Eigenvalue problems
 
 ## The report
-The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/project2.pdf).
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/Project_2_report.pdf).
 
 ## Codes (Documentation)
 To run the codes of the project, I advise to clone the repository pertaining to this project and run the codes in the following way:
