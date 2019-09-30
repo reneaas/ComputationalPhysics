@@ -6,10 +6,11 @@
 #include <armadillo>
 #include "functions.h"
 #include <string>
+#include "time.h"
 
 using namespace std;
 using namespace arma;
-ofstream ofile_eigenvalues, ofile_wavefunction, ofile_NumberOfIterations;
+ofstream ofile_eigenvalues, ofile_wavefunction, ofile_NumberOfIterations, ofile_Time;
 
 //Main program
 
@@ -17,10 +18,10 @@ int main(int argc, char* argv[]){
 
   //Declaration of variables:
   int n, N, RowIndex, ColumnIndex, k, l, max_iterations;                      //Integers
-  double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element;      //Floating points.
+  double sinus, cosinus, tangens, tau, tolerance, h, a, d, max_element, rho_max;      //Floating points.
   mat A, S;      //Matrices.
   string message;
-  char *outfilename_eigenvalues, *outfilename_wavefunction, *outfilename_NumberOfIterations;
+  char *outfilename_eigenvalues, *outfilename_wavefunction, *outfilename_NumberOfIterations, *outfilename_Time;
   string problemtype;
 
 
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]){
 
 
   //Specify floats:
-  tolerance = 1e-14;
+  tolerance = 1e-12;
   max_element = 1.0;    //initial value to pass first check in while loop.
 
 
@@ -50,6 +51,7 @@ int main(int argc, char* argv[]){
 
   if (problemtype == "BucklingBeam"){
     outfilename_NumberOfIterations = argv[5];
+    outfilename_Time = argv[6];
     h = 1.0/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -67,7 +69,8 @@ int main(int argc, char* argv[]){
   }
 
   if (problemtype == "QM_OneElectron"){
-    double rho_max = 5;
+    rho_max = atof(argv[5]);
+    //double rho_max = 8;
     h = rho_max/((double) N);
     d = 2.0/(h*h);
     a = -1.0/(h*h);
@@ -88,8 +91,7 @@ int main(int argc, char* argv[]){
 
   if (problemtype == "QM_TwoElectrons"){
     double oscillator_frequency;
-    //oscillator_frequency = atof(argv[5]);
-    oscillator_frequency = 1/115.299;
+    oscillator_frequency = atof(argv[5]);
     outfilename_wavefunction = argv[6];
     string repulsion = string(argv[7]);
     double rho_max = 30;
@@ -131,6 +133,23 @@ int main(int argc, char* argv[]){
     }
   }
 
+
+  //Measuring time for armadillo's eigenvalue function
+
+  time_t start, finish;
+
+  start = clock();
+
+  vec eigval = eig_sym(A);
+
+  finish = clock();
+
+  double time_armadillo = (double) (finish - start)/ (CLOCKS_PER_SEC);
+  cout<<"Time used for Armadillo's eigenvalue method:"<<endl;
+  cout << "Time used for n = "<< n << ": " << time_armadillo << " s" << endl;
+
+
+
   //Here we find the initial eigenvalues and eigenvectors of the matrix H.
   vec initial_eigenvalues;
   mat initial_eigenvectors;
@@ -138,6 +157,9 @@ int main(int argc, char* argv[]){
 
   int iterations = 0;
 
+  //Measuring time for the Jacobi method
+
+  start = clock();
 
   //Main algorithm - Jacobi's method
   while (max_element*max_element >= tolerance && iterations < max_iterations){
@@ -152,7 +174,6 @@ int main(int argc, char* argv[]){
     double a_kk = A(k,k);
     double a_ll = A(l,l);
     double a_kl = A(k,l);
-    double a_lk = A(l,k);
     A(k,k) = cosinus*cosinus*a_kk - 2.0*cosinus*sinus*a_kl + sinus*sinus*a_ll;
     A(l,l) = sinus*sinus*a_kk + 2.0*cosinus*sinus*a_kl + cosinus*cosinus*a_ll;
     A(l,k) = 0.0;
@@ -170,18 +191,35 @@ int main(int argc, char* argv[]){
     }
   }
 
+  finish = clock();
+
+
+  double time_jacobi = (double) (finish - start)/ (CLOCKS_PER_SEC);
+  cout<<"Time used for Jacobi's method:"<<endl;
+  cout << "Time used for n = "<< n << ": " << time_jacobi << " s" << endl;
+
+  ofile_Time.open(outfilename_Time);
+  ofile_Time<<"Jacobi_time"<<" " <<time_jacobi<< " "<<"Armadillo_time" << " "<<time_armadillo<<endl;
+  ofile_Time.close();
+
+
   S = FillUnitaryMatrix(k, l, n, cosinus, sinus);
+
+
   //Unit tests to check if mathematical properties are conserved.
-  message = OrthonormalityPreservationTest(A, S, n);                          //Unit test to check if orthonormality is preserved.
+  message = OrthonormalityPreservationTest(A, S, n);
   if (message != "OK"){
     cout << message << endl;
     exit(1);
   }
-  message = ConservationOfEigenvalues(A, initial_eigenvalues, n);             //Unit test to check if eigenvalues of matrix A are conserved through the unitary transformation(s).
+
+  //Unit test to check if eigenvalues of matrix A are conserved through the unitary transformation(s).
+  message = ConservationOfEigenvalues(A, initial_eigenvalues, n);
   if (message != "OK"){
     cout << message << endl;
     exit(2);
   }
+
 
   vec computed_eigenvalues = A.diag();                                          //Extract the computed eigenvalues from the diagonal of the final similar matrix.
   cout << "Completed computations in " << iterations << " iterations" << endl;
@@ -190,8 +228,9 @@ int main(int argc, char* argv[]){
 
   computed_eigenvalues = sort(computed_eigenvalues, "ascend");
   ofile_eigenvalues.open(outfilename_eigenvalues);
+  ofile_eigenvalues<<rho_max<<endl;
   for (int i = 0; i < n; i++){
-    ofile_eigenvalues << computed_eigenvalues(i) << endl;
+    ofile_eigenvalues << setw(20) << setprecision(14) << computed_eigenvalues(i) << endl;
   }
   ofile_eigenvalues.close();
 
@@ -203,18 +242,6 @@ int main(int argc, char* argv[]){
     for (int i = 0; i < n; i++){
       ground_state(i) = initial_eigenvectors(0,i);      //Fills the GS wavefunction.
     }
-
-    //Computes the expectation value of the electron-electron distance:
-    double expectation_value = 0;
-    int a = 0;
-    int b = 30;
-    vec ground_state_probability = vec(n);
-    for (int i = 0; i < n; i++){
-      ground_state_probability(i) = ground_state(i)*ground_state(i);
-    }
-    expectation_value = ComputeExpectationValue(a,b,n,ground_state_probability);
-    cout << "expectation value = " << expectation_value << endl;
-
 
     //Writes the GS wavefunction to file.
     double rho;
@@ -233,7 +260,6 @@ int main(int argc, char* argv[]){
     ofile_NumberOfIterations << n << " " << iterations << endl;
     ofile_NumberOfIterations.close();
   }
-
 
 
   return 0;
