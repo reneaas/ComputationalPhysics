@@ -24,7 +24,7 @@ int main(){
 
   if (integration_method == "gauss_legendre"){
     int n;
-    int a,b;
+    double a,b;
     cout << "Specify number of integration points: " << endl;
     cin >> n;
     cout << "Specify integration limits [a,b] : " << endl;
