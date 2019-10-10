@@ -17,12 +17,17 @@ double F(double, double);
 double radial_probability_density(double,double);
 double test_func(double, double, double);
 
-int main(){
+int main(int nargs, char* args[]){
   string integration_method;
-  cout << "Specify integration method, choose from: gauss_legendre, MC_brute, MC_importance " << endl;
+  cout << "Specify integration method, choose from: " << endl;
+  cout << "------------------------------------------------------" << endl;
+  cout << "Gauss legendre method                  --> type 1 " << endl;
+  cout << "Brute force monte carlo                --> type 2 " << endl;
+  cout << "Monte Carlo with importance sampling   --> type 3 " << endl;
+  cout << "------------------------------------------------------" << endl;
   cin >> integration_method;
 
-  if (integration_method == "gauss_legendre"){
+  if (integration_method == "1"){
     int n;
     int a,b;
     cout << "Specify number of integration points: " << endl;
@@ -74,9 +79,7 @@ int main(){
     cout << "Analytical value = " << 5*pow(M_PI, 2)/(16*16) << endl;
   }
 
-
-
-  if (integration_method == "MC_brute"){
+  if (integration_method == "2"){
     int n;
     double a,b;                   // The integration interval [a,b].
     int N;                //number of Monte Carlo samples
@@ -134,14 +137,13 @@ int main(){
     cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
   }
 
-  if (integration_method == "MC_importance"){
+  if (integration_method == "3"){
     int n;
     double max_radial_distance;
     cout << "Read in the number of integration points" << endl;
     cin >> n;
     cout << "Read in maximum radial distance r " << endl;
     cin >> max_radial_distance;
-    //Initialize the seed and call the Mersienne algorithm
     int d = 6;          //d-dimensional integral.
     double r1, r2, theta2;
     double *a, *b;
@@ -168,6 +170,7 @@ int main(){
     a[5] = 0;
     b[5] = 2*M_PI;
 
+    //Initialize the seed and call the Mersienne algorithm
     random_device rd;
     mt19937_64 gen(rd());
     //Sets up the uniform distribution for x in [0,1]
@@ -179,6 +182,11 @@ int main(){
     cout << "Specify the number of Monte Carlo samples: " << endl;
     cin >> N;
     MC_integrals = new double[N];
+
+    //Benchmark code
+    clock_t start, finish;
+    start  = clock();
+    //Main algorithm
     for (int i = 0; i < N; i++){
       cout << "Computing for sample = " << i << endl;
       for (int j = 0; j < n; j++){
@@ -198,17 +206,14 @@ int main(){
     }
     MC_integral /= (double) N;
     MC_integral *= 8*M_PI*M_PI;                               //Multiplying by factors due to integration with respect to phi1, phi2 and theta1. Integrand not explicitly dependent on them.
-    /*
-    for (int i = 3; i < d; i++){
-      MC_integral *= (b[i]-a[i]);                   //Compensates for the change of variables xi = a + (b-a)*mu given a uniform probability distribution p(mu).
-    }
-    */
+    finish = clock();
+    double timeused = (double) (finish-start)/(CLOCKS_PER_SEC);
     MC_integral *= M_PI;                            //Since we're using a uniform distribution for theta2 only, we only need to multiply by pi.
 
 
     cout << "Computed integral = " << MC_integral << endl;
     cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
-
+    cout << "time used = " << timeused << endl;
   }
 
   if (integration_method == "test"){
