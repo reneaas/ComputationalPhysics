@@ -27,7 +27,6 @@ int main(int nargs, char* args[]){
   double time_start, time_end, total_time;
   double max_radial_distance = 10;
   n = 10;
-  numprocs = 10;
   int d = 6;          //d-dimensional integral.
   double r1, r2, theta2;
   a = new double[d];
