@@ -30,6 +30,8 @@ double laguerre_integrate_func_6(double, double, double, double, double, double)
 int main(int nargs, char* args[]){
   string integration_method;
   string outfilename;
+  clock_t start, finish;
+
   if (nargs == 1){
 
     cout << "Specify integration method, choose from: " << endl;
@@ -42,8 +44,8 @@ int main(int nargs, char* args[]){
     cin >> integration_method;
   }
   else{
-    integration_method = "montecarlo_benchmarking";
     outfilename = string(args[1]);
+    integration_method = string(args[2]);
   }
 
   if (integration_method == "1"){
@@ -106,21 +108,31 @@ int main(int nargs, char* args[]){
   if (integration_method == "2"){
     int n, dimensions;
     double a,b, alpha;
-    cout << "Specify number of integration points: " << endl;
-    cin >> n;
+
 
     a = 0;
     b = M_PI;
     double integral_gauss_laguerre = 0;
 
+    if (nargs == 1){
 
-    cout<<"Choose dimension for integral:"<<endl;
-    cout << "------------------------------------------------------" << endl;
-    cout<<"For 3 dimensions                         --> type 3 "<<endl;
-    cout<<"For 6 dimensions                         --> type 6 "<<endl;
-    cout << "------------------------------------------------------" << endl;
-    cin >> dimensions;
-    cout << "------------------------------------------------------" << endl;
+      cout << "Specify number of integration points: " << endl;
+      cin >> n;
+
+      cout<<"Choose dimension for integral:"<<endl;
+      cout << "------------------------------------------------------" << endl;
+      cout<<"For 3 dimensions                         --> type 3 "<<endl;
+      cout<<"For 6 dimensions                         --> type 6 "<<endl;
+      cout << "------------------------------------------------------" << endl;
+      cin >> dimensions;
+      cout << "------------------------------------------------------" << endl;
+
+    }
+    else{
+      dimensions = atoi(args[3]);
+      n = atoi(args[4]);
+    }
+
 
     if(dimensions == 3){
       double *w1, *w2, *w3, *r1, *r2, *theta2;
@@ -132,12 +144,13 @@ int main(int nargs, char* args[]){
     r2 = new double[n+1];
     theta2 = new double[n];
 
-    alpha = 2.0;
+    alpha = 2;
 
     gauss_laguerre(r1, w1, n, alpha);
     gauss_laguerre(r2, w2, n, alpha);
     gauleg(a, b, theta2, w3, n);
 
+    start = clock();
 
     for(int i = 1; i<(n+1); i++){
       for(int j = 1; j<(n+1); j++){
@@ -147,7 +160,10 @@ int main(int nargs, char* args[]){
       }
     }
 
+
     integral_gauss_laguerre *= (M_PI*M_PI)/128;
+
+    finish = clock();
     }
 
     if(dimensions == 6){
@@ -178,7 +194,7 @@ int main(int nargs, char* args[]){
       gauleg(a, 2*b, phi1, w5, n);
       gauleg(a, 2*b, phi2, w6, n);
 
-
+      start = clock();
 
       for (int i = 1; i <= n; i++){
         for (int j = 1; j <= n; j++){
@@ -193,13 +209,18 @@ int main(int nargs, char* args[]){
           }
         }
       }
-
+      finish = clock();
 
     }
 
+    double timeused = (double) (finish - start)/CLOCKS_PER_SEC;
+    double exact = 5*pow(M_PI, 2)/(16*16);
+    double rel_error = abs(integral_gauss_laguerre - exact)/exact;
 
-    cout << "Integral = " << integral_gauss_laguerre << endl;
-    cout << "Analytical value = " << 5*pow(M_PI, 2)/(16*16) << endl;
+    ofile.open(outfilename);
+    ofile << integral_gauss_laguerre << " " << n << " " << rel_error << " " << timeused <<endl;
+    ofile.close();
+
 
 
   }
@@ -381,11 +402,10 @@ int main(int nargs, char* args[]){
     double MC_integral = 0;
     double *MC_integrals;
     int N;               //number of Monte Carlo samples
-    N = atoi(args[2]);
+    N = atoi(args[3]);
     MC_integrals = new double[N];
 
     //Benchmark code
-    clock_t start, finish;
     start  = clock();
     //Main algorithm
     for (int i = 0; i < N; i++){

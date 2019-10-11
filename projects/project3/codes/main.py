@@ -61,10 +61,11 @@ if compilation_instruction == "mpi_timeit":
     print("Compiling main program WITHOUT MPI...")
     os.system("c++ -O3 -c main.cpp lib.cpp")
     os.system("c++ -O3 -o main.exe main.cpp lib.o")
+    integration_method = "montecarlo_benchmarking"
     for N in Number_of_monte_carlo_samples:
         print("executing monte carlo integration WITHOUT mpi for N = " + str(N) + " samples...")
         outfilename = "time_vs_n_montecarlo_no_mpi_" + str(N) + ".txt"
-        os.system("./main.exe" + " " + outfilename + " " + str(N))
+        os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(N))
 
 
     for N in Number_of_monte_carlo_samples:
@@ -145,3 +146,55 @@ if compilation_instruction == "mpi_timeit":
         filename_no_mpi = "time_vs_n_montecarlo_no_mpi_" + str(N) + ".txt"
         os.system("rm" + " " + filename_mpi + " " + filename_no_mpi)
     print("Done.")
+
+if compilation_instruction == "benchmark_laguerre":
+    print("compiling")
+    os.system("c++ -O3 -c main.cpp lib.cpp")
+    os.system("c++ -O3 -o main.exe main.cpp lib.o")
+    dimensions = float(input("3 or 6 dimensions? "))
+    number_of_integration_points = [5, 10, 15, 20, 25, 30, 35, 40]
+
+    for n in number_of_integration_points:
+        outfilename = "dim_" + str(dimensions) + "_" + str(n) + ".txt"
+        integration_method = "2"
+        os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(dimensions) + " " + str(n))
+
+    main_filename = "Benchmark_dim_" + str(dimensions) + "_.txt"
+
+    integral_value = []
+    rel_error = []
+    timeused = []
+
+
+    for n in number_of_integration_points:
+        filename = "dim_" + str(dimensions) + "_" + str(n) + ".txt"
+        with open(filename, "r") as infile:
+            lines = infile.readlines()
+            line = lines[0]
+            line = line.split()
+            integral_value.append(float(line[0]))
+            rel_error.append(float(line[2]))
+            timeused.append(float(line[3]))
+
+
+        os.system("rm" + " " + filename)  #Delete .txt-files
+
+    data = {\
+            "Integration value" : integral_value,\
+            "Number of integration points" : number_of_integration_points,\
+            "$\epsilon_{rel}" : rel_error, \
+            "Time used" : timeused, \
+            }
+
+    dataset = pd.DataFrame(data)
+    dataset.to_latex(main_filename, encoding='utf-8', escape = False, index = False)
+
+    print("Results:")
+    print("----------------------------------------------------------------------------------------------------------------------------------")
+    print(dataset)
+    print("----------------------------------------------------------------------------------------------------------------------------------")
+
+    path = "results/laguerre/benchmarks";
+    if not os.path.exists(path):
+        os.makedirs(path)
+    os.system("mv" + " " +  main_filename + " " + path)
