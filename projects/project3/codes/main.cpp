@@ -462,6 +462,6 @@ double gammln( double xx){
 
 double laguerre_integrate_func(double u1, double u2, double theta2){
 
-  return (sin(theta2)/sqrt(u1*u1 +u2*u2 - 2*u1*u2*cos(theta2)));
+  return (sin(theta2)/sqrt(u1*u1 + u2*u2 - 2*u1*u2*cos(theta2)));
 
 }
