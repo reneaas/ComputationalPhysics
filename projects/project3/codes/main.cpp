@@ -38,6 +38,8 @@ int main(int nargs, char* args[]){
     outfilename = string(args[1]);
   }
 
+  
+
   if (integration_method == "1"){
     int n;
     int a,b;

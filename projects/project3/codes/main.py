@@ -33,7 +33,7 @@ if compilation_instruction == "mpi_timeit":
     for N in Number_of_monte_carlo_samples:
         print("executing monte carlo integration WITH mpi for N = " + str(N) + " samples...")
         outfilename = "time_vs_n_montecarlo_mpi" + str(N) + ".txt"
-        os.system("mpirun -np 10 --oversubscribe ./main_mpi.exe" + " " + str(N) + " " + "write_to_file" + " " + outfilename)
+        os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + str(N) + " " + "write_to_file" + " " + outfilename)
 
     #Lists to store the data.
     number_of_samples = []
