@@ -21,9 +21,10 @@ int main(int nargs, char* args[]){
   string integration_method;
   cout << "Specify integration method, choose from: " << endl;
   cout << "------------------------------------------------------" << endl;
-  cout << "Gauss legendre method                  --> type 1 " << endl;
-  cout << "Brute force monte carlo                --> type 2 " << endl;
-  cout << "Monte Carlo with importance sampling   --> type 3 " << endl;
+  cout << "Gauss Legendre method                  --> type 1 " << endl;
+  cout << "Gauss Laguerre method                  --> type 2 " << endl;
+  cout << "Brute force Monte Carlo                --> type 3 " << endl;
+  cout << "Monte Carlo with importance sampling   --> type 4 " << endl;
   cout << "------------------------------------------------------" << endl;
   cin >> integration_method;
 
@@ -80,6 +81,11 @@ int main(int nargs, char* args[]){
   }
 
   if (integration_method == "2"){
+
+    
+  }
+
+  if (integration_method == "3"){
     int n;
     double a,b;                   // The integration interval [a,b].
     int N;                //number of Monte Carlo samples
@@ -137,7 +143,7 @@ int main(int nargs, char* args[]){
     cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
   }
 
-  if (integration_method == "3"){
+  if (integration_method == "4"){
     int n;
     double max_radial_distance;
     cout << "Read in the number of integration points" << endl;

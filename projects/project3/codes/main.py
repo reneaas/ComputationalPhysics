@@ -19,4 +19,4 @@ if compilation_instruction == "mpi":
     os.system("mpicxx -O3 -c main_mpi.cpp")
     os.system("mpicxx -O3 -o main_mpi.exe main_mpi.o")
     print("executing with mpi")
-    os.system("mpirun -np 10 ./main_mpi.exe")
+    os.system("mpirun -np 10 --oversubscribe ./main_mpi.exe")

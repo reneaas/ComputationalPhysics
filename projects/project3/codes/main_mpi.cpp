@@ -72,9 +72,11 @@ int main(int nargs, char* args[]){
   MC_integrals = new double[local_N];
 
   for (int i = 0; i < local_N; i++){
+
     if (my_rank == 0){
       cout << "Computing for sample = " << i << endl;
     }
+    
     for (int j = 0; j < n; j++){
       r1 = RandomNumberGenerator(gen);
       r1 = -log(1-r1)/alpha;
