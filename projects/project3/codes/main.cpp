@@ -24,7 +24,8 @@ double radial_probability_density(double,double);
 double test_func(double, double, double);
 double gammln(double);
 void gauss_laguerre(double*, double*, int, double);
-double laguerre_integrate_func(double, double, double);
+double laguerre_integrate_func_3(double, double, double);
+double laguerre_integrate_func_6(double, double, double, double, double, double);
 
 int main(int nargs, char* args[]){
   string integration_method;
@@ -103,44 +104,102 @@ int main(int nargs, char* args[]){
   }
 
   if (integration_method == "2"){
-    int N;
+    int n, dimensions;
     double a,b, alpha;
     cout << "Specify number of integration points: " << endl;
-    cin >> N;
+    cin >> n;
+
     a = 0;
     b = M_PI;
+    double integral_gauss_laguerre = 0;
 
 
-    double *w1, *w2, *w3, *r1, *r2, *theta2;
+    cout<<"Choose dimension for integral:"<<endl;
+    cout << "------------------------------------------------------" << endl;
+    cout<<"For 3 dimensions                         --> type 3 "<<endl;
+    cout<<"For 6 dimensions                         --> type 6 "<<endl;
+    cout << "------------------------------------------------------" << endl;
+    cin >> dimensions;
+    cout << "------------------------------------------------------" << endl;
 
-    w1 = new double[N];
-    w2 = new double[N];
-    w3 = new double[N];
-    r1 = new double[N+1];
-    r2 = new double[N+1];
-    theta2 = new double[N];
+    if(dimensions == 3){
+      double *w1, *w2, *w3, *r1, *r2, *theta2;
+
+    w1 = new double[n];
+    w2 = new double[n];
+    w3 = new double[n];
+    r1 = new double[n+1];
+    r2 = new double[n+1];
+    theta2 = new double[n];
 
     alpha = 2.0;
 
-    gauss_laguerre(r1, w1, N, alpha);
-    gauss_laguerre(r2, w2, N, alpha);
-    gauleg(a, b, w3, theta2, N);
+    gauss_laguerre(r1, w1, n, alpha);
+    gauss_laguerre(r2, w2, n, alpha);
+    gauleg(a, b, theta2, w3, n);
 
-    double integral_gauss_laguerre = 0;
 
-    for(int i = 1; i<(N+1); i++){
-      for(int j = 1; j<(N+1); j++){
-        for(int k = 0; k<N; k++){
-          integral_gauss_laguerre += w1[i]*w2[j]*w3[k]*laguerre_integrate_func(r1[i], r2[j], theta2[k]);
+    for(int i = 1; i<(n+1); i++){
+      for(int j = 1; j<(n+1); j++){
+        for(int k = 0; k<n; k++){
+          integral_gauss_laguerre += w1[i]*w2[j]*w3[k]*laguerre_integrate_func_3(r1[i], r2[j], theta2[k]);
         }
       }
     }
 
     integral_gauss_laguerre *= (M_PI*M_PI)/128;
+    }
+
+    if(dimensions == 6){
+      double *w1, *w2, *w3, *w4, *w5, *w6, *r1, *r2, *theta1, *theta2, *phi1, *phi2;
+
+      w1 = new double[n+1];
+      w2 = new double[n+1];
+      w3 = new double[n];
+      w4 = new double[n];
+      w5 = new double[n];
+      w6 = new double[n];
+
+      r1 = new double[n+1];
+      r2 = new double[n+1];
+
+      theta1 = new double[n];
+      theta2 = new double[n];
+
+      phi1 = new double[n];
+      phi2 = new double[n];
+
+      alpha = 0;
+
+      gauss_laguerre(r1, w1, n, alpha);
+      gauss_laguerre(r2, w2, n, alpha);
+      gauleg(a, b, theta1, w3, n);
+      gauleg(a, b, theta2,w4, n);
+      gauleg(a, 2*b, phi1, w5, n);
+      gauleg(a, 2*b, phi2, w6, n);
+
+
+
+      for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= n; j++){
+          for (int k = 0; k < n; k++){
+            for (int l = 0; l < n; l++){
+              for (int p = 0; p < n; p++){
+                for (int r = 0; r < n; r++){
+                  integral_gauss_laguerre += w1[i]*w2[j]*w3[k]*w4[l]*w5[p]*w6[r]*laguerre_integrate_func_6(r1[i], r2[j], theta1[k], theta2[l], phi1[p], phi2[r]);
+                }
+              }
+            }
+          }
+        }
+      }
+
+
+    }
+
 
     cout << "Integral = " << integral_gauss_laguerre << endl;
     cout << "Analytical value = " << 5*pow(M_PI, 2)/(16*16) << endl;
-
 
 
   }
@@ -460,7 +519,19 @@ double gammln( double xx){
 #undef MAXIT
 
 
-double laguerre_integrate_func(double u1, double u2, double theta2){
+double laguerre_integrate_func_6(double u1, double u2, double theta1, double theta2, double phi1, double phi2){
+  if (u1*u1 + u2*u2 - 2*u1*u2*(cos(theta1)*cos(theta2)+sin(theta1)*sin(theta2)*cos(phi1 - phi2)) <  1e-8){
+    return 0;
+  }
+
+  return exp(-3*(u1+u2))*(sin(theta2)*sin(theta1)*u1*u1*u2*u2/sqrt(u1*u1 + u2*u2 - 2*u1*u2*(cos(theta1)*cos(theta2)+sin(theta1)*sin(theta2)*cos(phi1 - phi2))));
+
+}
+
+double laguerre_integrate_func_3(double u1, double u2, double theta2){
+  if(sin(theta2)/sqrt(u1*u1 + u2*u2 - 2*u1*u2*cos(theta2)) < 1e-8){
+    return 0;
+  }
 
   return (sin(theta2)/sqrt(u1*u1 + u2*u2 - 2*u1*u2*cos(theta2)));
 
