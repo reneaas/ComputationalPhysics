@@ -3,12 +3,15 @@
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
+#include <fstream>
 #include <cstdlib>
 #include <armadillo>
 #include <string>
 #include "time.h"
 #include <random>
 #include <mpi.h>
+
+ofstream ofile;
 
 using namespace std;
 
@@ -20,6 +23,13 @@ double test_func(double, double, double);
 double gauss_legendre_solver(double*, double*, double*, double*, double*, double*, double*, double*, double*, double*, double*, double*, int n, double (*)(double, double, double, double, double, double));
 
 int main(int nargs, char* args[]){
+  //Arguments taken from the command line
+  int N = atoi(args[1]);                        //Number of monte carlo samples
+  string write_to_file = string(args[2]);       //Write to file or not.
+  string outfilename;
+  if (write_to_file == "write_to_file"){
+    outfilename = string(args[3]);
+  }
 
   int n, local_N, numprocs, my_rank;
   double *a, *b;
@@ -52,7 +62,6 @@ int main(int nargs, char* args[]){
   a[5] = 0;
   b[5] = 2*M_PI;
   double *MC_integrals;
-  int N = 1000000;        //Number of samples
   local_integral = 0.0;
 
   //Initialize the seed and call the Mersienne algorithm
@@ -72,9 +81,12 @@ int main(int nargs, char* args[]){
   MC_integrals = new double[local_N];
 
   for (int i = 0; i < local_N; i++){
+    /*
     if (my_rank == 0){
-      cout << "Computing for sample = " << i << endl;
+      cout << "Computing for sample = " << numprocs*i << endl;
     }
+    */
+
     for (int j = 0; j < n; j++){
       r1 = RandomNumberGenerator(gen);
       r1 = -log(1-r1)/alpha;
@@ -96,11 +108,19 @@ int main(int nargs, char* args[]){
   total_integral *=  8*M_PI*M_PI*M_PI;                               //Multiplying by factors due to integration with respect to phi1, phi2 and theta1. Integrand not explicitly dependent on them.
   time_end = MPI_Wtime();
   total_time = time_end - time_start;
+  /*
   if (my_rank == 0){
     cout << "Computed integral = " << total_integral << endl;
     cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
     cout << "time used = " << total_time << endl;
   }
+  */
+  if (write_to_file == "write_to_file" && my_rank == 0){
+    ofile.open(outfilename);
+    ofile << N << " " << total_time << " " << total_integral << endl;
+    ofile.close();
+  }
+
   MPI_Finalize();
   return 0;
 }
