@@ -231,6 +231,8 @@ int main(int nargs, char* args[]){
     int n;
     double a,b;                   // The integration interval [a,b].
     int N;                //number of Monte Carlo samples
+    double relative_error;
+    double exact = 5*pow(M_PI,2)/(16*16);                               //Exact value of the integral.
     cout << "Read in the number of integration points" << endl;
     cin >> n;
     cout << "Read in the integration limits [a,b] " << endl;
@@ -280,9 +282,10 @@ int main(int nargs, char* args[]){
     }
     MC_integral /= (double) N;
     MC_integral *= pow((double) (b-a), d);      //Compensates for the change of variables xi = a + (b-a)*mu.
-
+    relative_error = abs((MC_integral-exact)/exact);                        //The computed relative error.
     cout << "Computed integral = " << MC_integral << endl;
     cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
+    cout << "Relative error = " << relative_error << endl;
   }
 
   if (integration_method == "4"){
@@ -373,6 +376,9 @@ int main(int nargs, char* args[]){
     a = new double[d];
     b = new double[d];
     double alpha = 4;
+    double relative_error;
+    double exact = 5*pow(M_PI,2)/(16*16);
+
 
     //r1 endpoints
     a[0] = 0;
@@ -430,6 +436,7 @@ int main(int nargs, char* args[]){
     finish = clock();
     double timeused = (double) (finish-start)/(CLOCKS_PER_SEC);
     MC_integral *= M_PI;                            //Since we're using a uniform distribution for theta2 only, we only need to multiply by pi.
+    relative_error = abs((MC_integral - exact)/exact);
 
     /*
     cout << "Computed integral = " << MC_integral << endl;
@@ -438,7 +445,7 @@ int main(int nargs, char* args[]){
     */
 
     ofile.open(outfilename);
-    ofile << N << " " << timeused << " " << MC_integral << endl;
+    ofile << N << " " << timeused << " " << MC_integral << " " << relative_error <<  endl;
     ofile.close();
 
   }

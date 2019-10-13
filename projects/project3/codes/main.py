@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+plt.rc('text', usetex=True)
 
 compilation_instruction = str(sys.argv[1])
 if compilation_instruction == "no_mpi":
@@ -42,8 +43,8 @@ if compilation_instruction == "mpi_timeit":
     timeused_no_mpi = []
     computed_integrals_no_mpi = []
     speedups = []
-
-    #The first column in the file is the number N, the second column is the time used.
+    relative_error_no_mpi = []
+    relative_error_mpi = []
 
 
     for N in Number_of_monte_carlo_samples:
@@ -55,6 +56,7 @@ if compilation_instruction == "mpi_timeit":
             number_of_samples.append(float(line[0]))
             timeused_mpi.append(float(line[1]))
             computed_integrals_mpi.append(float(line[2]))
+            relative_error_mpi.append(float(line[3]))
 
 
     #This part runs the same simulation but without mpi.
@@ -76,6 +78,7 @@ if compilation_instruction == "mpi_timeit":
             line = line.split()
             timeused_no_mpi.append(float(line[1]))
             computed_integrals_no_mpi.append(float(line[2]))
+            relative_error_no_mpi.append(float(line[3]))
 
     #Computes speedup = T_1/T_p, where T_1 is time on a single processor, while T_p is the parallelized time.
     for T_1, T_p in zip(timeused_no_mpi, timeused_mpi):
@@ -88,26 +91,16 @@ if compilation_instruction == "mpi_timeit":
     print("Writing the results to a file...")
     #Write all the results to congregate file.
     outfilename = "time_vs_n_montecarlo_mpi.txt"
-    """
-    with open(outfilename, "w") as outfile:
-        outfile.write(str("%18s") % "log10(N)" + " " + str("%18s") % "Time_no_mpi" + str("%18s") % " Time_mpi" + " " + str("%18s") % "Integral_no_mpi" + " " + str("%18s") % "Integral_mpi" + " " + str("%18s") % "SpeedUp")
-        outfile.write("\n")
-        for n, time_no_MPI, time_MPI, integral_no_mpi, integral_mpi, speedup in zip(number_of_samples_log10, timeused_no_mpi, timeused_mpi, computed_integrals_no_mpi, computed_integrals_mpi, speedups):
-            print(n)
-            outfile.write(str("%18d") % n + " " + str("%18f") % time_no_MPI + " " + str("%18f") % time_MPI + " " + str("%18f") % integral_no_mpi + " " + str("%18f") % integral_mpi + " " + (str("%18f")) % speedup)
-            outfile.write("\n")
-
-    """
-
     data = {\
             "$\log_{10}(N)$" : number_of_samples_log10,\
             "$\Delta t_\text{no MPI}$" : timeused_no_mpi,\
             "$\Delta t_\text{MPI}$" : timeused_mpi, \
             "$I_\text{no MPI}$" : computed_integrals_no_mpi, \
             "$I_\text{MPI}$" : computed_integrals_mpi, \
-            "$T_1/T_p$" : speedups\
+            "$T_1/T_p$" : speedups,\
+            "Relative error, no mpi" : relative_error_no_mpi, \
+            "Relative error, mpi" : relative_error_mpi \
             }
-
     dataset = pd.DataFrame(data)
     dataset.to_latex(outfilename, encoding='utf-8', escape = False, index = False)
     print("Results:")
@@ -123,12 +116,11 @@ if compilation_instruction == "mpi_timeit":
         os.makedirs(path)
     os.system("mv" + " " + filename_table + " " + path)                #Moves the file to the correct directory.
 
-    #Makes a plot of log10(N) vs time.
-    figurename = "time_vs_n_montecarlo.pdf"
-    plt.scatter(number_of_samples_log10, timeused_mpi, label = "Timeused with parallelization")
-    plt.scatter(number_of_samples_log10, timeused_no_mpi, label = "Time used without parallelization")
-    plt.xlabel("log10(N)")
-    plt.ylabel("time/s")
+    #Makes a plot of log10(N) vs speedup.
+    figurename = "speedup_vs_n_montecarlo.pdf"
+    plt.scatter(number_of_samples_log10, speedups, label = r"Speedup = $T_1/T_p$")
+    plt.xlabel(r"$\log_{10}(N)$")
+    plt.ylabel(r"$T_1/T_p$")
     plt.legend()
     plt.savefig(figurename)
     plt.close()
@@ -182,7 +174,7 @@ if compilation_instruction == "benchmark_laguerre":
     data = {\
             "Integration value" : integral_value,\
             "Number of integration points" : number_of_integration_points,\
-            "$\epsilon_{rel}" : rel_error, \
+            "$\epsilon_\text{rel}$" : rel_error, \
             "Time used" : timeused, \
             }
 
