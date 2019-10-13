@@ -3,6 +3,8 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from Library import StraightLine
+from Library import PlottingTool
 plt.rc('text', usetex=True)
 
 compilation_instruction = str(sys.argv[1])
@@ -30,7 +32,7 @@ if compilation_instruction == "mpi_timeit":
     os.system("mpicxx -O3 -c main_mpi.cpp")
     os.system("mpicxx -O3 -o main_mpi.exe main_mpi.o")
     #Number_of_monte_carlo_samples = [10**i for i in range(1,6)]
-    Number_of_monte_carlo_samples = [10, 50, 100, 500, 1000, 5000, 10000, 50000, 100000]
+    Number_of_monte_carlo_samples = [10, 50, 100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000]
     for N in Number_of_monte_carlo_samples:
         print("executing monte carlo integration WITH mpi for N = " + str(N) + " samples...")
         outfilename = "time_vs_n_montecarlo_mpi" + str(N) + ".txt"
@@ -117,17 +119,61 @@ if compilation_instruction == "mpi_timeit":
     os.system("mv" + " " + filename_table + " " + path)                #Moves the file to the correct directory.
 
     #Makes a plot of log10(N) vs speedup.
+
     figurename = "speedup_vs_n_montecarlo.pdf"
-    plt.scatter(number_of_samples_log10, speedups, label = r"Speedup = $T_1/T_p$")
-    plt.xlabel(r"$\log_{10}(N)$")
-    plt.ylabel(r"$T_1/T_p$")
-    plt.legend()
-    plt.savefig(figurename)
-    plt.close()
+    xlabel = "$\log_{10}(N)$"
+    ylabel = "$T_1/T_p$"
+    labeltext = "Speedup = $T_1/T_p$"
+    Line = StraightLine(x = number_of_samples_log10, y = speedups, number_of_datasets = 1)
+
+    line = Line.straightline()
+    Line.make_plot(labeltexts = labeltext, xlabel = xlabel, ylabel = ylabel, figurename = figurename)
+
+
+
+    relative_error_mpi_log10 = [np.log10(i) for i in relative_error_mpi]
+    relative_error_no_mpi_log10 = [np.log10(i) for i in relative_error_no_mpi]
+    #Prepares the datasets to be plotted
+    X_data = []
+    Y_data = []
+    X_data.append(number_of_samples_log10)
+    X_data.append(number_of_samples_log10)
+    Y_data.append(relative_error_no_mpi_log10)
+    Y_data.append(relative_error_mpi_log10)
+
+    #Creates an instance of PlottingTool and plots the datasets for relative error.
+    Plotmaker = PlottingTool(x = X_data, y = Y_data, number_of_datasets = 2)
+    figurename_relative_error = "relative_error_montecarlo.pdf"
+    labeltexts = ["Without MPI", "With MPI"]
+    xlabel = "$\log_{10} N$"
+    ylabel = "$\log_{10} (\epsilon)$"
+    type = "scatter"
+    Plotmaker.plot(labeltexts = labeltexts, xlabel = xlabel, ylabel = ylabel, figurename = figurename_relative_error, type = type)
+
+    figurename_relative_error_straightline = "relative_error_montecarlo_straightlines.pdf"
+    Lines_relative_error = StraightLine(x = X_data, y = Y_data, number_of_datasets = 2)
+    Lines_relative_error.straightline()
+    Lines_relative_error.make_plot(labeltexts = labeltexts, xlabel = xlabel, ylabel = ylabel, figurename = figurename_relative_error_straightline)
+
+    #Specifies filenames and labels for use with StraightLine.
+    figurename_relative_error_with_mpi = "relative_error_mpi_montecarlo_straightline.pdf"
+    labeltext_relative_error_mpi = "with MPI"
+    figurename_relative_error_no_mpi = "relative_error_no_mpi_montecarlo_straightline.pdf"
+    labeltext_relative_error_no_mpi = "without MPI"
+
+    #Plots straight line and error bar for relative error with mpi
+    Line_relative_error_mpi = StraightLine(x = number_of_samples_log10, y = relative_error_mpi_log10, number_of_datasets = 1)
+    Line_relative_error_mpi.straightline()
+    Line_relative_error_mpi.make_plot(labeltexts = labeltext_relative_error_mpi, xlabel = xlabel, ylabel = ylabel, figurename = figurename_relative_error_with_mpi)
+
+    #Plots straigth line and error bar for relative error without mpi.
+    Line_relative_error_no_mpi = StraightLine(x = number_of_samples_log10, y = relative_error_no_mpi_log10, number_of_datasets = 1)
+    Line_relative_error_no_mpi.straightline()
+    Line_relative_error_no_mpi.make_plot(labeltexts = labeltext_relative_error_no_mpi, xlabel = xlabel, ylabel = ylabel, figurename = figurename_relative_error_no_mpi)
 
     #Moves the file to destination
     path_figure = path
-    os.system("mv" + " " + figurename + " " + path_figure)
+    os.system("mv" + " " + figurename + " " + figurename_relative_error + " " + figurename_relative_error_straightline + " " + figurename_relative_error_with_mpi + " " + figurename_relative_error_no_mpi + " " + path_figure)
 
 
 

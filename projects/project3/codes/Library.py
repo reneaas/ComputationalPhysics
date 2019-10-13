@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rc("text", usetex = True)
 
 class StraightLine:
     """
@@ -71,8 +72,8 @@ class StraightLine:
             self.dC = np.array(self.dC)
         else:
             n = np.shape(self.X)[-1]
-            x = self.X[i]
-            y = self.Y[i]
+            x = self.X
+            y = self.Y
             #algoritme
             D = np.dot(x,x) - (1/n)*np.sum(x)**2
             E = np.dot(x,y) - (1/n)*np.sum(x)*np.sum(y)
@@ -90,17 +91,16 @@ class StraightLine:
             self.dM = m
             self.dC = dc
 
-        return self.M, self.C, self.dM, self.dC
-
     def make_plot(self, labeltexts, xlabel, ylabel, figurename):
         if self.number_of_datasets > 1:
+            errorbar_labels = ["dataset" + " " + i for i in labeltexts]
             for i in range(self.number_of_datasets):
                 labeltext = labeltexts[i]
                 y_error = np.sqrt( self.dM[i]**2 + self.dC[i]**2 )
                 x = np.linspace(min(self.X[i]), max(self.X[i]), 101)
                 y = self.M[i]*x + self.C[i]
                 plt.plot(x,y, label = labeltext)
-                plt.errorbar(self.X[i], self.Y[i], y_error, capsize = 5, fmt=".")
+                plt.errorbar(self.X[i], self.Y[i], y_error, capsize = 5, fmt=".", label = errorbar_labels[i])
             plt.xlabel(xlabel, fontsize = 18)
             plt.ylabel(ylabel, fontsize = 18)
             plt.legend(fontsize = 14)
@@ -121,3 +121,79 @@ class StraightLine:
             plt.yticks(size = 12)
             plt.savefig(figurename, dpi = 1000)
         plt.close()
+
+
+class PlottingTool:
+    """
+    How to use this class
+
+    Step 1: Initiate an instance:
+
+    Plotmaker = PlottingTool(x, y, number_of_datasets)
+
+    x: (n x m)- matrix containing data for the x-axis, containing n datasets of length m.
+    y: (n x m)-matrix containing data for the y-axis , contaning n datasets of length m.
+    number_of_datasets: the number of datasets n.
+
+    Step 2:
+    Create plot simply by calling
+
+    Plotmaker.plot(labeltexts, xlabel, ylabel, figurename, type)
+
+    labeltexts: labels pertaining to each dataset
+    xlabel: label along the x-axis
+    ylabel: label along the y-axis
+    figurename: filename to save the figure with
+    type: plot or scatter. plot gives a regular plot, scatter gives crosses X for each point (x,y).
+
+    """
+
+    def __init__(self, x, y, number_of_datasets):
+        self.X = np.array(x)
+        self.Y = np.array(y)
+        self.number_of_datasets = number_of_datasets
+
+    def plot(self, labeltexts, xlabel, ylabel, figurename, type):
+        if self.number_of_datasets == 1:
+            if type == "plot":
+                plt.plot(self.X, self.Y, label = labeltexts)
+                plt.xlabel(xlabel, fontsize = 18)
+                plt.ylabel(ylabel, fontsize = 18)
+                plt.legend(fontsize = 14)
+                plt.xticks(size = 12)
+                plt.yticks(size = 12)
+                plt.savefig(figurename, dpi = 1000)
+                plt.close()
+
+            if type == "scatter":
+                plt.scatter(self.X, self.Y, marker = "x",  label = labeltexts)
+                plt.xlabel(xlabel, fontsize = 18)
+                plt.ylabel(ylabel, fontsize = 18)
+                plt.legend(fontsize = 14)
+                plt.xticks(size = 12)
+                plt.yticks(size = 12)
+                plt.savefig(figurename, dpi = 1000)
+                plt.close()
+
+        if self.number_of_datasets > 1:
+            if type == "plot":
+                for i in range(self.number_of_datasets):
+                    plt.plot(self.X[i], self.Y[i], label = labeltexts[i])
+                plt.xlabel(xlabel, fontsize = 18)
+                plt.ylabel(ylabel, fontsize = 18)
+                plt.legend(fontsize = 14)
+                plt.xticks(size = 12)
+                plt.yticks(size = 12)
+                plt.savefig(figurename, dpi = 1000)
+                plt.close()
+
+            if type == "scatter":
+                for i in range(self.number_of_datasets):
+                    plt.scatter(self.X[i], self.Y[i], marker = "x" ,label = labeltexts[i])
+                plt.xlabel(xlabel, fontsize = 18)
+                plt.ylabel(ylabel, fontsize = 18)
+                plt.legend(fontsize = 14)
+                plt.xticks(size = 12)
+                plt.yticks(size = 12)
+                plt.savefig(figurename, dpi = 1000)
+                plt.close()
