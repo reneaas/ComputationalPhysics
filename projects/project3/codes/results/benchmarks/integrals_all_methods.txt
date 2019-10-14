@@ -1,0 +1,9 @@
+\begin{tabular}{rrrrr}
+\toprule
+  n &  Gauss-Legendre &  Gauss-Laguerre &  Monte Carlo Brute Force &  Monte carlo w/importance sampling \\
+\midrule
+  5 &        0.264249 &        0.202106 &                 0.220129 &                           0.191020 \\
+ 10 &        0.071980 &        0.197457 &                 0.191440 &                           0.205610 \\
+ 15 &        0.239088 &        0.195908 &                 0.201151 &                           0.193571 \\
+\bottomrule
+\end{tabular}

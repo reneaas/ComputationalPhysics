@@ -236,3 +236,153 @@ if compilation_instruction == "benchmark_laguerre":
     if not os.path.exists(path):
         os.makedirs(path)
     os.system("mv" + " " +  main_filename + " " + path)
+
+if compilation_instruction == "compare_all":
+    print("compiling")
+    os.system("c++ -O3 -c main.cpp lib.cpp")
+    os.system("c++ -O3 -o main.exe main.cpp lib.o")
+    dimensions = 3
+    number_of_integration_points = [5, 10, 15, 20, 25, 30]
+
+    #First Gauss-Legendre; integration_method = "1".
+    integration_method = "1"
+    a = -3.0
+    b = 3.0
+    for n in number_of_integration_points:
+        print("Exectuting for Gauss-Legendre method for n = " + str(n))
+        outfilename = "method_" + integration_method + "_" + str(n) + ".txt"
+        arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
+        os.system("./main.exe" + " " + arguments)
+
+
+    #Then Gauss-Laguerre, integration_method = "2"
+    integration_method = "2"
+    for n in number_of_integration_points:
+        print("Exectuting for Gauss-Laguerre method for n = " + str(n))
+        outfilename = "method_" + integration_method + "_" + str(n) + ".txt"
+        os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(dimensions) + " " + str(n))
+
+    #Next up is Brute force monte carlo, integration_method = "3".
+    integration_method = "3"
+    for n in number_of_integration_points:
+        print("Exectuting for Monte Carlo integration w/Brute force for n = " + str(n))
+        outfilename = "method_" + integration_method + "_" + str(n) + ".txt"
+        arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
+        os.system("./main.exe" + " " + arguments)
+
+    integration_method = "4"
+    max_radial_distance = 10
+    for n in number_of_integration_points:
+        print("Exectuting for Monte Carlo integration w/importance sampling for n = " + str(n))
+        outfilename = "method_" + integration_method + "_" + str(n) + ".txt"
+        arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
+        os.system("./main.exe" + " " + arguments)
+
+
+
+    timeused_gauleg = []
+    timeused_gaulag = []
+    timeused_MC_brute = []
+    timeused_MC_importance = []
+
+    relative_error_gauleg = []
+    relative_error_gaulag = []
+    relative_error_MC_brute = []
+    relative_error_MC_importance = []
+
+    integral_gauleg = []
+    integral_gaulag = []
+    integral_MC_brute = []
+    integral_MC_importance = []
+
+    integration_method = "1"
+    for n in number_of_integration_points:
+        infilename = "method_" + integration_method + "_" + str(n) + ".txt"
+        with open(infilename, "r") as infile:
+            lines = infile.readlines()
+            line = lines[0]
+            numbers = line.split()
+            integral_gauleg.append(float(numbers[0]))
+            relative_error_gauleg.append(float(numbers[2]))
+            timeused_gauleg.append(float(numbers[3]))
+        os.system("rm" + " " + infilename)
+
+    integration_method = "2"
+    for n in number_of_integration_points:
+        infilename = "method_" + integration_method + "_" + str(n) + ".txt"
+        with open(infilename, "r") as infile:
+            lines = infile.readlines()
+            line = lines[0]
+            numbers = line.split()
+            integral_gaulag.append(float(numbers[0]))
+            relative_error_gaulag.append(float(numbers[2]))
+            timeused_gaulag.append(float(numbers[3]))
+        os.system("rm" + " " + infilename)
+
+    integration_method = "3"
+    for n in number_of_integration_points:
+        infilename = "method_" + integration_method + "_" + str(n) + ".txt"
+        with open(infilename, "r") as infile:
+            lines = infile.readlines()
+            line = lines[0]
+            numbers = line.split()
+            integral_MC_brute.append(float(numbers[0]))
+            relative_error_MC_brute.append(float(numbers[2]))
+            timeused_MC_brute.append(float(numbers[3]))
+        os.system("rm" + " " + infilename)
+
+    integration_method = "4"
+    for n in number_of_integration_points:
+        infilename = "method_" + integration_method + "_" + str(n) + ".txt"
+        with open(infilename, "r") as infile:
+            lines = infile.readlines()
+            line = lines[0]
+            numbers = line.split()
+            integral_MC_importance.append(float(numbers[0]))
+            relative_error_MC_importance.append(float(numbers[2]))
+            timeused_MC_importance.append(float(numbers[3]))
+        os.system("rm" + " " + infilename)
+
+    #Create datasets.
+    dataset_integrals = {\
+                        "n" : number_of_integration_points, \
+                        "Gauss-Legendre" : integral_gauleg, \
+                        "Gauss-Laguerre" : integral_gaulag, \
+                        "Monte Carlo Brute Force" : integral_MC_brute, \
+                        "Monte carlo w/importance sampling" : integral_MC_importance \
+                        }
+
+    dataset_relative_errors = {\
+                                "n" : number_of_integration_points, \
+                                "Gauss-Legendre" : relative_error_gauleg, \
+                                "Gauss-Laguerre" : relative_error_gaulag, \
+                                "Monte Carlo w/Brute force" : relative_error_MC_brute, \
+                                "Monte Carlo w/importance sampling" : relative_error_MC_importance\
+                                }
+
+    dataset_timeused = {\
+                        "n" : number_of_integration_points, \
+                        "Gauss-Legendre" : timeused_gauleg, \
+                        "Gauss-Laguerre" : timeused_gaulag, \
+                        "Monte Carlo w/Brute force" : timeused_MC_brute, \
+                        "Monte Carlo w/importance sampling" : timeused_MC_importance\
+                        }
+
+    data_integrals = pd.DataFrame(dataset_integrals)
+    data_relative_errors = pd.DataFrame(dataset_relative_errors)
+    data_timeused = pd.DataFrame(dataset_timeused)
+
+
+    outfilename_integrals = "integrals_all_methods.txt"
+    outfilename_relative_errors = "relative_error_all_methods.txt"
+    outfilename_timeused = "timeused_all_methods.txt"
+
+
+    data_integrals.to_latex(outfilename_integrals, encoding='utf-8', escape = False, index = False)
+    data_relative_errors.to_latex(outfilename_relative_errors, encoding='utf-8', escape = False, index = False)
+    data_timeused.to_latex(outfilename_timeused, encoding='utf-8', escape = False, index = False)
+
+    path = "results/benchmarks"
+    if not os.path.exists(path):
+        os.makedirs(path)
+    os.system("mv" + " " + outfilename_integrals + " " + outfilename_relative_errors + " " + outfilename_timeused + " " + path)

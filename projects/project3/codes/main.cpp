@@ -51,10 +51,18 @@ int main(int nargs, char* args[]){
   if (integration_method == "1"){
     int n;
     double a,b;
-    cout << "Specify number of integration points: " << endl;
-    cin >> n;
-    cout << "Specify integration limits [a,b] : " << endl;
-    cin >> a >> b;
+    if (nargs == 1){
+      cout << "Specify number of integration points: " << endl;
+      cin >> n;
+      cout << "Specify integration limits [a,b] : " << endl;
+      cin >> a >> b;
+    }
+    else{
+      n = atoi(args[3]);
+      a = atof(args[4]);
+      b = atof(args[5]);
+
+    }
 
     double *x1, *y1, *z1, *x2, *y2, *z2;
     double *w1, *w2, *w3, *w4, *w5, *w6;
@@ -99,10 +107,19 @@ int main(int nargs, char* args[]){
       }
     }
     finish = clock();
+    double exact = 5*pow(M_PI, 2)/(16*16);
     double timeused = (double) (finish - start)/(CLOCKS_PER_SEC);
+    /*
     cout << "Integral = " << integral_gauss_legendre << endl;
-    cout << "Analytical value = " << 5*pow(M_PI, 2)/(16*16) << endl;
+    cout << "Analytical value = " << exact << endl;
     cout << "timeused = " << timeused << endl;
+    */
+    double relative_error = abs((integral_gauss_legendre-exact)/exact);
+
+    if (nargs != 1){
+      ofile.open(outfilename);
+      ofile << integral_gauss_legendre << " " << n << " " << relative_error << " " << timeused << endl;
+    }
   }
 
   if (integration_method == "2"){
@@ -233,17 +250,26 @@ int main(int nargs, char* args[]){
     int N;                //number of Monte Carlo samples
     double relative_error;
     double exact = 5*pow(M_PI,2)/(16*16);                               //Exact value of the integral.
-    cout << "Read in the number of integration points" << endl;
-    cin >> n;
-    cout << "Read in the integration limits [a,b] " << endl;
-    cin >> a >> b;
-    cout << "Specify number of monte carlo samples: " << endl;
-    cin >> N;
+    if (nargs == 1){
+      cout << "Read in the number of integration points" << endl;
+      cin >> n;
+      cout << "Read in the integration limits [a,b] " << endl;
+      cin >> a >> b;
+      cout << "Specify number of monte carlo samples: " << endl;
+      cin >> N;
+    }
+    else{
+      n = atoi(args[3]);
+      a = atof(args[4]);
+      b = atof(args[5]);
+      N = 100;                   //Keep number of samples constant for comparison purposes with respect to integration points n.
+    }
     //Initialize the seed and call the Mersienne algorithm
     int d = 6;          //d-dimensional integral.
     random_device rd;
     mt19937_64 gen(rd());
     double x1, x2, x3, x4, x5, x6;
+    clock_t start, finish;
     //Sets up the uniform distribution for x in [0,1]
     uniform_real_distribution<double> RandomNumberGenerator(0,1);
     //Creates the variables
@@ -251,8 +277,9 @@ int main(int nargs, char* args[]){
     double *MC_integrals;
     double *x = new double[d];
     MC_integrals = new double[N];
+    start = clock();
     for (int i = 0; i < N; i++){
-      cout << "Computing for sample = " << i << endl;
+      //cout << "Computing for sample = " << i << endl;
       for (int j = 0; j < n; j++){
         x[0] =  RandomNumberGenerator(gen);
         x[0] = a + (b-a)*x[0];
@@ -282,19 +309,35 @@ int main(int nargs, char* args[]){
     }
     MC_integral /= (double) N;
     MC_integral *= pow((double) (b-a), d);      //Compensates for the change of variables xi = a + (b-a)*mu.
+    finish = clock();
+    double timeused = (double) (finish-start)/CLOCKS_PER_SEC;
     relative_error = abs((MC_integral-exact)/exact);                        //The computed relative error.
+    /*
     cout << "Computed integral = " << MC_integral << endl;
     cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
     cout << "Relative error = " << relative_error << endl;
+    */
+    if (nargs != 1){
+      ofile.open(outfilename);
+      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << endl;
+      ofile.close();
+    }
+
   }
 
   if (integration_method == "4"){
     int n;
     double max_radial_distance;
-    cout << "Read in the number of integration points" << endl;
-    cin >> n;
-    cout << "Read in maximum radial distance r " << endl;
-    cin >> max_radial_distance;
+    if (nargs == 1){
+      cout << "Read in the number of integration points" << endl;
+      cin >> n;
+      cout << "Read in maximum radial distance r " << endl;
+      cin >> max_radial_distance;
+    }
+    else{
+      n = atoi(args[3]);
+      max_radial_distance = atof(args[4]);
+    }
     int d = 6;          //d-dimensional integral.
     double r1, r2, theta2;
     double *a, *b;
@@ -330,8 +373,7 @@ int main(int nargs, char* args[]){
     double MC_integral = 0;
     double *MC_integrals;
     int N;               //number of Monte Carlo samples
-    cout << "Specify the number of Monte Carlo samples: " << endl;
-    cin >> N;
+    N = 100;
     MC_integrals = new double[N];
 
     //Benchmark code
@@ -339,7 +381,7 @@ int main(int nargs, char* args[]){
     start  = clock();
     //Main algorithm
     for (int i = 0; i < N; i++){
-      cout << "Computing for sample = " << i << endl;
+      //cout << "Computing for sample = " << i << endl;
       for (int j = 0; j < n; j++){
         r1 = RandomNumberGenerator(gen);
         r1 = -log(1-r1)/alpha;
@@ -360,11 +402,18 @@ int main(int nargs, char* args[]){
     finish = clock();
     double timeused = (double) (finish-start)/(CLOCKS_PER_SEC);
     MC_integral *= M_PI;                            //Since we're using a uniform distribution for theta2 only, we only need to multiply by pi.
-
-
+    double exact = 5*pow(M_PI,2)/(16*16);
+    double relative_error = abs((MC_integral-exact)/exact);
+    /*
     cout << "Computed integral = " << MC_integral << endl;
     cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
     cout << "time used = " << timeused << endl;
+    */
+    if (nargs != 1){
+      ofile.open(outfilename);
+      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << endl;
+      ofile.close();
+    }
   }
 
   if (integration_method == "montecarlo_benchmarking"){
