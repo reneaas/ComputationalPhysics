@@ -109,11 +109,11 @@ int main(int nargs, char* args[]){
     finish = clock();
     double exact = 5*pow(M_PI, 2)/(16*16);
     double timeused = (double) (finish - start)/(CLOCKS_PER_SEC);
-    /*
+    
     cout << "Integral = " << integral_gauss_legendre << endl;
     cout << "Analytical value = " << exact << endl;
     cout << "timeused = " << timeused << endl;
-    */
+
     double relative_error = abs((integral_gauss_legendre-exact)/exact);
 
     if (nargs != 1){
