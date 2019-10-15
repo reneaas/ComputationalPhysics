@@ -242,7 +242,7 @@ if compilation_instruction == "compare_all":
     os.system("c++ -O3 -c main.cpp lib.cpp")
     os.system("c++ -O3 -o main.exe main.cpp lib.o")
     dimensions = 3
-    number_of_integration_points = [5, 10, 15, 20, 25, 30]
+    number_of_integration_points = [5, 7, 9, 13, 15, 21]
 
     #First Gauss-Legendre; integration_method = "1".
     integration_method = "1"
@@ -261,23 +261,26 @@ if compilation_instruction == "compare_all":
         print("Exectuting for Gauss-Laguerre method for n = " + str(n))
         outfilename = "method_" + integration_method + "_" + str(n) + ".txt"
         os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(dimensions) + " " + str(n))
-
+        """
     #Next up is Brute force monte carlo, integration_method = "3".
     integration_method = "3"
+    N = 100
     for n in number_of_integration_points:
         print("Exectuting for Monte Carlo integration w/Brute force for n = " + str(n))
         outfilename = "method_" + integration_method + "_" + str(n) + ".txt"
-        arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
+        arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b) + " " + str(N)
         os.system("./main.exe" + " " + arguments)
+
 
     integration_method = "4"
     max_radial_distance = 10
+    N = 1000
     for n in number_of_integration_points:
         print("Exectuting for Monte Carlo integration w/importance sampling for n = " + str(n))
         outfilename = "method_" + integration_method + "_" + str(n) + ".txt"
-        arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
+        arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance) + " " + str(N)
         os.system("./main.exe" + " " + arguments)
-
+    """
 
 
     timeused_gauleg = []
@@ -318,7 +321,7 @@ if compilation_instruction == "compare_all":
             relative_error_gaulag.append(float(numbers[2]))
             timeused_gaulag.append(float(numbers[3]))
         os.system("rm" + " " + infilename)
-
+    """
     integration_method = "3"
     for n in number_of_integration_points:
         infilename = "method_" + integration_method + "_" + str(n) + ".txt"
@@ -342,6 +345,15 @@ if compilation_instruction == "compare_all":
             relative_error_MC_importance.append(float(numbers[2]))
             timeused_MC_importance.append(float(numbers[3]))
         os.system("rm" + " " + infilename)
+    """
+
+    plt.plot(np.log10(number_of_integration_points), np.log(timeused_gauleg), label="gauleg")
+    plt.plot(np.log10(number_of_integration_points), np.log10(timeused_gaulag), label="gaulag")
+    #plt.plot(number_of_integration_points, timeused_MC_brute, label="MC_brute")
+    #plt.plot(number_of_integration_points, timeused_MC_importance, label="MC-importance")
+    plt.legend()
+    plt.show()
+
 
 
     #Create datasets.
