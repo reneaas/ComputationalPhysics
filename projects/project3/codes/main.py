@@ -387,3 +387,9 @@ if compilation_instruction == "compare_all":
     if not os.path.exists(path):
         os.makedirs(path)
     os.system("mv" + " " + outfilename_integrals + " " + outfilename_relative_errors + " " + outfilename_timeused + " " + path)
+
+if compilation_instruction == "compare_montecarlo_methods":
+    print("compiling code...")
+    os.system("c++ -O3 -c main.cpp lib.cpp")
+    os.system("c++ -O3 -o main.exe main.cpp lib.o")
+    Number_of_monte_carlo_samples = [10, 100, 1000, 10000, 100000]
