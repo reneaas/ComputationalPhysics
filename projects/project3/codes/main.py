@@ -388,47 +388,5 @@ if compilation_instruction == "compare_all":
         os.makedirs(path)
     os.system("mv" + " " + outfilename_integrals + " " + outfilename_relative_errors + " " + outfilename_timeused + " " + path)
 
-if compilation_instruction == "compare_montecarlo_methods":
-    print("compiling code...")
-    os.system("c++ -O3 -c main.cpp lib.cpp")
-    os.system("c++ -O3 -o main.exe main.cpp lib.o")
-    Number_of_monte_carlo_samples = [10, 100, 1000, 10000, 100000]
 
-    #First run the code with brute force montecarlo, integration method "3":
-    integration_method = "3"
-    n = 10
-    a = -10
-    b = 10
-    for N in Number_of_monte_carlo_samples:
-        outfilename = "bruteforce_N_" + str(N) + ".txt"
-        os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b) + " " + str(N))
-
-    #Then we run the code for monte carlo with importance sampling, integration_method = "4"
-    integration_method = "4"
-    n = 10
-    max_radial_distance = 10;
-    for N in Number_of_monte_carlo_samples:
-        outfilename = "importancesampling_N_" + str(N) + ".txt"
-        os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance) + " " + str(N))
-
-    #Defines empty lists to store data
-    integrals_bruteforce = []
-    timeused_bruteforce = []
-    relative_error_bruteforce = []
-    standard_deviation_bruteforce = []
-
-    integrals_ImportanceSampling = []
-    timeused_ImportanceSampling = []
-    relative_error_ImportanceSampling = []
-    standard_deviation_ImportanceSampling = []
-
-    #Read the files with the results for brute force monte carlo integration
-    for N in Number_of_monte_carlo_samples:
-        infilename = "bruteforce_N_" + str(N) + ".txt"
-        with open(infilename, "r") as infile:
-            lines = infile.readlines()
-            line = lines[0]
-            values = line.split()
-            integrals_bruteforce.append(float(values[0]))
-            relative_error_bruteforce.append(float(values[2]))
-            timeused_bruteforce.append(float(values[3]))
+    
