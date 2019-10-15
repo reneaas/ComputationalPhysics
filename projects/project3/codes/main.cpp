@@ -234,6 +234,9 @@ int main(int nargs, char* args[]){
     double exact = 5*pow(M_PI, 2)/(16*16);
     double rel_error = abs(integral_gauss_laguerre - exact)/exact;
 
+    cout<<"Exact"<<" "<<exact<<endl;
+    cout<<"Calculated"<<" "<<integral_gauss_laguerre<<endl;
+
     ofile.open(outfilename);
     ofile << integral_gauss_laguerre << " " << n << " " << rel_error << " " << timeused <<endl;
     ofile.close();
