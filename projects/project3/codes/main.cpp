@@ -265,7 +265,7 @@ int main(int nargs, char* args[]){
       n = atoi(args[3]);
       a = atof(args[4]);
       b = atof(args[5]);
-      N = 100;                   //Keep number of samples constant for comparison purposes with respect to integration points n.
+      N = atoi(args[6]);
     }
     //Initialize the seed and call the Mersienne algorithm
     int d = 6;          //d-dimensional integral.
@@ -279,6 +279,9 @@ int main(int nargs, char* args[]){
     double MC_integral;
     double *MC_integrals;
     double *x = new double[d];
+    double sigma_sum = 0;
+    double *sigma_sums;
+    sigma_sums = new double[N];
     MC_integrals = new double[N];
     start = clock();
     for (int i = 0; i < N; i++){
@@ -302,6 +305,7 @@ int main(int nargs, char* args[]){
                   x[5] = RandomNumberGenerator(gen);
                   x[5] = a + (b-a)*x[5];
                   MC_integrals[i] += CoulombRepulsion(x[0],x[1],x[2],x[3],x[4],x[5]);
+                  sigma_sums[i] += MC_integrals[i]*MC_integrals[i];
                 }
               }
             }
@@ -309,12 +313,16 @@ int main(int nargs, char* args[]){
         }
       }
       MC_integral += MC_integrals[i]/ (pow((double) n,d));
+      sigma_sum += sigma_sums[i] / (pow((double) n,d));
     }
     MC_integral /= (double) N;
     MC_integral *= pow((double) (b-a), d);      //Compensates for the change of variables xi = a + (b-a)*mu.
     finish = clock();
     double timeused = (double) (finish-start)/CLOCKS_PER_SEC;
     relative_error = abs((MC_integral-exact)/exact);                        //The computed relative error.
+    double variance = sigma_sum - MC_integral*MC_integral;
+    double standard_deviation = sqrt(variance);
+
     /*
     cout << "Computed integral = " << MC_integral << endl;
     cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
@@ -322,7 +330,7 @@ int main(int nargs, char* args[]){
     */
     if (nargs != 1){
       ofile.open(outfilename);
-      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << endl;
+      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << " " << standard_deviation << endl;
       ofile.close();
     }
 
@@ -330,16 +338,20 @@ int main(int nargs, char* args[]){
 
   if (integration_method == "4"){
     int n;
+    int N;               //number of Monte Carlo samples
     double max_radial_distance;
     if (nargs == 1){
       cout << "Read in the number of integration points" << endl;
       cin >> n;
       cout << "Read in maximum radial distance r " << endl;
       cin >> max_radial_distance;
+      cout << "Read in number of monte carlo samples" << endl;
+      cin >> N;
     }
     else{
       n = atoi(args[3]);
       max_radial_distance = atof(args[4]);
+      N = atoi(args[5]);
     }
     int d = 6;          //d-dimensional integral.
     double r1, r2, theta2;
@@ -347,6 +359,8 @@ int main(int nargs, char* args[]){
     a = new double[d];
     b = new double[d];
     double alpha = 4;
+    double sigma_sum = 0;
+    double *sigma_sums;
 
     //r1 endpoints
     a[0] = 0;
@@ -375,9 +389,9 @@ int main(int nargs, char* args[]){
     //Creates the variables
     double MC_integral = 0;
     double *MC_integrals;
-    int N;               //number of Monte Carlo samples
-    N = 100;
     MC_integrals = new double[N];
+    sigma_sums = new double[N];
+
 
     //Benchmark code
     clock_t start, finish;
@@ -395,13 +409,18 @@ int main(int nargs, char* args[]){
             theta2 = RandomNumberGenerator(gen);
             theta2 = a[3] + (b[3]-a[3])*theta2;
             MC_integrals[i] += CoulombRepulsion_spherical(r1,r2,theta2)/radial_probability_density(r1,r2);
+            sigma_sums[i] += MC_integrals[i]*MC_integrals[i];
           }
         }
       }
       MC_integral += MC_integrals[i] / (pow( (double) n, (double) 3));
+      sigma_sum += sigma_sums[i] / (pow( (double) n, (double) 3));
     }
     MC_integral /= (double) N;
     MC_integral *= 8*M_PI*M_PI;                               //Multiplying by factors due to integration with respect to phi1, phi2 and theta1. Integrand not explicitly dependent on them.
+    sigma_sum /= (double) N;
+    double variance = sigma_sum - MC_integral*MC_integral;
+    double standard_deviation = sqrt(variance);
     finish = clock();
     double timeused = (double) (finish-start)/(CLOCKS_PER_SEC);
     MC_integral *= M_PI;                            //Since we're using a uniform distribution for theta2 only, we only need to multiply by pi.
@@ -414,9 +433,10 @@ int main(int nargs, char* args[]){
     */
     if (nargs != 1){
       ofile.open(outfilename);
-      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << endl;
+      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << " " << standard_deviation << endl;
       ofile.close();
     }
+    cout << "STD  = " << sqrt(standard_deviation) << endl;
   }
 
   if (integration_method == "montecarlo_benchmarking"){
