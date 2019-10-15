@@ -63,6 +63,8 @@ int main(int nargs, char* args[]){
   b[5] = 2*M_PI;
   double *MC_integrals;
   local_integral = 0.0;
+  double relative_error;
+  double exact = 5*pow(M_PI,2)/(16*16);
 
   //Initialize the seed and call the Mersienne algorithm
   random_device rd;
@@ -108,6 +110,7 @@ int main(int nargs, char* args[]){
   total_integral *=  8*M_PI*M_PI*M_PI;                               //Multiplying by factors due to integration with respect to phi1, phi2 and theta1. Integrand not explicitly dependent on them.
   time_end = MPI_Wtime();
   total_time = time_end - time_start;
+  relative_error = abs((total_integral-exact)/exact);
   /*
   if (my_rank == 0){
     cout << "Computed integral = " << total_integral << endl;
@@ -117,7 +120,7 @@ int main(int nargs, char* args[]){
   */
   if (write_to_file == "write_to_file" && my_rank == 0){
     ofile.open(outfilename);
-    ofile << N << " " << total_time << " " << total_integral << endl;
+    ofile << N << " " << total_time << " " << total_integral << " " << relative_error << endl;
     ofile.close();
   }
 

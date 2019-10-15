@@ -30,6 +30,8 @@ double laguerre_integrate_func_6(double, double, double, double, double, double)
 int main(int nargs, char* args[]){
   string integration_method;
   string outfilename;
+  clock_t start, finish;
+
   if (nargs == 1){
 
     cout << "Specify integration method, choose from: " << endl;
@@ -42,8 +44,8 @@ int main(int nargs, char* args[]){
     cin >> integration_method;
   }
   else{
-    integration_method = "montecarlo_benchmarking";
     outfilename = string(args[1]);
+    integration_method = string(args[2]);
   }
 
 
@@ -51,10 +53,18 @@ int main(int nargs, char* args[]){
   if (integration_method == "1"){
     int n;
     double a,b;
-    cout << "Specify number of integration points: " << endl;
-    cin >> n;
-    cout << "Specify integration limits [a,b] : " << endl;
-    cin >> a >> b;
+    if (nargs == 1){
+      cout << "Specify number of integration points: " << endl;
+      cin >> n;
+      cout << "Specify integration limits [a,b] : " << endl;
+      cin >> a >> b;
+    }
+    else{
+      n = atoi(args[3]);
+      a = atof(args[4]);
+      b = atof(args[5]);
+
+    }
 
     double *x1, *y1, *z1, *x2, *y2, *z2;
     double *w1, *w2, *w3, *w4, *w5, *w6;
@@ -99,30 +109,49 @@ int main(int nargs, char* args[]){
       }
     }
     finish = clock();
+    double exact = 5*pow(M_PI, 2)/(16*16);
     double timeused = (double) (finish - start)/(CLOCKS_PER_SEC);
+    /*
     cout << "Integral = " << integral_gauss_legendre << endl;
-    cout << "Analytical value = " << 5*pow(M_PI, 2)/(16*16) << endl;
+    cout << "Analytical value = " << exact << endl;
     cout << "timeused = " << timeused << endl;
+    */
+    double relative_error = abs((integral_gauss_legendre-exact)/exact);
+
+    if (nargs != 1){
+      ofile.open(outfilename);
+      ofile << integral_gauss_legendre << " " << n << " " << relative_error << " " << timeused << endl;
+    }
   }
 
   if (integration_method == "2"){
     int n, dimensions;
     double a,b, alpha;
-    cout << "Specify number of integration points: " << endl;
-    cin >> n;
+
 
     a = 0;
     b = M_PI;
     double integral_gauss_laguerre = 0;
 
+    if (nargs == 1){
 
-    cout<<"Choose dimension for integral:"<<endl;
-    cout << "------------------------------------------------------" << endl;
-    cout<<"For 3 dimensions                         --> type 3 "<<endl;
-    cout<<"For 6 dimensions                         --> type 6 "<<endl;
-    cout << "------------------------------------------------------" << endl;
-    cin >> dimensions;
-    cout << "------------------------------------------------------" << endl;
+      cout << "Specify number of integration points: " << endl;
+      cin >> n;
+
+      cout<<"Choose dimension for integral:"<<endl;
+      cout << "------------------------------------------------------" << endl;
+      cout<<"For 3 dimensions                         --> type 3 "<<endl;
+      cout<<"For 6 dimensions                         --> type 6 "<<endl;
+      cout << "------------------------------------------------------" << endl;
+      cin >> dimensions;
+      cout << "------------------------------------------------------" << endl;
+
+    }
+    else{
+      dimensions = atoi(args[3]);
+      n = atoi(args[4]);
+    }
+
 
     if(dimensions == 3){
       double *w1, *w2, *w3, *r1, *r2, *theta2;
@@ -134,12 +163,13 @@ int main(int nargs, char* args[]){
     r2 = new double[n+1];
     theta2 = new double[n];
 
-    alpha = 2.0;
+    alpha = 2;
 
     gauss_laguerre(r1, w1, n, alpha);
     gauss_laguerre(r2, w2, n, alpha);
     gauleg(a, b, theta2, w3, n);
 
+    start = clock();
 
     for(int i = 1; i<(n+1); i++){
       for(int j = 1; j<(n+1); j++){
@@ -149,7 +179,10 @@ int main(int nargs, char* args[]){
       }
     }
 
+
     integral_gauss_laguerre *= (M_PI*M_PI)/128;
+
+    finish = clock();
     }
 
     if(dimensions == 6){
@@ -180,7 +213,7 @@ int main(int nargs, char* args[]){
       gauleg(a, 2*b, phi1, w5, n);
       gauleg(a, 2*b, phi2, w6, n);
 
-
+      start = clock();
 
       for (int i = 1; i <= n; i++){
         for (int j = 1; j <= n; j++){
@@ -195,13 +228,18 @@ int main(int nargs, char* args[]){
           }
         }
       }
-
+      finish = clock();
 
     }
 
+    double timeused = (double) (finish - start)/CLOCKS_PER_SEC;
+    double exact = 5*pow(M_PI, 2)/(16*16);
+    double rel_error = abs(integral_gauss_laguerre - exact)/exact;
 
-    cout << "Integral = " << integral_gauss_laguerre << endl;
-    cout << "Analytical value = " << 5*pow(M_PI, 2)/(16*16) << endl;
+    ofile.open(outfilename);
+    ofile << integral_gauss_laguerre << " " << n << " " << rel_error << " " << timeused <<endl;
+    ofile.close();
+
 
 
   }
@@ -213,17 +251,28 @@ int main(int nargs, char* args[]){
     int n;
     double a,b;                   // The integration interval [a,b].
     int N;                //number of Monte Carlo samples
-    cout << "Read in the number of integration points" << endl;
-    cin >> n;
-    cout << "Read in the integration limits [a,b] " << endl;
-    cin >> a >> b;
-    cout << "Specify number of monte carlo samples: " << endl;
-    cin >> N;
+    double relative_error;
+    double exact = 5*pow(M_PI,2)/(16*16);                               //Exact value of the integral.
+    if (nargs == 1){
+      cout << "Read in the number of integration points" << endl;
+      cin >> n;
+      cout << "Read in the integration limits [a,b] " << endl;
+      cin >> a >> b;
+      cout << "Specify number of monte carlo samples: " << endl;
+      cin >> N;
+    }
+    else{
+      n = atoi(args[3]);
+      a = atof(args[4]);
+      b = atof(args[5]);
+      N = 100;                   //Keep number of samples constant for comparison purposes with respect to integration points n.
+    }
     //Initialize the seed and call the Mersienne algorithm
     int d = 6;          //d-dimensional integral.
     random_device rd;
     mt19937_64 gen(rd());
     double x1, x2, x3, x4, x5, x6;
+    clock_t start, finish;
     //Sets up the uniform distribution for x in [0,1]
     uniform_real_distribution<double> RandomNumberGenerator(0,1);
     //Creates the variables
@@ -231,8 +280,9 @@ int main(int nargs, char* args[]){
     double *MC_integrals;
     double *x = new double[d];
     MC_integrals = new double[N];
+    start = clock();
     for (int i = 0; i < N; i++){
-      cout << "Computing for sample = " << i << endl;
+      //cout << "Computing for sample = " << i << endl;
       for (int j = 0; j < n; j++){
         x[0] =  RandomNumberGenerator(gen);
         x[0] = a + (b-a)*x[0];
@@ -262,93 +312,35 @@ int main(int nargs, char* args[]){
     }
     MC_integral /= (double) N;
     MC_integral *= pow((double) (b-a), d);      //Compensates for the change of variables xi = a + (b-a)*mu.
-
+    finish = clock();
+    double timeused = (double) (finish-start)/CLOCKS_PER_SEC;
+    relative_error = abs((MC_integral-exact)/exact);                        //The computed relative error.
+    /*
     cout << "Computed integral = " << MC_integral << endl;
     cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
+    cout << "Relative error = " << relative_error << endl;
+    */
+    if (nargs != 1){
+      ofile.open(outfilename);
+      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << endl;
+      ofile.close();
+    }
+
   }
 
   if (integration_method == "4"){
     int n;
     double max_radial_distance;
-    cout << "Read in the number of integration points" << endl;
-    cin >> n;
-    cout << "Read in maximum radial distance r " << endl;
-    cin >> max_radial_distance;
-    int d = 6;          //d-dimensional integral.
-    double r1, r2, theta2;
-    double *a, *b;
-    a = new double[d];
-    b = new double[d];
-    double alpha = 4;
-
-    //r1 endpoints
-    a[0] = 0;
-    b[0] = max_radial_distance;
-    //r2 endpoints
-    a[1] = 0;
-    b[1] = max_radial_distance;
-    //theta1 endpoints
-    a[2] = 0;
-    b[2] = M_PI;
-    //theta2 endpoints
-    a[3] = 0;
-    b[3] = M_PI;
-    //phi1 endpoints
-    a[4] = 0;
-    b[4] = 2*M_PI;
-    //phi2 endpoints
-    a[5] = 0;
-    b[5] = 2*M_PI;
-
-    //Initialize the seed and call the Mersienne algorithm
-    random_device rd;
-    mt19937_64 gen(rd());
-    //Sets up the uniform distribution for x in [0,1]
-    uniform_real_distribution<double> RandomNumberGenerator(0,1);
-    //Creates the variables
-    double MC_integral = 0;
-    double *MC_integrals;
-    int N;               //number of Monte Carlo samples
-    cout << "Specify the number of Monte Carlo samples: " << endl;
-    cin >> N;
-    MC_integrals = new double[N];
-
-    //Benchmark code
-    clock_t start, finish;
-    start  = clock();
-    //Main algorithm
-    for (int i = 0; i < N; i++){
-      cout << "Computing for sample = " << i << endl;
-      for (int j = 0; j < n; j++){
-        r1 = RandomNumberGenerator(gen);
-        r1 = -log(1-r1)/alpha;
-        for (int k = 0; k < n; k++){
-          r2 = RandomNumberGenerator(gen);
-          r2 = -log(1-r2)/alpha;
-          for (int l = 0; l < n; l++){
-            theta2 = RandomNumberGenerator(gen);
-            theta2 = a[3] + (b[3]-a[3])*theta2;
-            MC_integrals[i] += CoulombRepulsion_spherical(r1,r2,theta2)/radial_probability_density(r1,r2);
-          }
-        }
-      }
-      MC_integral += MC_integrals[i] / (pow( (double) n, (double) 3));
+    if (nargs == 1){
+      cout << "Read in the number of integration points" << endl;
+      cin >> n;
+      cout << "Read in maximum radial distance r " << endl;
+      cin >> max_radial_distance;
     }
-    MC_integral /= (double) N;
-    MC_integral *= 8*M_PI*M_PI;                               //Multiplying by factors due to integration with respect to phi1, phi2 and theta1. Integrand not explicitly dependent on them.
-    finish = clock();
-    double timeused = (double) (finish-start)/(CLOCKS_PER_SEC);
-    MC_integral *= M_PI;                            //Since we're using a uniform distribution for theta2 only, we only need to multiply by pi.
-
-
-    cout << "Computed integral = " << MC_integral << endl;
-    cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
-    cout << "time used = " << timeused << endl;
-  }
-
-  if (integration_method == "montecarlo_benchmarking"){
-    int n = 10;
-    double max_radial_distance = 10;
+    else{
+      n = atoi(args[3]);
+      max_radial_distance = atof(args[4]);
+    }
     int d = 6;          //d-dimensional integral.
     double r1, r2, theta2;
     double *a, *b;
@@ -384,7 +376,7 @@ int main(int nargs, char* args[]){
     double MC_integral = 0;
     double *MC_integrals;
     int N;               //number of Monte Carlo samples
-    N = atoi(args[2]);
+    N = 100;
     MC_integrals = new double[N];
 
     //Benchmark code
@@ -413,6 +405,90 @@ int main(int nargs, char* args[]){
     finish = clock();
     double timeused = (double) (finish-start)/(CLOCKS_PER_SEC);
     MC_integral *= M_PI;                            //Since we're using a uniform distribution for theta2 only, we only need to multiply by pi.
+    double exact = 5*pow(M_PI,2)/(16*16);
+    double relative_error = abs((MC_integral-exact)/exact);
+    /*
+    cout << "Computed integral = " << MC_integral << endl;
+    cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
+    cout << "time used = " << timeused << endl;
+    */
+    if (nargs != 1){
+      ofile.open(outfilename);
+      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << endl;
+      ofile.close();
+    }
+  }
+
+  if (integration_method == "montecarlo_benchmarking"){
+    int n = 10;
+    double max_radial_distance = 10;
+    int d = 6;          //d-dimensional integral.
+    double r1, r2, theta2;
+    double *a, *b;
+    a = new double[d];
+    b = new double[d];
+    double alpha = 4;
+    double relative_error;
+    double exact = 5*pow(M_PI,2)/(16*16);
+
+
+    //r1 endpoints
+    a[0] = 0;
+    b[0] = max_radial_distance;
+    //r2 endpoints
+    a[1] = 0;
+    b[1] = max_radial_distance;
+    //theta1 endpoints
+    a[2] = 0;
+    b[2] = M_PI;
+    //theta2 endpoints
+    a[3] = 0;
+    b[3] = M_PI;
+    //phi1 endpoints
+    a[4] = 0;
+    b[4] = 2*M_PI;
+    //phi2 endpoints
+    a[5] = 0;
+    b[5] = 2*M_PI;
+
+    //Initialize the seed and call the Mersienne algorithm
+    random_device rd;
+    mt19937_64 gen(rd());
+    //Sets up the uniform distribution for x in [0,1]
+    uniform_real_distribution<double> RandomNumberGenerator(0,1);
+    //Creates the variables
+    double MC_integral = 0;
+    double *MC_integrals;
+    int N;               //number of Monte Carlo samples
+    N = atoi(args[3]);
+    MC_integrals = new double[N];
+
+    //Benchmark code
+    start  = clock();
+    //Main algorithm
+    for (int i = 0; i < N; i++){
+      //cout << "Computing for sample = " << i << endl;
+      for (int j = 0; j < n; j++){
+        r1 = RandomNumberGenerator(gen);
+        r1 = -log(1-r1)/alpha;
+        for (int k = 0; k < n; k++){
+          r2 = RandomNumberGenerator(gen);
+          r2 = -log(1-r2)/alpha;
+          for (int l = 0; l < n; l++){
+            theta2 = RandomNumberGenerator(gen);
+            theta2 = a[3] + (b[3]-a[3])*theta2;
+            MC_integrals[i] += CoulombRepulsion_spherical(r1,r2,theta2)/radial_probability_density(r1,r2);
+          }
+        }
+      }
+      MC_integral += MC_integrals[i] / (pow( (double) n, (double) 3));
+    }
+    MC_integral /= (double) N;
+    MC_integral *= 8*M_PI*M_PI;                               //Multiplying by factors due to integration with respect to phi1, phi2 and theta1. Integrand not explicitly dependent on them.
+    finish = clock();
+    double timeused = (double) (finish-start)/(CLOCKS_PER_SEC);
+    MC_integral *= M_PI;                            //Since we're using a uniform distribution for theta2 only, we only need to multiply by pi.
+    relative_error = abs((MC_integral - exact)/exact);
 
     /*
     cout << "Computed integral = " << MC_integral << endl;
@@ -421,7 +497,7 @@ int main(int nargs, char* args[]){
     */
 
     ofile.open(outfilename);
-    ofile << N << " " << timeused << " " << MC_integral << endl;
+    ofile << N << " " << timeused << " " << MC_integral << " " << relative_error <<  endl;
     ofile.close();
 
   }
