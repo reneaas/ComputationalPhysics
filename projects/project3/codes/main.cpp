@@ -47,6 +47,8 @@ int main(int nargs, char* args[]){
     integration_method = string(args[2]);
   }
 
+
+
   if (integration_method == "1"){
     int n;
     double a,b;
