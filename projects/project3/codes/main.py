@@ -259,7 +259,8 @@ if compilation_instruction == "compare_MC":
     os.system("mpicxx -O3 -c main_mpi.cpp")
     os.system("mpicxx -O3 -o main_mpi.exe main_mpi.o")
 
-    number_of_monte_carlo_samples = [10**i for i in range(1,9)]
+    number_of_monte_carlo_samples = [10**i for i in range(2,8)]
+    #number_of_monte_carlo_samples = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 100000000]
     max_radial_distance = 10
     a = -3
     b = 3
@@ -271,7 +272,7 @@ if compilation_instruction == "compare_MC":
         print("Cartesian coordinates WITH MPI for n = " + str(n) + " samples...")
         outfilename = "MPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
         arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
-        os.system("mpirun -np 10 --oversubscribe ./main_mpi.exe" + " " + arguments)
+        os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
 
     #Runs the code with MPI in spherical coordinates.
@@ -280,7 +281,7 @@ if compilation_instruction == "compare_MC":
         print("Spherical coordinates WITH mpi for n = " + str(n) + " samples...")
         outfilename = "MPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
         arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
-        os.system("mpirun -np 10 --oversubscribe ./main_mpi.exe" + " " + arguments)
+        os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
     #Compiles the code without MPI.
     print("compiling")
@@ -438,6 +439,19 @@ if compilation_instruction == "compare_MC":
     timeused = pd.DataFrame(timeused)
     speedup = pd.DataFrame(speedup)
 
+    outfilename_integrals = "integrals_MCmethods.txt"
+    outfilename_STDmean = "STDmean_MCmethods.txt"
+    outfilename_RelativeError = "RelativeError_MCmethods.txt"
+    outfilename_timeused = "timeused_MCmethods.txt"
+    outfilename_speedup = "speedup_MCmethods.txt"
+
+    integrals.to_latex(outfilename_integrals, encoding='utf-8', escape = False, index = False)
+    STDmean.to_latex(outfilename_STDmean, encoding='utf-8', escape = False, index = False)
+    RelativeError.to_latex(outfilename_RelativeError, encoding='utf-8', escape = False, index = False)
+    timeused.to_latex(outfilename_timeused, encoding='utf-8', escape = False, index = False)
+    speedup.to_latex(outfilename_speedup, encoding='utf-8', escape = False, index = False)
+
+
     print("----------------------------------------------------------------------------------")
     print("integrals:")
     print("----------------------------------------------------------------------------------")
@@ -458,3 +472,22 @@ if compilation_instruction == "compare_MC":
     print("Speedup:")
     print("----------------------------------------------------------------------------------")
     print(speedup)
+
+
+    X_data = []
+    for i in range(4):
+        X_data.append(np.log10(number_of_monte_carlo_samples))
+
+    timeused_mat = []
+    timeused_mat.append(np.log10(timeused_MPI_cartesian))
+    timeused_mat.append(np.log10(timeused_MPI_spherical))
+    timeused_mat.append(np.log10(timeused_cartesian))
+    timeused_mat.append(np.log10(timeused_spherical))
+
+    figurename_lines_timeused = "Time_used_for_all_Monte_Carlo_methods.pdf"
+    labeltexts_lines = ["Brute force w/MPI", "Importance sampling w/MPI", "Brute force", "Importance sampling"]
+    xlabel_lines = "$\log_{10}(N)$"
+    ylabel_lines_timeused = "$\log_{10}(t)$"
+    lines_timeused = StraightLine(X_data, timeused_mat, 4)
+    lines_timeused.straightline()
+    lines_timeused.make_plot(labeltexts_lines, xlabel_lines, ylabel_lines_timeused, figurename_lines_timeused)

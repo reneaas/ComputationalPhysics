@@ -100,7 +100,7 @@ class StraightLine:
                 x = np.linspace(min(self.X[i]), max(self.X[i]), 101)
                 y = self.M[i]*x + self.C[i]
                 plt.plot(x,y, label = labeltext)
-                plt.errorbar(self.X[i], self.Y[i], y_error, capsize = 5, fmt=".", label = errorbar_labels[i])
+                #plt.errorbar(self.X[i], self.Y[i], y_error, capsize = 5, fmt=".", label = errorbar_labels[i])
             plt.xlabel(xlabel, fontsize = 18)
             plt.ylabel(ylabel, fontsize = 18)
             plt.legend(fontsize = 14)
