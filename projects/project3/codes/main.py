@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from Library import StraightLine
 from Library import PlottingTool
-plt.rc('text', usetex=True)
+#plt.rc('text', usetex=True)
 
 compilation_instruction = str(sys.argv[1])
 if compilation_instruction == "no_mpi":
@@ -186,16 +186,6 @@ if compilation_instruction == "compare_all":
             relative_error_MC_importance.append(float(numbers[2]))
             timeused_MC_importance.append(float(numbers[3]))
         os.system("rm" + " " + infilename)
-
-    """
-    plt.plot(np.log10(number_of_integration_points), np.log(timeused_gauleg), label="gauleg")
-    plt.plot(np.log10(number_of_integration_points), np.log10(timeused_gaulag), label="gaulag")
-    #plt.plot(number_of_integration_points, timeused_MC_brute, label="MC_brute")
-    #plt.plot(number_of_integration_points, timeused_MC_importance, label="MC-importance")
-    plt.legend()
-    plt.show()
-    """
-
 
 
     #Create datasets.

@@ -373,6 +373,18 @@ int main(int nargs, char* args[]){
     cout<<"Exact"<<" "<<exact<<endl;
     cout<<"Calculated"<<" "<<integral<<endl;
 
+
+    //Finding the energy noe something
+    double bohr_radius, k, A, E_gs;
+    k = 1.44;       //eV nm
+    bohr_radius = 5.29177e-11 * 1e9;
+    A = 8/(M_PI*pow(bohr_radius,3));
+    E_gs = k*A*A*pow(bohr_radius,5) * integral + (-8*13.6057);
+
+    cout<<"Energy ground state He: "<<E_gs<< " eV"<<endl;
+
+
+
     if(nargs != 1){
     //Write results to file.
     ofile.open(outfilename);
@@ -380,6 +392,7 @@ int main(int nargs, char* args[]){
     ofile.close();
     }
   }
+
 
 
   return 0;
