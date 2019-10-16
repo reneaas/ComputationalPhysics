@@ -13,26 +13,26 @@ The primary code of the numerical project is [main.py](https://github.com/reneaa
 ```console
 python3 main.py no_mpi
 ```
+Here you compile the code ????? If you have already compiled it, and just want to change some of the input parameters, you call:
+```console
+python3 main.py 0
+```
 
-  * Once this particular problem is run, you'll be prompted with:
-    1.
-        Specify integration method, choose from:
-
-        Gauss Legendre method                  --> type 1
-        Gauss Laguerre method                  --> type 2
-        Brute force Monte Carlo                --> type 3
-        Monte Carlo with importance sampling   --> type 4
-
-
-        - If you type 1, you'll have to specify number of integration points (an integer), and then the integration limits [a,b] (two double floating point numbers).
-        - If you type 2, you will have to specify number of integration points (an integer). Then you'll have to decide if you want to do the integral for three or six dimensions:
-
-        Choose dimension for integral:
-
-        For 3 dimensions                         --> type 3
-        For 6 dimensions                         --> type 6
-      
-
-        You then obtain the exact and calculated value for the integral.
-        - If you type 3, you'll have to specify number of monte carlo samples (an integer), then the integration limits [a,b] (two double floating point numbers). The results appear in the terminal.
-        - If you type 4, you'll have to specify number of monte carlo samples (an integer), then the maximum radial distance (double floating point number). The results appear in the terminal.
+  * Once this particular problem is run (either with no_mpi or 0), you'll be prompted with:
+  ```console
+Specify integration method, choose from:
+Gauss Legendre method                  --> type 1
+Gauss Laguerre method                  --> type 2
+Brute force Monte Carlo                --> type 3
+Monte Carlo with importance sampling   --> type 4
+```
+- If you type 1, you'll have to specify number of integration points (an integer), and then the integration limits [a,b] (two double floating point numbers).
+- If you type 2, you will have to specify number of integration points (an integer). Then you'll have to decide if you want to do the integral for three or six dimensions:
+```console
+Choose dimension for integral:
+For 3 dimensions                         --> type 3
+For 6 dimensions                         --> type 6
+```
+You then obtain the exact and calculated value for the integral.
+- If you type 3, you'll have to specify number of monte carlo samples (an integer), then the integration limits [a,b] (two double floating point numbers). The results appear in the terminal.
+- If you type 4, you'll have to specify number of monte carlo samples (an integer), then the maximum radial distance (double floating point number). The results appear in the terminal.
