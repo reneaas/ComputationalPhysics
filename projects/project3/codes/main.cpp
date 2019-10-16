@@ -19,13 +19,12 @@ ofstream ofile;
 
 double CoulombRepulsion(double, double, double, double, double, double);
 double CoulombRepulsion_spherical(double, double, double);
-double F(double, double);
-double radial_probability_density(double,double);
-double test_func(double, double, double);
 double gammln(double);
 void gauss_laguerre(double*, double*, int, double);
 double laguerre_integrate_func_3(double, double, double);
 double laguerre_integrate_func_6(double, double, double, double, double, double);
+double CoulombRepulsionMC(double*);
+double CoulombRepulsionMC_ImportanceSampling(double*);
 
 int main(int nargs, char* args[]){
   string integration_method;
@@ -242,284 +241,160 @@ int main(int nargs, char* args[]){
 
   }
 
-
-
   if (integration_method == "3"){
-    int n;
-    double a,b;                   // The integration interval [a,b].
-    int N;                //number of Monte Carlo samples
-    double relative_error;
-    double exact = 5*pow(M_PI,2)/(16*16);                               //Exact value of the integral.
+    //Declaration of variables
+    int n, d;
+    double a, b, integral, sigma, variance, std_mean, jacobidet, func_value, exact, relative_error, timeused;
+    double *x;
+    clock_t start, finish;
+    //Sets up the uniform distribution for x in [0,1]
+    random_device rd;
+    mt19937_64 gen(rd());
+    uniform_real_distribution<double> RandomNumberGenerator(0,1);
+
+    //If no terminal arguments are made
     if (nargs == 1){
-      cout << "Read in the number of integration points" << endl;
+      cout << "Specify number of monte carlo samples:" << endl;
       cin >> n;
-      cout << "Read in the integration limits [a,b] " << endl;
+      cout << "Specify integration limits [a,b]: " << endl;
       cin >> a >> b;
-      cout << "Specify number of monte carlo samples: " << endl;
-      cin >> N;
     }
     else{
       n = atoi(args[3]);
       a = atof(args[4]);
       b = atof(args[5]);
-      N = atoi(args[6]);
     }
-    //Initialize the seed and call the Mersienne algorithm
-    int d = 6;          //d-dimensional integral.
-    random_device rd;
-    mt19937_64 gen(rd());
-    double x1, x2, x3, x4, x5, x6;
-    clock_t start, finish;
-    //Sets up the uniform distribution for x in [0,1]
-    uniform_real_distribution<double> RandomNumberGenerator(0,1);
-    //Creates the variables
-    double MC_integral;
-    double *MC_integrals;
-    double *x = new double[d];
-    double sigma_sum = 0;
-    double *sigma_sums;
-    sigma_sums = new double[N];
-    MC_integrals = new double[N];
+
+
+    //Hardcode specific parameters
+    d = 6;                                                //dimensions
+    jacobidet = pow((b-a), d);                               //Jacobideterminant
+    x = new double[d];                                    //Integration coordinates x1,...,xd.
+    integral = 0.;
+    sigma = 0.;
+    variance = 0.;
+    std_mean = 0.;
+    exact = 5*M_PI*M_PI/(16*16);
+
     start = clock();
-    for (int i = 0; i < N; i++){
-      //cout << "Computing for sample = " << i << endl;
-      for (int j = 0; j < n; j++){
-        x[0] =  RandomNumberGenerator(gen);
-        x[0] = a + (b-a)*x[0];
-        for (int k = 0; k < n; k++){
-          x[1] = RandomNumberGenerator(gen);
-          x[1] = a + (b-a)*x[1];
-          for (int l = 0; l < n; l++){
-            x[2] = RandomNumberGenerator(gen);
-            x[2] = a + (b-a)*x[2];
-            for (int m = 0; m < n; m++){
-              x[3] = RandomNumberGenerator(gen);
-              x[3] = a + (b-a)*x[3];
-              for (int p = 0; p < n; p++){
-                x[4] = RandomNumberGenerator(gen);
-                x[4] = a + (b-a)*x[4];
-                for (int r = 0; r < n; r++){
-                  x[5] = RandomNumberGenerator(gen);
-                  x[5] = a + (b-a)*x[5];
-                  MC_integrals[i] += CoulombRepulsion(x[0],x[1],x[2],x[3],x[4],x[5]);
-                  sigma_sums[i] += MC_integrals[i]*MC_integrals[i];
-                }
-              }
-            }
-          }
-        }
+    //Here the integration begins, loop over all n monte carlo samples
+    for (int i = 0; i < n; i++){
+      //Collect a sample of the stochastic varable X = (X1,...,Xd)
+      for (int j = 0; j < d; j++){
+        //Use the mapping mu(x[j]) = a + (b-a)*x[j], fill
+        x[j] = RandomNumberGenerator(gen);                //Random number from uniform distribution
+        x[j] = a + (b-a)*x[j];                            //Change of coordinates.
       }
-      MC_integral += MC_integrals[i]/ (pow((double) n,d));
-      sigma_sum += sigma_sums[i] / (pow((double) n,d));
+      func_value = CoulombRepulsionMC(x);                 //Compute function value for the sample of X
+      integral += func_value;                             //computed the contribution to the integral
+      sigma += func_value*func_value;                     //computes the contribution to the variance
     }
-    MC_integral /= (double) N;
-    MC_integral *= pow((double) (b-a), d);      //Compensates for the change of variables xi = a + (b-a)*mu.
+    integral /= ((double) n);                             //Arithmetic mean to obtain the integral
+    sigma /= ((double) n);                                //Arithmetic mean to obtain the variance
+    variance = sigma - integral*integral;             //Computes the variance
+    integral *= jacobidet;                                //Final contribution to the integral.
+    std_mean = jacobidet*sqrt(variance/( (double) n));
+    relative_error = abs((integral - exact)/exact);
     finish = clock();
-    double timeused = (double) (finish-start)/CLOCKS_PER_SEC;
-    relative_error = abs((MC_integral-exact)/exact);                        //The computed relative error.
-    double variance = sigma_sum - MC_integral*MC_integral;
-    double standard_deviation = sqrt(variance);
-
-    /*
-    cout << "Computed integral = " << MC_integral << endl;
-    cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
-    cout << "Relative error = " << relative_error << endl;
-    */
-    if (nargs != 1){
-      ofile.open(outfilename);
-      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << " " << standard_deviation << endl;
-      ofile.close();
-    }
-
-  }
-
-  if (integration_method == "4"){
-    int n;
-    int N;               //number of Monte Carlo samples
-    double max_radial_distance;
-    if (nargs == 1){
-      cout << "Read in the number of integration points" << endl;
-      cin >> n;
-      cout << "Read in maximum radial distance r " << endl;
-      cin >> max_radial_distance;
-      cout << "Read in number of monte carlo samples" << endl;
-      cin >> N;
-    }
-    else{
-      n = atoi(args[3]);
-      max_radial_distance = atof(args[4]);
-      N = atoi(args[5]);
-    }
-    int d = 6;          //d-dimensional integral.
-    double r1, r2, theta2;
-    double *a, *b;
-    a = new double[d];
-    b = new double[d];
-    double alpha = 4;
-    double sigma_sum = 0;
-    double *sigma_sums;
-
-    //r1 endpoints
-    a[0] = 0;
-    b[0] = max_radial_distance;
-    //r2 endpoints
-    a[1] = 0;
-    b[1] = max_radial_distance;
-    //theta1 endpoints
-    a[2] = 0;
-    b[2] = M_PI;
-    //theta2 endpoints
-    a[3] = 0;
-    b[3] = M_PI;
-    //phi1 endpoints
-    a[4] = 0;
-    b[4] = 2*M_PI;
-    //phi2 endpoints
-    a[5] = 0;
-    b[5] = 2*M_PI;
-
-    //Initialize the seed and call the Mersienne algorithm
-    random_device rd;
-    mt19937_64 gen(rd());
-    //Sets up the uniform distribution for x in [0,1]
-    uniform_real_distribution<double> RandomNumberGenerator(0,1);
-    //Creates the variables
-    double MC_integral = 0;
-    double *MC_integrals;
-    MC_integrals = new double[N];
-    sigma_sums = new double[N];
+    timeused = (double) (finish - start)/CLOCKS_PER_SEC;
 
 
-    //Benchmark code
-    clock_t start, finish;
-    start  = clock();
-    //Main algorithm
-    for (int i = 0; i < N; i++){
-      //cout << "Computing for sample = " << i << endl;
-      for (int j = 0; j < n; j++){
-        r1 = RandomNumberGenerator(gen);
-        r1 = -log(1-r1)/alpha;
-        for (int k = 0; k < n; k++){
-          r2 = RandomNumberGenerator(gen);
-          r2 = -log(1-r2)/alpha;
-          for (int l = 0; l < n; l++){
-            theta2 = RandomNumberGenerator(gen);
-            theta2 = a[3] + (b[3]-a[3])*theta2;
-            MC_integrals[i] += CoulombRepulsion_spherical(r1,r2,theta2)/radial_probability_density(r1,r2);
-            sigma_sums[i] += MC_integrals[i]*MC_integrals[i];
-          }
-        }
-      }
-      MC_integral += MC_integrals[i] / (pow( (double) n, (double) 3));
-      sigma_sum += sigma_sums[i] / (pow( (double) n, (double) 3));
-    }
-    MC_integral /= (double) N;
-    MC_integral *= 8*M_PI*M_PI;                               //Multiplying by factors due to integration with respect to phi1, phi2 and theta1. Integrand not explicitly dependent on them.
-    sigma_sum /= (double) N;
-    double variance = sigma_sum - MC_integral*MC_integral;
-    double standard_deviation = sqrt(variance);
-    finish = clock();
-    double timeused = (double) (finish-start)/(CLOCKS_PER_SEC);
-    MC_integral *= M_PI;                            //Since we're using a uniform distribution for theta2 only, we only need to multiply by pi.
-    double exact = 5*pow(M_PI,2)/(16*16);
-    double relative_error = abs((MC_integral-exact)/exact);
-    /*
-    cout << "Computed integral = " << MC_integral << endl;
-    cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
-    cout << "time used = " << timeused << endl;
-    */
-    if (nargs != 1){
-      ofile.open(outfilename);
-      ofile << MC_integral << " " << n << " " << relative_error << " " << timeused << " " << standard_deviation << endl;
-      ofile.close();
-    }
-    cout << "STD  = " << sqrt(standard_deviation) << endl;
-  }
-
-  if (integration_method == "montecarlo_benchmarking"){
-    int n = 10;
-    double max_radial_distance = 10;
-    int d = 6;          //d-dimensional integral.
-    double r1, r2, theta2;
-    double *a, *b;
-    a = new double[d];
-    b = new double[d];
-    double alpha = 4;
-    double relative_error;
-    double exact = 5*pow(M_PI,2)/(16*16);
-
-
-    //r1 endpoints
-    a[0] = 0;
-    b[0] = max_radial_distance;
-    //r2 endpoints
-    a[1] = 0;
-    b[1] = max_radial_distance;
-    //theta1 endpoints
-    a[2] = 0;
-    b[2] = M_PI;
-    //theta2 endpoints
-    a[3] = 0;
-    b[3] = M_PI;
-    //phi1 endpoints
-    a[4] = 0;
-    b[4] = 2*M_PI;
-    //phi2 endpoints
-    a[5] = 0;
-    b[5] = 2*M_PI;
-
-    //Initialize the seed and call the Mersienne algorithm
-    random_device rd;
-    mt19937_64 gen(rd());
-    //Sets up the uniform distribution for x in [0,1]
-    uniform_real_distribution<double> RandomNumberGenerator(0,1);
-    //Creates the variables
-    double MC_integral = 0;
-    double *MC_integrals;
-    int N;               //number of Monte Carlo samples
-    N = atoi(args[3]);
-    MC_integrals = new double[N];
-
-    //Benchmark code
-    start  = clock();
-    //Main algorithm
-    for (int i = 0; i < N; i++){
-      //cout << "Computing for sample = " << i << endl;
-      for (int j = 0; j < n; j++){
-        r1 = RandomNumberGenerator(gen);
-        r1 = -log(1-r1)/alpha;
-        for (int k = 0; k < n; k++){
-          r2 = RandomNumberGenerator(gen);
-          r2 = -log(1-r2)/alpha;
-          for (int l = 0; l < n; l++){
-            theta2 = RandomNumberGenerator(gen);
-            theta2 = a[3] + (b[3]-a[3])*theta2;
-            MC_integrals[i] += CoulombRepulsion_spherical(r1,r2,theta2)/radial_probability_density(r1,r2);
-          }
-        }
-      }
-      MC_integral += MC_integrals[i] / (pow( (double) n, (double) 3));
-    }
-    MC_integral /= (double) N;
-    MC_integral *= 8*M_PI*M_PI;                               //Multiplying by factors due to integration with respect to phi1, phi2 and theta1. Integrand not explicitly dependent on them.
-    finish = clock();
-    double timeused = (double) (finish-start)/(CLOCKS_PER_SEC);
-    MC_integral *= M_PI;                            //Since we're using a uniform distribution for theta2 only, we only need to multiply by pi.
-    relative_error = abs((MC_integral - exact)/exact);
-
-    /*
-    cout << "Computed integral = " << MC_integral << endl;
-    cout << "Analytical value = " << 5*pow(M_PI,2)/(16*16) << endl;
-    cout << "time used = " << timeused << endl;
-    */
-
+    //Write the results to file
     ofile.open(outfilename);
-    ofile << N << " " << timeused << " " << MC_integral << " " << relative_error <<  endl;
+    ofile << integral << " " << std_mean << " " << relative_error << " " << timeused << endl;
     ofile.close();
 
   }
 
+  if (integration_method == "4"){
+    //Declaration of variables
+    int n, d;
+    double max_radial_distance, integral, sigma, variance, std_mean, jacobidet, func_value, exact, alpha, relative_error, timeused;
+    double *x;
+    clock_t start, finish;
+    //Sets up the uniform distribution for x in [0,1]
+    random_device rd;
+    mt19937_64 gen(rd());
+    uniform_real_distribution<double> RandomNumberGenerator(0,1);
+
+    //If no terminal arguments are made
+    if (nargs == 1){
+      cout << "Specify number of monte carlo samples:" << endl;
+      cin >> n;
+      cout << "Specify maximum radial distance: " << endl;
+      cin >> max_radial_distance;
+    }
+    else{
+      n = atoi(args[3]);
+      max_radial_distance = atof(args[4]);
+    }
+
+    //Hardcode specific parameters
+    d = 3;                                                //dimensions    (three of the integrals are trivially solved analytically)
+    jacobidet = 8*pow(M_PI, 3)/16;                        //"Jacobideterminant"
+    x = new double[d];                                    //Integration coordinates x1,...,xd.
+    integral = 0.;
+    sigma = 0.;
+    variance = 0.;
+    std_mean =0.;
+    exact = 5*M_PI*M_PI/(16*16);
+    alpha = 4;
+
+    start = clock();
+    //And so it begins... summing up the function values for n monte carlo samples
+    for (int i = 0; i < n; i++){
+      //Sample from the respective probability distributions of X = (r1,r2,theta2)
+      x[0] = RandomNumberGenerator(gen);
+      x[0] = -log(1-x[0])/alpha;                      //r1-coordinate
+      x[1] = RandomNumberGenerator(gen);
+      x[1] = -log(1-x[1])/alpha;                      //r2-coordinate
+      x[2] = RandomNumberGenerator(gen);
+      x[2] = M_PI*x[2];                               //theta2-coordinate
+      func_value = CoulombRepulsionMC_ImportanceSampling(x);
+      integral += func_value;
+      sigma += func_value*func_value;
+    }
+    integral /= ((double) n);                             //Arithmetic mean to obtain the integral
+    sigma /= ((double) n);                                //Arithmetic mean to obtain the variance
+    variance = sigma - integral*integral;                 //Computes the variance
+    integral *= jacobidet;                                //Final contribution to the integral.
+    std_mean = jacobidet*sqrt(variance/( (double) n));
+    finish = clock();
+    timeused = (double) (finish - start)/CLOCKS_PER_SEC;
+    relative_error = abs((integral - exact)/exact);
+
+    //Write results to file.
+    ofile.open(outfilename);
+    ofile << integral << " " << std_mean << " " << relative_error << " " << timeused << endl;
+    ofile.close();
+   }
+
+
   return 0;
+}
+
+double CoulombRepulsionMC(double *x){
+  double func_value = 0;
+  double norm = sqrt((x[0]-x[3])*(x[0]-x[3]) + (x[1]-x[4])*((x[1]-x[4])) + (x[2]-x[5])*(x[2]-x[5]));
+  if (norm == 0){
+    func_value = 0;
+  }
+  else{
+    func_value = exp(-4*( sqrt(x[0]*x[0] + x[1]*x[1] + x[2]*x[2]) + sqrt(x[3]*x[3] + x[4]*x[4] + x[5]*x[5]) ))/norm;
+  }
+  return func_value;
+}
+
+double CoulombRepulsionMC_ImportanceSampling(double *x){
+  double func_value;
+  double norm = sqrt( x[0]*x[0] + x[1]*x[1] - 2*x[0]*x[1]*cos(x[2]) );
+  if (norm == 1){
+    func_value = 0;
+  }
+  else{
+    func_value = x[0]*x[0]*x[1]*x[1]*sin(x[2])/norm;
+  }
+  return func_value;
 }
 
 double CoulombRepulsion(double x1, double y1, double z1, double x2, double y2, double z2){
@@ -542,19 +417,6 @@ double CoulombRepulsion_spherical(double r1, double r2, double theta2){
   }
   return r1*r1*r2*r2*sin(theta2)*exp(-4*(r1+r2)) / ( sqrt(r1*r1 + r2*r2 -2*r1*r2*cos(theta2)) );
 }
-
-
-double radial_probability_density(double r1,double r2){
-  /*
-  Normalized radial probability distribution.
-  */
-  return 16*exp(-4*(r1+r2));
-}
-
-double test_func(double x, double y, double z){
-  return x*x*y*y*z*z*exp(-(x+y+z));
-}
-
 
 
 //  Note that you need to call it with a given value of alpha,
