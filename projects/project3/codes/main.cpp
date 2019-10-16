@@ -108,7 +108,7 @@ int main(int nargs, char* args[]){
     finish = clock();
     double exact = 5*pow(M_PI, 2)/(16*16);
     double timeused = (double) (finish - start)/(CLOCKS_PER_SEC);
-    
+
     cout << "Integral = " << integral_gauss_legendre << endl;
     cout << "Analytical value = " << exact << endl;
     cout << "timeused = " << timeused << endl;
@@ -302,11 +302,15 @@ int main(int nargs, char* args[]){
     timeused = (double) (finish - start)/CLOCKS_PER_SEC;
 
 
+    cout<<"Exact"<<" "<<exact<<endl;
+    cout<<"Calculated"<<" "<<integral<<endl;
+
+    if(nargs != 1){
     //Write the results to file
     ofile.open(outfilename);
     ofile << integral << " " << std_mean << " " << relative_error << " " << timeused << endl;
     ofile.close();
-
+}
   }
 
   if (integration_method == "4"){
@@ -366,11 +370,16 @@ int main(int nargs, char* args[]){
     timeused = (double) (finish - start)/CLOCKS_PER_SEC;
     relative_error = abs((integral - exact)/exact);
 
+    cout<<"Exact"<<" "<<exact<<endl;
+    cout<<"Calculated"<<" "<<integral<<endl;
+
+    if(nargs != 1){
     //Write results to file.
     ofile.open(outfilename);
     ofile << integral << " " << std_mean << " " << relative_error << " " << timeused << endl;
     ofile.close();
-   }
+    }
+  }
 
 
   return 0;
