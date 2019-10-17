@@ -262,7 +262,7 @@ if compilation_instruction == "compare_MC":
         print("Cartesian coordinates WITH MPI for n = " + str(n) + " samples...")
         outfilename = "MPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
         arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
-        os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
+        os.system("mpirun -np 8 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
 
     #Runs the code with MPI in spherical coordinates.
@@ -271,7 +271,7 @@ if compilation_instruction == "compare_MC":
         print("Spherical coordinates WITH mpi for n = " + str(n) + " samples...")
         outfilename = "MPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
         arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
-        os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
+        os.system("mpirun -np 8 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
     #Compiles the code without MPI.
     print("compiling")
@@ -387,40 +387,40 @@ if compilation_instruction == "compare_MC":
 
     integrals = {\
                     "n" : number_of_monte_carlo_samples,\
-                    "MPI (cartesian)" : integral_MPI_cartesian,\
-                    "MPI (spherical)" : integral_MPI_spherical,\
-                    "No MPI (cartesian)" : integral_cartesian,\
-                    "No MPI (spherical)" : integral_spherical\
+                    "MPI (BF)" : integral_MPI_cartesian,\
+                    "MPI (IS)" : integral_MPI_spherical,\
+                    "No MPI (BF)" : integral_cartesian,\
+                    "No MPI (IS)" : integral_spherical\
                 }
 
     STDmean = {\
                     "n" : number_of_monte_carlo_samples,\
-                    "MPI (cartesian)" : STDmean_MPI_cartesian,\
-                    "MPI (spherical)" : STDmean_MPI_spherical,\
-                    "No MPI (cartesian)" : STDmean_cartesian,\
-                    "No MPI (spherical)" : STDmean_spherical\
+                    "$\sigma_\text{BF}$ (MPI)" : STDmean_MPI_cartesian,\
+                    "$\sigma_\text{IS}$ (MPI)" : STDmean_MPI_spherical,\
+                    "$\sigma_\text{BF}$" : STDmean_cartesian,\
+                    "$\sigma_\text{IS}$" : STDmean_spherical\
                 }
 
     RelativeError = {\
                     "n" : number_of_monte_carlo_samples,\
-                    "MPI (cartesian)" : RelativeError_MPI_cartesian,\
-                    "MPI (spherical)" : RelativeError_MPI_spherical,\
-                    "No MPI (cartesian)" : RelativeError_cartesian,\
-                    "No MPI (spherical)" : RelativeError_spherical\
+                    "$\epsilon_\text{BF}$ (MPI)" : RelativeError_MPI_cartesian,\
+                    "$\epsilon_\text{IS}$ (MPI)" : RelativeError_MPI_spherical,\
+                    "$\epsilon_\text{BF}$" : RelativeError_cartesian,\
+                    "$\epsilon_\text{IS}$ (IS)" : RelativeError_spherical\
                 }
 
     timeused = {\
                     "n" : number_of_monte_carlo_samples,\
-                    "MPI (cartesian)" : timeused_MPI_cartesian,\
-                    "MPI (spherical)" : timeused_MPI_spherical,\
-                    "No MPI (cartesian)" : timeused_cartesian,\
-                    "No MPI (spherical)" : timeused_spherical,\
+                    "$\Delta t_\text{BF}$ (MPI)" : timeused_MPI_cartesian,\
+                    "$\Delta t_\text{IS}$ (MPI)" : timeused_MPI_spherical,\
+                    "$\Delta t_\text{BF}$" : timeused_cartesian,\
+                    "$\Delta t_\text{IS}$ (IS)" : timeused_spherical,\
                 }
 
     speedup = {\
                     "n" : number_of_monte_carlo_samples,\
-                    "speedup (cartesian)" : speedup_cartesian,\
-                    "speedup (spherical)" : speedup_spherical,\
+                    "speedup (BF)" : speedup_cartesian,\
+                    "speedup (IS)" : speedup_spherical,\
                 }
 
     integrals = pd.DataFrame(integrals)
@@ -440,6 +440,17 @@ if compilation_instruction == "compare_MC":
     RelativeError.to_latex(outfilename_RelativeError, encoding='utf-8', escape = False, index = False)
     timeused.to_latex(outfilename_timeused, encoding='utf-8', escape = False, index = False)
     speedup.to_latex(outfilename_speedup, encoding='utf-8', escape = False, index = False)
+
+    path = "results/monte_carlo/benchmarks"
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
+    os.system("mv" + " " + outfilename_integrals + " " + path)
+    os.system("mv" + " " + outfilename_STDmean + " " + path)
+    os.system("mv" + " " + outfilename_RelativeError + " " + path)
+    os.system("mv" + " " + outfilename_timeused + " " + path)
+    os.system("mv" + " " + outfilename_speedup + " " + path)
 
 
     print("----------------------------------------------------------------------------------")
@@ -481,3 +492,45 @@ if compilation_instruction == "compare_MC":
     lines_timeused = StraightLine(X_data, timeused_mat, 4)
     lines_timeused.straightline()
     lines_timeused.make_plot(labeltexts_lines, xlabel_lines, ylabel_lines_timeused, figurename_lines_timeused)
+
+
+
+if compilation_instruction == "ground_state":
+    #Compiles the code without MPI.
+    print("compiling")
+    os.system("c++ -O3 -c main.cpp lib.cpp")
+    os.system("c++ -O3 -o main.exe main.cpp lib.o")
+
+    number_of_monte_carlo_samples = [10**i for i in range(2,8)]
+    integration_method = "4"
+    Integrals = []
+    relative_error = []
+
+
+
+    for n in number_of_monte_carlo_samples:
+        print("running code for n = " + str(n))
+        outfilename = "monty_" + "n_" + str(n) + ".txt"
+        os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(n) )
+
+    for n in number_of_monte_carlo_samples:
+        infilename = "monty_" + "n_" + str(n) + ".txt"
+        with open(infilename,"r") as infile:
+            lines = infile.readlines()
+            line = lines[0]
+            numbers = line.split()
+            Integrals.append(float(numbers[4]))
+            relative_error.append(float(numbers[5]))
+        os.system("rm" + " " + infilename)
+
+    dataset = {"$N$" : number_of_monte_carlo_samples, "$\expval{H}$ [eV]" : Integrals, "$\epsilon$" : relative_error}
+
+    dataset = pd.DataFrame(dataset)
+    outfilename = "ground_state_energies.txt"
+    path = "results/"
+    dataset.to_latex(outfilename, encoding='utf-8', escape = False, index = False)
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    os.system("mv" + " " + outfilename + " " + path)

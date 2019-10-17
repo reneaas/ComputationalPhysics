@@ -335,7 +335,7 @@ int main(int nargs, char* args[]){
     }
     else{
       n = atoi(args[3]);
-      max_radial_distance = atof(args[4]);
+      //max_radial_distance = atof(args[4]);
     }
 
     //Hardcode specific parameters
@@ -372,9 +372,6 @@ int main(int nargs, char* args[]){
     timeused = (double) (finish - start)/CLOCKS_PER_SEC;
     relative_error = abs((integral - exact)/exact);
 
-    cout<<"Exact"<<" "<<exact<<endl;
-    cout<<"Calculated"<<" "<<integral<<endl;
-
 
     //Finding the energy noe something
     double bohr_radius, k, A, E_gs;
@@ -383,14 +380,15 @@ int main(int nargs, char* args[]){
     A = 8/(M_PI*pow(bohr_radius,3));
     E_gs = k*A*A*pow(bohr_radius,5) * integral + (-8*13.6057);
 
-    cout<<"Energy ground state He: "<<E_gs<< " eV"<<endl;
+    double exact_groundstate = -79.005151042;
+    double ground_state_relative_error = abs((E_gs - exact_groundstate)/exact_groundstate);
 
 
 
     if(nargs != 1){
     //Write results to file.
     ofile.open(outfilename);
-    ofile << integral << " " << std_mean << " " << relative_error << " " << timeused << endl;
+    ofile << integral << " " << std_mean << " " << relative_error << " " << timeused << " " << E_gs << " " << ground_state_relative_error << endl;
     ofile.close();
     }
   }
