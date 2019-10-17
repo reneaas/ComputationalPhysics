@@ -13,7 +13,7 @@ The primary code of the numerical project is [main.py](https://github.com/reneaa
 ```console
 python3 main.py no_mpi
 ```
-Here you compile the code ????? If you have already compiled it, and just want to change some of the input parameters, you call:
+Here you compile the code by typing "no_mpi". If you have already compiled it, and just want to change some of the input parameters, you call:
 ```console
 python3 main.py 0
 ```
@@ -36,3 +36,15 @@ For 6 dimensions                         --> type 6
 You then obtain the exact and calculated value for the integral.
 - If you type 3, you'll have to specify number of monte carlo samples (an integer), then the integration limits [a,b] (two double floating point numbers). The results appear in the terminal.
 - If you type 4, you'll have to specify number of monte carlo samples (an integer), then the maximum radial distance (double floating point number). The results appear in the terminal.
+
+2. Benchmarking the Laguerre method
+```console
+python3 main.py benchmark_laguerre
+```
+* Once this particular problem is run, you'll be prompted with:
+```console
+Produce new data? Type yes or no:
+```
+  - Type yes to compile and produce new results and new plots. Type no to not compile and to produce results and plots with data already saved.
+
+3. 
