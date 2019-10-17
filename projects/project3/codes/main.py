@@ -31,7 +31,7 @@ if compilation_instruction == "benchmark_laguerre":
 
 
         dimensions = [3,6]
-        number_of_integration_points = [5, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
+        number_of_integration_points = [10*i for i in range(1,11)]
 
         #Runs the program for Gauss-Laguerre for both 3 and 6 dimensions, writing the results to file
         for i in dimensions:
