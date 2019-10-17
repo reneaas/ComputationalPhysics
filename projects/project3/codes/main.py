@@ -52,8 +52,8 @@ if compilation_instruction == "benchmark_laguerre":
         os.system("rm" + " " + filename)  #Delete .txt-files
 
     data = {\
+            "n" : number_of_integration_points,\
             "Integration value" : integral_value,\
-            "Number of integration points" : number_of_integration_points,\
             "$\epsilon_\text{rel}$" : rel_error, \
             "Time used" : timeused, \
             }
