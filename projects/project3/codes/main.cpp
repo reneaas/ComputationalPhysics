@@ -125,7 +125,6 @@ int main(int nargs, char* args[]){
     int n, dimensions;
     double a,b, alpha;
 
-
     a = 0;
     b = M_PI;
     double integral_gauss_laguerre = 0;
@@ -226,19 +225,21 @@ int main(int nargs, char* args[]){
         }
       }
       finish = clock();
+}
 
-    }
+      double timeused = (double) (finish - start)/CLOCKS_PER_SEC;
+      double exact = 5*pow(M_PI, 2)/(16*16);
+      double rel_error = abs(integral_gauss_laguerre - exact)/exact;
+      /*
+      cout<<"Exact"<<" "<<exact<<endl;
+      cout<<"Calculated"<<" "<<integral_gauss_laguerre<<endl;
+      */
+      ofile.open(outfilename);
+      ofile << n << " " << setprecision(9) << integral_gauss_laguerre << " "<< setprecision(9) << rel_error << " " <<setprecision(9) <<timeused <<endl;
+      ofile.close();
 
-    double timeused = (double) (finish - start)/CLOCKS_PER_SEC;
-    double exact = 5*pow(M_PI, 2)/(16*16);
-    double rel_error = abs(integral_gauss_laguerre - exact)/exact;
 
-    cout<<"Exact"<<" "<<exact<<endl;
-    cout<<"Calculated"<<" "<<integral_gauss_laguerre<<endl;
 
-    ofile.open(outfilename);
-    ofile << integral_gauss_laguerre << " " << n << " " << rel_error << " " << timeused <<endl;
-    ofile.close();
 
 
 

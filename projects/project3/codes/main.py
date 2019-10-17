@@ -23,53 +23,65 @@ if compilation_instruction == "benchmark_laguerre":
     print("compiling")
     os.system("c++ -O3 -c main.cpp lib.cpp")
     os.system("c++ -O3 -o main.exe main.cpp lib.o")
-    dimensions = float(input("3 or 6 dimensions? "))
-    number_of_integration_points = [5, 10, 15, 20, 25, 30, 35, 40]
-
-    for n in number_of_integration_points:
-        outfilename = "dim_" + str(dimensions) + "_" + str(n) + ".txt"
-        integration_method = "2"
-        os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(dimensions) + " " + str(n))
-
-    main_filename = "Benchmark_dim_" + str(dimensions) + "_.txt"
-
-    integral_value = []
-    rel_error = []
-    timeused = []
+    dimensions = [3,6]
+    number_of_integration_points = [5, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
 
 
-    for n in number_of_integration_points:
-        filename = "dim_" + str(dimensions) + "_" + str(n) + ".txt"
-        with open(filename, "r") as infile:
-            lines = infile.readlines()
-            line = lines[0]
-            line = line.split()
-            integral_value.append(float(line[0]))
-            rel_error.append(float(line[2]))
-            timeused.append(float(line[3]))
+    for i in dimensions:
+        for n in number_of_integration_points:
+            print("Executing for n = %.f" % n)
+            outfilename = "dim_" + str(i) + "_" + str(n) + ".txt"
+            integration_method = "2"
+            os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(i) + " " + str(n))
 
 
-        os.system("rm" + " " + filename)  #Delete .txt-files
 
-    data = {\
+    integral_value = [[],[]]
+    rel_error = [[],[]]
+    timeused = [[],[]]
+
+
+    for i in range(len(dimensions)):
+        for n in number_of_integration_points:
+            filename = "dim_" + str(dimensions[i]) + "_" + str(n) + ".txt"
+            with open(filename, "r") as infile:
+                line = infile.readline()
+                line = line.split()
+                integral_value[i].append(float(line[1]))
+                rel_error[i].append(float(line[2]))
+                timeused[i].append(float(line[3]))
+
+
+            os.system("rm" + " " + filename)  #Delete .txt-files
+
+    main_filename_3_dim = "benchmark_dim_3_.csv"
+    main_filename_6_dim = "benchmark_dim_6_.csv"
+
+
+    data_3_dim = {\
             "n" : number_of_integration_points,\
-            "Integration value" : integral_value,\
-            "$\epsilon_\text{rel}$" : rel_error, \
-            "Time used" : timeused, \
+            "Integration value" : integral_value[0],\
+            "Relative error" : rel_error[0], \
+            "Time used" : timeused[0], \
             }
 
-    dataset = pd.DataFrame(data)
-    dataset.to_latex(main_filename, encoding='utf-8', escape = False, index = False)
+    data_6_dim = {\
+            "n" : number_of_integration_points,\
+            "Integration value" : integral_value[1],\
+            "Relative error" : rel_error[1], \
+            "Time used" : timeused[1], \
+            }
 
-    print("Results:")
-    print("----------------------------------------------------------------------------------------------------------------------------------")
-    print(dataset)
-    print("----------------------------------------------------------------------------------------------------------------------------------")
+    dataset3 = pd.DataFrame(data_3_dim)
+    dataset6 = pd.DataFrame(data_6_dim)
+    dataset3.to_csv(main_filename_3_dim, index = False)
+    dataset6.to_csv(main_filename_6_dim, index = False)
 
-    path = "results/laguerre/benchmarks";
+
+    path = "results/laguerre";
     if not os.path.exists(path):
         os.makedirs(path)
-    os.system("mv" + " " +  main_filename + " " + path)
+    os.system("mv" + " " +  main_filename_3_dim + " " + main_filename_6_dim + " " + path)
 
 if compilation_instruction == "compare_all":
     print("compiling")
@@ -448,3 +460,34 @@ if compilation_instruction == "compare_MC":
     print("Speedup:")
     print("----------------------------------------------------------------------------------")
     print(speedup)
+
+
+if compilation_instruction == "compare_laguerre":
+
+    path = "results/laguerre/"
+
+    data_3_dim = pd.read_csv(path + "benchmark_dim_3_.csv", header = 0, names = ["n_3", "int_val_3", "rel_err_3", "time_3"])
+    data_6_dim = pd.read_csv(path + "benchmark_dim_6_.csv", header = 0, names = ["n_6", "int_val_6", "rel_err_6", "time_6"])
+
+    n = data_3_dim["n_3"]
+    exact = 5*np.pi**2/(16*16)
+
+
+
+    plt.scatter(n, data_3_dim["int_val_3"], label="3 dimensions")
+    plt.scatter(n, data_6_dim["int_val_6"], label="6 dimensions")
+    plt.axhline(y = exact, ls = "--", label="Analytical value")
+    plt.legend()
+    plt.show()
+
+
+    plt.plot(n, np.log(data_3_dim["time_3"]), label="3 dimensions")
+    plt.plot(n, np.log(data_6_dim["time_6"]), label="6 dimensions")
+    plt.legend()
+    plt.show()
+
+
+    plt.plot(n, (data_3_dim["rel_err_3"]), label="3 dimensions")
+    plt.plot(n, (data_6_dim["rel_err_6"]), label="6 dimensions")
+    plt.legend()
+    plt.show()
