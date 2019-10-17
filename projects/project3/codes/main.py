@@ -374,8 +374,8 @@ if compilation_instruction == "multiple_MC":
     number_of_monte_carlo_samples = [10**i for i in range(2,8)]
     #number_of_monte_carlo_samples = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 100000000]
     max_radial_distance = 10
-    a = -2
-    b = 2
+    a = -2.7
+    b = 2.7
 
 
     #How many times we want to run the code for the same value of monte carlo sample
