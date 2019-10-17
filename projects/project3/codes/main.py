@@ -357,8 +357,6 @@ if compilation_instruction == "ground_state":
         os.makedirs(path)
 
     os.system("mv" + " " + outfilename + " " + path)
-<<<<<<< HEAD
-=======
 
 if compilation_instruction == "multiple_MC":
 
@@ -639,4 +637,3 @@ if compilation_instruction == "multiple_MC":
     print(Ground_state)
     print("------------------------------------------------------------------------------------")
     print("lol")
->>>>>>> d3d7a12a0e722aa11409f0cb85512b67e86dad9d
