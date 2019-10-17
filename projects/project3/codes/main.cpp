@@ -47,6 +47,8 @@ int main(int nargs, char* args[]){
     integration_method = string(args[2]);
   }
 
+
+
   if (integration_method == "1"){
     int n;
     double a,b;
@@ -109,9 +111,6 @@ int main(int nargs, char* args[]){
     double exact = 5*pow(M_PI, 2)/(16*16);
     double timeused = (double) (finish - start)/(CLOCKS_PER_SEC);
 
-    cout << "Integral = " << integral_gauss_legendre << endl;
-    cout << "Analytical value = " << exact << endl;
-    cout << "timeused = " << timeused << endl;
 
     double relative_error = abs((integral_gauss_legendre-exact)/exact);
 
@@ -239,7 +238,13 @@ int main(int nargs, char* args[]){
       ofile.close();
 
 
+<<<<<<< HEAD
 
+=======
+    ofile.open(outfilename);
+    ofile << integral_gauss_laguerre << " " << n << " " << rel_error << " " << timeused <<endl;
+    ofile.close();
+>>>>>>> a1925512bf65642e4a7996557b6d9a090d17a378
 
 
 
@@ -303,8 +308,6 @@ int main(int nargs, char* args[]){
     timeused = (double) (finish - start)/CLOCKS_PER_SEC;
 
 
-    cout<<"Exact"<<" "<<exact<<endl;
-    cout<<"Calculated"<<" "<<integral<<endl;
 
     if(nargs != 1){
     //Write the results to file
@@ -334,7 +337,7 @@ int main(int nargs, char* args[]){
     }
     else{
       n = atoi(args[3]);
-      max_radial_distance = atof(args[4]);
+      //max_radial_distance = atof(args[4]);
     }
 
     //Hardcode specific parameters
@@ -371,9 +374,6 @@ int main(int nargs, char* args[]){
     timeused = (double) (finish - start)/CLOCKS_PER_SEC;
     relative_error = abs((integral - exact)/exact);
 
-    cout<<"Exact"<<" "<<exact<<endl;
-    cout<<"Calculated"<<" "<<integral<<endl;
-
 
     //Finding the energy noe something
     double bohr_radius, k, A, E_gs;
@@ -382,14 +382,15 @@ int main(int nargs, char* args[]){
     A = 8/(M_PI*pow(bohr_radius,3));
     E_gs = k*A*A*pow(bohr_radius,5) * integral + (-8*13.6057);
 
-    cout<<"Energy ground state He: "<<E_gs<< " eV"<<endl;
+    double exact_groundstate = -79.005151042;
+    double ground_state_relative_error = abs((E_gs - exact_groundstate)/exact_groundstate);
 
 
 
     if(nargs != 1){
     //Write results to file.
     ofile.open(outfilename);
-    ofile << integral << " " << std_mean << " " << relative_error << " " << timeused << endl;
+    ofile << integral << " " << std_mean << " " << relative_error << " " << timeused << " " << E_gs << " " << ground_state_relative_error << endl;
     ofile.close();
     }
   }
