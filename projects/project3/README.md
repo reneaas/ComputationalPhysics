@@ -47,4 +47,4 @@ Produce new data? Type yes or no:
 ```
   - Type yes to compile and produce new results and new plots. Type no to not compile and to produce results and plots with data already saved.
 
-3. 
+3.
