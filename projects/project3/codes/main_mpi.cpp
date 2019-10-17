@@ -216,7 +216,7 @@ int main(int nargs, char* args[]){
 
     alpha = 0;
 
-    n = 50;
+    n = 25;
 
     h = (b-a)/n;
 
@@ -245,6 +245,9 @@ int main(int nargs, char* args[]){
     time_start = MPI_Wtime();
 
     for (int i = 1; i <= local_n; i++){
+      if (my_rank == 0){
+        cout << "iteration = " << i << endl;
+      }
       for (int j = 1; j <= local_n; j++){
         for (int k = 0; k < local_n; k++){
           for (int l = 0; l < local_n; l++){
@@ -267,13 +270,13 @@ int main(int nargs, char* args[]){
     exact = 5*pow(M_PI, 2)/(16*16);
     rel_error = abs(total_integral - exact)/exact;
 
-    if (nargs == 2){
+    if (my_rank == 0){
     cout<<"Exact"<<" "<<exact<<endl;
     cout<<"Calculated"<<" "<<total_integral<<endl;
     cout<<"Total time "<<total_time<<endl;
   }
 
-    if (nargs != 2){
+    if (my_rank == 200){
     ofile.open(outfilename);
     ofile << n << " " << setprecision(9) << total_integral << " "<< setprecision(9) << rel_error << " " <<setprecision(9) <<total_time <<endl;
     ofile.close();
