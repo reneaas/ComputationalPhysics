@@ -238,16 +238,6 @@ int main(int nargs, char* args[]){
       ofile.close();
 
 
-<<<<<<< HEAD
-
-=======
-    ofile.open(outfilename);
-    ofile << integral_gauss_laguerre << " " << n << " " << rel_error << " " << timeused <<endl;
-    ofile.close();
->>>>>>> a1925512bf65642e4a7996557b6d9a090d17a378
-
-
-
   }
 
   if (integration_method == "3"){

@@ -24,65 +24,126 @@ if compilation_instruction == "benchmark_laguerre":
     print("compiling")
     os.system("c++ -O3 -c main.cpp lib.cpp")
     os.system("c++ -O3 -o main.exe main.cpp lib.o")
-    dimensions = [3,6]
-    number_of_integration_points = [5, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
+
+    compile = str(input("Produce new data? Type yes or no: "))
+
+    if compile == "yes":
 
 
-    for i in dimensions:
-        for n in number_of_integration_points:
-            print("Executing for n = %.f" % n)
-            outfilename = "dim_" + str(i) + "_" + str(n) + ".txt"
-            integration_method = "2"
-            os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(i) + " " + str(n))
+        dimensions = [3,6]
+        number_of_integration_points = [5, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
+
+        #Runs the program for Gauss-Laguerre for both 3 and 6 dimensions, writing the results to file
+        for i in dimensions:
+            for n in number_of_integration_points:
+                print("Executing for n = %.f" % n)
+                outfilename = "dim_" + str(i) + "_" + str(n) + ".txt"
+                integration_method = "2"
+                os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(i) + " " + str(n))
 
 
 
-    integral_value = [[],[]]
-    rel_error = [[],[]]
-    timeused = [[],[]]
+        integral_value = [[],[]]
+        rel_error = [[],[]]
+        timeused = [[],[]]
+
+        #Reading the files generated above and read the data to lists.
+        for i in range(len(dimensions)):
+            for n in number_of_integration_points:
+                filename = "dim_" + str(dimensions[i]) + "_" + str(n) + ".txt"
+                with open(filename, "r") as infile:
+                    line = infile.readline()
+                    line = line.split()
+                    integral_value[i].append(float(line[1]))
+                    rel_error[i].append(float(line[2]))
+                    timeused[i].append(float(line[3]))
 
 
-    for i in range(len(dimensions)):
-        for n in number_of_integration_points:
-            filename = "dim_" + str(dimensions[i]) + "_" + str(n) + ".txt"
-            with open(filename, "r") as infile:
-                line = infile.readline()
-                line = line.split()
-                integral_value[i].append(float(line[1]))
-                rel_error[i].append(float(line[2]))
-                timeused[i].append(float(line[3]))
+                os.system("rm" + " " + filename)  #Delete .txt-files
+
+        #Writing the combined data to main file for each dimension
+        main_filename_3_dim = "benchmark_dim_3_.csv"
+        main_filename_6_dim = "benchmark_dim_6_.csv"
 
 
-            os.system("rm" + " " + filename)  #Delete .txt-files
+        data_3_dim = {\
+                "n" : number_of_integration_points,\
+                "Integration value" : integral_value[0],\
+                "Relative error" : rel_error[0], \
+                "Time used" : timeused[0], \
+                }
 
-    main_filename_3_dim = "benchmark_dim_3_.csv"
-    main_filename_6_dim = "benchmark_dim_6_.csv"
+        data_6_dim = {\
+                "n" : number_of_integration_points,\
+                "Integration value" : integral_value[1],\
+                "Relative error" : rel_error[1], \
+                "Time used" : timeused[1], \
+                }
+
+        dataset3 = pd.DataFrame(data_3_dim)
+        dataset6 = pd.DataFrame(data_6_dim)
+        dataset3.to_csv(main_filename_3_dim, index = False)
+        dataset6.to_csv(main_filename_6_dim, index = False)
+
+        #Moves the files to appropriate file
+        path = "results/laguerre";
+        if not os.path.exists(path):
+            os.makedirs(path)
+        os.system("mv" + " " +  main_filename_3_dim + " " + main_filename_6_dim + " " + path)
+
+    path = "results/laguerre/"
+
+    #Reading the files generated above
+
+    data_3_dim = pd.read_csv(path + "benchmark_dim_3_.csv", header = 0, names = ["n_3", "int_val_3", "rel_err_3", "time_3"])
+    data_6_dim = pd.read_csv(path + "benchmark_dim_6_.csv", header = 0, names = ["n_6", "int_val_6", "rel_err_6", "time_6"])
+
+    n = data_3_dim["n_3"]
+    exact = 5*np.pi**2/(16*16)
+
+    path = "results/laguerre/"
+
+    data_3_dim = pd.read_csv(path + "benchmark_dim_3_.csv", header = 0, names = ["n_3", "int_val_3", "rel_err_3", "time_3"])
+    data_6_dim = pd.read_csv(path + "benchmark_dim_6_.csv", header = 0, names = ["n_6", "int_val_6", "rel_err_6", "time_6"])
+
+    n = data_3_dim["n_3"]
+    exact = 5*np.pi**2/(16*16)
+
+    #Comparing the results for 3 and 6 dimensions graphically
+    figname1 = "integration_value.pdf"
+    figname2 = "time_data.pdf"
+    figname3 = "relative_error.pdf"
 
 
-    data_3_dim = {\
-            "n" : number_of_integration_points,\
-            "Integration value" : integral_value[0],\
-            "Relative error" : rel_error[0], \
-            "Time used" : timeused[0], \
-            }
-
-    data_6_dim = {\
-            "n" : number_of_integration_points,\
-            "Integration value" : integral_value[1],\
-            "Relative error" : rel_error[1], \
-            "Time used" : timeused[1], \
-            }
-
-    dataset3 = pd.DataFrame(data_3_dim)
-    dataset6 = pd.DataFrame(data_6_dim)
-    dataset3.to_csv(main_filename_3_dim, index = False)
-    dataset6.to_csv(main_filename_6_dim, index = False)
+    plt.scatter(n, data_3_dim["int_val_3"], label="3 dimensions")
+    plt.scatter(n, data_6_dim["int_val_6"], label="6 dimensions")
+    plt.axhline(y = exact, ls = "--", label="Analytical value")
+    plt.xlabel("n")
+    plt.ylabel("Integration value")
+    plt.legend()
+    plt.savefig(figname1)
 
 
-    path = "results/laguerre";
+    plt.plot(np.log10(n), np.log(data_3_dim["time_3"]), label="3 dimensions")
+    plt.plot(np.log10(n), np.log(data_6_dim["time_6"]), label="6 dimensions")
+    plt.xlabel("$log_{10}(n)$")
+    plt.ylabel("$log_{10}(Time)$")
+    plt.legend()
+    plt.savefig(figname2)
+
+
+    plt.plot(n, (data_3_dim["rel_err_3"]), label="3 dimensions")
+    plt.plot(n, (data_6_dim["rel_err_6"]), label="6 dimensions")
+    plt.xlabel("n")
+    plt.ylabel("$\epsilon_{relative}$")
+    plt.legend()
+    plt.savefig(figname3)
+
     if not os.path.exists(path):
         os.makedirs(path)
-    os.system("mv" + " " +  main_filename_3_dim + " " + main_filename_6_dim + " " + path)
+    os.system("mv" + " " +  figname1 + " " + figname2 + " " + figname3 + " " + path)
+
+
 
 if compilation_instruction == "compare_all":
     print("compiling")
@@ -317,7 +378,7 @@ if compilation_instruction == "multiple_MC":
 
 
     #How many times we want to run the code for the same value of monte carlo sample
-    m_runs = 1000
+    m_runs = 5
 
     #Dictionaries to hold calculated values
     dict_Integral_BF = {str(i):[] for i in number_of_monte_carlo_samples}
@@ -574,34 +635,3 @@ if compilation_instruction == "multiple_MC":
     print("------------------------------------------------------------------------------------")
     print(Ground_state)
     print("------------------------------------------------------------------------------------")
-
-
-if compilation_instruction == "compare_laguerre":
-
-    path = "results/laguerre/"
-
-    data_3_dim = pd.read_csv(path + "benchmark_dim_3_.csv", header = 0, names = ["n_3", "int_val_3", "rel_err_3", "time_3"])
-    data_6_dim = pd.read_csv(path + "benchmark_dim_6_.csv", header = 0, names = ["n_6", "int_val_6", "rel_err_6", "time_6"])
-
-    n = data_3_dim["n_3"]
-    exact = 5*np.pi**2/(16*16)
-
-
-
-    plt.scatter(n, data_3_dim["int_val_3"], label="3 dimensions")
-    plt.scatter(n, data_6_dim["int_val_6"], label="6 dimensions")
-    plt.axhline(y = exact, ls = "--", label="Analytical value")
-    plt.legend()
-    plt.show()
-
-
-    plt.plot(n, np.log(data_3_dim["time_3"]), label="3 dimensions")
-    plt.plot(n, np.log(data_6_dim["time_6"]), label="6 dimensions")
-    plt.legend()
-    plt.show()
-
-
-    plt.plot(n, (data_3_dim["rel_err_3"]), label="3 dimensions")
-    plt.plot(n, (data_6_dim["rel_err_6"]), label="6 dimensions")
-    plt.legend()
-    plt.show()
