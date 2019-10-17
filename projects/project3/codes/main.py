@@ -35,6 +35,7 @@ if compilation_instruction == "benchmark_laguerre":
 
         #Runs the program for Gauss-Laguerre for both 3 and 6 dimensions, writing the results to file
         for i in dimensions:
+            print("Running for %.f dimensions" % i)
             for n in number_of_integration_points:
                 print("Executing for n = %.f" % n)
                 outfilename = "dim_" + str(i) + "_" + str(n) + ".txt"
@@ -122,7 +123,7 @@ if compilation_instruction == "benchmark_laguerre":
     plt.ylabel("Integration value")
     plt.legend()
     plt.savefig(figname1)
-
+    plt.close()
 
     plt.plot(np.log10(n), np.log(data_3_dim["time_3"]), label="3 dimensions")
     plt.plot(np.log10(n), np.log(data_6_dim["time_6"]), label="6 dimensions")
@@ -130,6 +131,7 @@ if compilation_instruction == "benchmark_laguerre":
     plt.ylabel("$log_{10}(Time)$")
     plt.legend()
     plt.savefig(figname2)
+    plt.close()
 
 
     plt.plot(n, (data_3_dim["rel_err_3"]), label="3 dimensions")
@@ -138,12 +140,11 @@ if compilation_instruction == "benchmark_laguerre":
     plt.ylabel("$\epsilon_{relative}$")
     plt.legend()
     plt.savefig(figname3)
+    plt.close()
 
     if not os.path.exists(path):
         os.makedirs(path)
     os.system("mv" + " " +  figname1 + " " + figname2 + " " + figname3 + " " + path)
-
-
 
 if compilation_instruction == "compare_all":
     print("compiling")
