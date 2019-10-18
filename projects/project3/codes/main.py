@@ -364,14 +364,14 @@ if compilation_instruction == "multiple_MC":
 
     print("Compiling main program WITH MPI...")
     os.system("mpicxx -O3 -c main_mpi.cpp")
-    os.system("mpicxx -O3 -o main_mpi.exe main_mpi.o")
+    os.system("mpicxx -O3 -o main_mpi.exe main_mpi.o lib.o")
 
     #Compiles the code without MPI.
-    print("compiling")
+    print("compiling main progam without MPI....")
     os.system("c++ -O3 -c main.cpp lib.cpp")
     os.system("c++ -O3 -o main.exe main.cpp lib.o")
 
-    number_of_monte_carlo_samples = [10**i for i in range(2,8)]
+    number_of_monte_carlo_samples = [10**i for i in range(2,7)]
     #number_of_monte_carlo_samples = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 100000000]
     max_radial_distance = 10
     a = -2.7
@@ -379,7 +379,7 @@ if compilation_instruction == "multiple_MC":
 
 
     #How many times we want to run the code for the same value of monte carlo sample
-    m_runs = 5
+    m_runs = 50
 
     #Dictionaries to hold calculated values
     dict_Integral_BF = {str(i):[] for i in number_of_monte_carlo_samples}
@@ -409,8 +409,9 @@ if compilation_instruction == "multiple_MC":
     dict_Error_Ground_state_IS = {str(i):[] for i in number_of_monte_carlo_samples}
 
     #Multiple runs of same montecarlo value
+    print("executing...")
     for m in range(0,m_runs):
-        print("Iteration number",m)
+        print("Iteration number =", m+1, " of", m_runs)
 
         #Runs the code with MPI in Cartesian coordinates.
         integration_method = "1"
@@ -493,10 +494,6 @@ if compilation_instruction == "multiple_MC":
                 dict_Ground_state_IS[str(n)].append(float(numbers[4]))
                 dict_Error_Ground_state_IS[str(n)].append(float(numbers[5]))
             os.system("rm" + " " + infilename)
-    print("--------------------------------------------------------------------------------------------------------")
-    print(dict_Integral_BF)
-    print("--------------------------------------------------------------------------------------------------------")
-
 
     for n in number_of_monte_carlo_samples:
         key = str(n)
@@ -616,10 +613,6 @@ if compilation_instruction == "multiple_MC":
     outfilename_Ground_state = "MC_Ground_state.txt"
     outfilename_Speedup = "MC_Speedup.txt"
 
-    path = "results/monte_carlo/benchmarks"
-    if not os.path.exists(path):
-        os.makedirs(path)
-
 
     Integrals.to_latex(outfilename_Integrals, encoding='utf-8', escape = False, index = False)
     Errors.to_latex(outfilename_Errors, encoding='utf-8', escape = False, index = False)
@@ -627,6 +620,14 @@ if compilation_instruction == "multiple_MC":
     Times.to_latex(outfilename_Times, encoding='utf-8', escape = False, index = False)
     Ground_state.to_latex(outfilename_Ground_state, encoding='utf-8', escape = False, index = False)
     Speedup.to_latex(outfilename_Speedup, encoding='utf-8', escape = False, index = False)
+
+    files = outfilename_Integrals + " " + outfilename_Errors + " " + outfilename_Standard_deviations \
+            + " " + outfilename_Times + " " + outfilename_Ground_state + " " + outfilename_Speedup
+
+    path = "results/monte_carlo/benchmarks"
+    if not os.path.exists(path):
+        os.makedirs(path)
+    os.system("mv" + " " + files + " " + path)
 
     print("Integrals:")
     print("------------------------------------------------------------------------------------")
@@ -636,4 +637,3 @@ if compilation_instruction == "multiple_MC":
     print("------------------------------------------------------------------------------------")
     print(Ground_state)
     print("------------------------------------------------------------------------------------")
-    print("lol")

@@ -275,7 +275,7 @@ int main(int nargs, char* args[]){
   //Integration method "3" implements Monte Carlo integration with brute force (uniform distributions)
   if (integration_method == "3"){
     //Declaration of variables
-    int n, d;                          .
+    int n, d;                          
     double a, b, integral, sigma, variance, std_mean, jacobidet, func_value, exact, relative_error, timeused;
     double *x;
     clock_t start, finish;
