@@ -146,46 +146,6 @@ if compilation_instruction == "benchmark_laguerre":
         os.makedirs(path)
     os.system("mv" + " " +  figname1 + " " + figname2 + " " + figname3 + " " + path)
 
-if compilation_instruction == "ground_state":
-    #Compiles the code without MPI.
-    print("compiling")
-    os.system("c++ -O3 -c main.cpp lib.cpp")
-    os.system("c++ -O3 -o main.exe main.cpp lib.o")
-
-    number_of_monte_carlo_samples = [10**i for i in range(2,8)]
-    integration_method = "4"
-    Integrals = []
-    relative_error = []
-
-
-
-    for n in number_of_monte_carlo_samples:
-        print("running code for n = " + str(n))
-        outfilename = "monty_" + "n_" + str(n) + ".txt"
-        os.system("./main.exe" + " " + outfilename + " " + integration_method + " " + str(n) )
-
-    for n in number_of_monte_carlo_samples:
-        infilename = "monty_" + "n_" + str(n) + ".txt"
-        with open(infilename,"r") as infile:
-            lines = infile.readlines()
-            line = lines[0]
-            numbers = line.split()
-            Integrals.append(float(numbers[4]))
-            relative_error.append(float(numbers[5]))
-        os.system("rm" + " " + infilename)
-
-    dataset = {"$N$" : number_of_monte_carlo_samples, "$\expval{H}$ [eV]" : Integrals, "$\epsilon$" : relative_error}
-
-    dataset = pd.DataFrame(dataset)
-    outfilename = "ground_state_energies.txt"
-    path = "results/"
-    dataset.to_latex(outfilename, encoding='utf-8', escape = False, index = False)
-
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-    os.system("mv" + " " + outfilename + " " + path)
-
 if compilation_instruction == "multiple_MC":
 
 
