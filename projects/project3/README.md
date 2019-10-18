@@ -47,4 +47,21 @@ Produce new data? Type yes or no:
 ```
   - Type yes to compile and produce new results and new plots. Type no to not compile and to produce results and plots with data already saved.
 
-3.
+3. Benchmarking the Monte Carlo methods and Ground State energy
+```console
+python3 main.py multiple_MC
+```
+
+* By running this command you will compile the Brute force, the Brute force with MPI, the Importance sampling and the Importance sampling with MPI versions of the Monte Carlo method. You'll then be prompted with:
+```console
+Produce new data? Type yes or no:
+```
+
+  - Type yes to compile and produce new sets of data. Type no to use already existing datasets.
+  - If you type yes, you'll be prompted with
+  ```console
+  How many sets of data do you want?:
+  ```
+  - Here you choose how many times you want to run and produce datasets for sample sets N = [10,100,1000,10000,100000,1000000].
+
+-

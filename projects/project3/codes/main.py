@@ -148,140 +148,142 @@ if compilation_instruction == "benchmark_laguerre":
 
 if compilation_instruction == "multiple_MC":
 
+    compile = str(input("Produce new data? Type yes or no: "))
+
+    if compile == "yes":
+
+        m_runs = str(input("How many sets of data do you want?: "))
+
+        print("Compiling main program WITH MPI...")
+        os.system("mpicxx -O3 -c main_mpi.cpp")
+        os.system("mpicxx -O3 -o main_mpi.exe main_mpi.o lib.o")
+
+        #Compiles the code without MPI.
+        print("compiling main progam without MPI....")
+        os.system("c++ -O3 -c main.cpp lib.cpp")
+        os.system("c++ -O3 -o main.exe main.cpp lib.o")
+
+        number_of_monte_carlo_samples = [10**i for i in range(2,7)]
+        #number_of_monte_carlo_samples = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 100000000]
+        max_radial_distance = 10
+        a = -2.7
+        b = 2.7
 
 
-    print("Compiling main program WITH MPI...")
-    os.system("mpicxx -O3 -c main_mpi.cpp")
-    os.system("mpicxx -O3 -o main_mpi.exe main_mpi.o lib.o")
+        #How many times we want to run the code for the same value of monte carlo samples
+        #Dictionaries to hold calculated values
+        dict_Integral_BF = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Integral_BF_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Integral_IS = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Integral_IS_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
 
-    #Compiles the code without MPI.
-    print("compiling main progam without MPI....")
-    os.system("c++ -O3 -c main.cpp lib.cpp")
-    os.system("c++ -O3 -o main.exe main.cpp lib.o")
+        dict_Error_BF = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Error_BF_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Error_IS = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Error_IS_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
 
-    number_of_monte_carlo_samples = [10**i for i in range(2,7)]
-    #number_of_monte_carlo_samples = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 100000000]
-    max_radial_distance = 10
-    a = -2.7
-    b = 2.7
+        dict_Std_BF = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Std_BF_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Std_IS = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Std_IS_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
 
+        dict_Time_BF = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Time_BF_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Time_IS = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Time_IS_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
 
-    #How many times we want to run the code for the same value of monte carlo samples
-    m_runs = 10000
+        dict_Speedup_BF = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Speedup_IS = {str(i):[] for i in number_of_monte_carlo_samples}
 
-    #Dictionaries to hold calculated values
-    dict_Integral_BF = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Integral_BF_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Integral_IS = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Integral_IS_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Ground_state_IS = {str(i):[] for i in number_of_monte_carlo_samples}
+        dict_Error_Ground_state_IS = {str(i):[] for i in number_of_monte_carlo_samples}
 
-    dict_Error_BF = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Error_BF_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Error_IS = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Error_IS_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
+        #Multiple runs of same montecarlo value
+        print("executing...")
+        for m in range(0,m_runs):
+            print("Iteration number =", m+1, " of", m_runs)
 
-    dict_Std_BF = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Std_BF_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Std_IS = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Std_IS_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
+            #Runs the code with MPI in Cartesian coordinates.
+            integration_method = "1"
+            for n in number_of_monte_carlo_samples:
+                outfilename = "MPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
+                arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
+                os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
-    dict_Time_BF = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Time_BF_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Time_IS = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Time_IS_MPI = {str(i):[] for i in number_of_monte_carlo_samples}
+            #Adding values to dictionary
+            for n in number_of_monte_carlo_samples:
+                infilename = "MPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
+                with open(infilename,"r") as infile:
+                    lines = infile.readlines()
+                    line = lines[0]
+                    numbers = line.split()
+                    dict_Integral_BF_MPI[str(n)].append(float(numbers[0]))
+                    dict_Std_BF_MPI[str(n)].append(float(numbers[1]))
+                    dict_Error_BF_MPI[str(n)].append(float(numbers[2]))
+                    dict_Time_BF_MPI[str(n)].append(float(numbers[3]))
+                os.system("rm" + " " + infilename)
 
-    dict_Speedup_BF = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Speedup_IS = {str(i):[] for i in number_of_monte_carlo_samples}
+            #Runs the code with MPI in spherical coordinates.
+            integration_method = "2"
+            for n in number_of_monte_carlo_samples:
+                outfilename = "MPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
+                arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
+                os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
-    dict_Ground_state_IS = {str(i):[] for i in number_of_monte_carlo_samples}
-    dict_Error_Ground_state_IS = {str(i):[] for i in number_of_monte_carlo_samples}
+            #Adding values to dictionary
+            for n in number_of_monte_carlo_samples:
+                infilename = "MPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
+                with open(infilename,"r") as infile:
+                    lines = infile.readlines()
+                    line = lines[0]
+                    numbers = line.split()
+                    dict_Integral_IS_MPI[str(n)].append(float(numbers[0]))
+                    dict_Std_IS_MPI[str(n)].append(float(numbers[1]))
+                    dict_Error_IS_MPI[str(n)].append(float(numbers[2]))
+                    dict_Time_IS_MPI[str(n)].append(float(numbers[3]))
+                os.system("rm" + " " + infilename)
 
-    #Multiple runs of same montecarlo value
-    print("executing...")
-    for m in range(0,m_runs):
-        print("Iteration number =", m+1, " of", m_runs)
+            #Runs the code without MPI in Cartesian coordinates
+            integration_method = "3"
+            for n in number_of_monte_carlo_samples:
+                outfilename = "NoMPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
+                arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
+                os.system("./main.exe" + " " + arguments)
 
-        #Runs the code with MPI in Cartesian coordinates.
-        integration_method = "1"
-        for n in number_of_monte_carlo_samples:
-            outfilename = "MPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
-            arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
-            os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
+            #Adding values to dictionary
+            for n in number_of_monte_carlo_samples:
+                infilename = outfilename = "NoMPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
+                with open(infilename,"r") as infile:
+                    lines = infile.readlines()
+                    line = lines[0]
+                    numbers = line.split()
+                    dict_Integral_BF[str(n)].append(float(numbers[0]))
+                    dict_Std_BF[str(n)].append(float(numbers[1]))
+                    dict_Error_BF[str(n)].append(float(numbers[2]))
+                    dict_Time_BF[str(n)].append(float(numbers[3]))
+                os.system("rm" + " " + infilename)
 
-        #Adding values to dictionary
-        for n in number_of_monte_carlo_samples:
-            infilename = "MPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
-            with open(infilename,"r") as infile:
-                lines = infile.readlines()
-                line = lines[0]
-                numbers = line.split()
-                dict_Integral_BF_MPI[str(n)].append(float(numbers[0]))
-                dict_Std_BF_MPI[str(n)].append(float(numbers[1]))
-                dict_Error_BF_MPI[str(n)].append(float(numbers[2]))
-                dict_Time_BF_MPI[str(n)].append(float(numbers[3]))
-            os.system("rm" + " " + infilename)
+            #Runs the code without MPI in spherical coordinates
+            integration_method = "4"
+            for n in number_of_monte_carlo_samples:
+                outfilename = "NoMPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
+                arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
+                os.system("./main.exe" + " " + arguments)
 
-        #Runs the code with MPI in spherical coordinates.
-        integration_method = "2"
-        for n in number_of_monte_carlo_samples:
-            outfilename = "MPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
-            arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
-            os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
-
-        #Adding values to dictionary
-        for n in number_of_monte_carlo_samples:
-            infilename = "MPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
-            with open(infilename,"r") as infile:
-                lines = infile.readlines()
-                line = lines[0]
-                numbers = line.split()
-                dict_Integral_IS_MPI[str(n)].append(float(numbers[0]))
-                dict_Std_IS_MPI[str(n)].append(float(numbers[1]))
-                dict_Error_IS_MPI[str(n)].append(float(numbers[2]))
-                dict_Time_IS_MPI[str(n)].append(float(numbers[3]))
-            os.system("rm" + " " + infilename)
-
-        #Runs the code without MPI in Cartesian coordinates
-        integration_method = "3"
-        for n in number_of_monte_carlo_samples:
-            outfilename = "NoMPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
-            arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
-            os.system("./main.exe" + " " + arguments)
-
-        #Adding values to dictionary
-        for n in number_of_monte_carlo_samples:
-            infilename = outfilename = "NoMPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
-            with open(infilename,"r") as infile:
-                lines = infile.readlines()
-                line = lines[0]
-                numbers = line.split()
-                dict_Integral_BF[str(n)].append(float(numbers[0]))
-                dict_Std_BF[str(n)].append(float(numbers[1]))
-                dict_Error_BF[str(n)].append(float(numbers[2]))
-                dict_Time_BF[str(n)].append(float(numbers[3]))
-            os.system("rm" + " " + infilename)
-
-        #Runs the code without MPI in spherical coordinates
-        integration_method = "4"
-        for n in number_of_monte_carlo_samples:
-            outfilename = "NoMPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
-            arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
-            os.system("./main.exe" + " " + arguments)
-
-        #Adding values to dictionary
-        for n in number_of_monte_carlo_samples:
-            infilename = "NoMPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
-            with open(infilename,"r") as infile:
-                lines = infile.readlines()
-                line = lines[0]
-                numbers = line.split()
-                dict_Integral_IS[str(n)].append(float(numbers[0]))
-                dict_Std_IS[str(n)].append(float(numbers[1]))
-                dict_Error_IS[str(n)].append(float(numbers[2]))
-                dict_Time_IS[str(n)].append(float(numbers[3]))
-                dict_Ground_state_IS[str(n)].append(float(numbers[4]))
-                dict_Error_Ground_state_IS[str(n)].append(float(numbers[5]))
-            os.system("rm" + " " + infilename)
+            #Adding values to dictionary
+            for n in number_of_monte_carlo_samples:
+                infilename = "NoMPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
+                with open(infilename,"r") as infile:
+                    lines = infile.readlines()
+                    line = lines[0]
+                    numbers = line.split()
+                    dict_Integral_IS[str(n)].append(float(numbers[0]))
+                    dict_Std_IS[str(n)].append(float(numbers[1]))
+                    dict_Error_IS[str(n)].append(float(numbers[2]))
+                    dict_Time_IS[str(n)].append(float(numbers[3]))
+                    dict_Ground_state_IS[str(n)].append(float(numbers[4]))
+                    dict_Error_Ground_state_IS[str(n)].append(float(numbers[5]))
+                os.system("rm" + " " + infilename)
 
     for n in number_of_monte_carlo_samples:
         key = str(n)
