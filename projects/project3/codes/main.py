@@ -152,7 +152,7 @@ if compilation_instruction == "multiple_MC":
 
     if compile == "yes":
 
-        m_runs = str(input("How many sets of data do you want?: "))
+        m_runs = int(input("How many sets of data do you want?: "))
 
         print("Compiling main program WITH MPI...")
         os.system("mpicxx -O3 -c main_mpi.cpp")
@@ -208,7 +208,7 @@ if compilation_instruction == "multiple_MC":
             for n in number_of_monte_carlo_samples:
                 outfilename = "MPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
                 arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
-                os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
+                os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
             #Adding values to dictionary
             for n in number_of_monte_carlo_samples:
@@ -228,7 +228,7 @@ if compilation_instruction == "multiple_MC":
             for n in number_of_monte_carlo_samples:
                 outfilename = "MPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
                 arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
-                os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
+                os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
             #Adding values to dictionary
             for n in number_of_monte_carlo_samples:
@@ -285,145 +285,160 @@ if compilation_instruction == "multiple_MC":
                     dict_Error_Ground_state_IS[str(n)].append(float(numbers[5]))
                 os.system("rm" + " " + infilename)
 
-    for n in number_of_monte_carlo_samples:
-        key = str(n)
-        dict_Integral_BF[key] = np.mean(dict_Integral_BF[key])
-        dict_Integral_BF_MPI[key] = np.mean(dict_Integral_BF_MPI[key])
-        dict_Integral_IS[key] = np.mean(dict_Integral_IS[key])
-        dict_Integral_IS_MPI[key] = np.mean(dict_Integral_IS_MPI[key])
+        for n in number_of_monte_carlo_samples:
+            key = str(n)
+            dict_Integral_BF[key] = np.mean(dict_Integral_BF[key])
+            dict_Integral_BF_MPI[key] = np.mean(dict_Integral_BF_MPI[key])
+            dict_Integral_IS[key] = np.mean(dict_Integral_IS[key])
+            dict_Integral_IS_MPI[key] = np.mean(dict_Integral_IS_MPI[key])
 
-        dict_Error_BF[key] = np.mean(dict_Error_BF[key])
-        dict_Error_BF_MPI[key] = np.mean(dict_Error_BF_MPI[key])
-        dict_Error_IS[key] = np.mean(dict_Error_IS[key])
-        dict_Error_IS_MPI[key] = np.mean(dict_Error_IS_MPI[key])
+            dict_Error_BF[key] = np.mean(dict_Error_BF[key])
+            dict_Error_BF_MPI[key] = np.mean(dict_Error_BF_MPI[key])
+            dict_Error_IS[key] = np.mean(dict_Error_IS[key])
+            dict_Error_IS_MPI[key] = np.mean(dict_Error_IS_MPI[key])
 
-        dict_Std_BF[key] = np.mean(dict_Std_BF[key])
-        dict_Std_BF_MPI[key] = np.mean(dict_Std_BF_MPI[key])
-        dict_Std_IS[key] = np.mean(dict_Std_IS[key])
-        dict_Std_IS_MPI[key] = np.mean(dict_Std_IS_MPI[key])
+            dict_Std_BF[key] = np.mean(dict_Std_BF[key])
+            dict_Std_BF_MPI[key] = np.mean(dict_Std_BF_MPI[key])
+            dict_Std_IS[key] = np.mean(dict_Std_IS[key])
+            dict_Std_IS_MPI[key] = np.mean(dict_Std_IS_MPI[key])
 
-        dict_Time_BF[key] = np.mean(dict_Time_BF[key])
-        dict_Time_BF_MPI[key] = np.mean(dict_Time_BF_MPI[key])
-        dict_Time_IS[key] = np.mean(dict_Time_IS[key])
-        dict_Time_IS_MPI[key] = np.mean(dict_Time_IS_MPI[key])
-
-
-        dict_Ground_state_IS[key] = np.mean(dict_Ground_state_IS[key])
-        dict_Error_Ground_state_IS[key] = np.mean(dict_Error_Ground_state_IS[key])
-
-        dict_Speedup_BF[key] = float(dict_Time_BF[key])/float(dict_Time_BF_MPI[key])
-        dict_Speedup_IS[key] = float(dict_Time_IS[key])/float(dict_Time_IS_MPI[key])
+            dict_Time_BF[key] = np.mean(dict_Time_BF[key])
+            dict_Time_BF_MPI[key] = np.mean(dict_Time_BF_MPI[key])
+            dict_Time_IS[key] = np.mean(dict_Time_IS[key])
+            dict_Time_IS_MPI[key] = np.mean(dict_Time_IS_MPI[key])
 
 
-    I_BF = [dict_Integral_BF[str(i)] for i in number_of_monte_carlo_samples]
-    I_BF_MPI = [dict_Integral_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
-    I_IS = [dict_Integral_IS[str(i)] for i in number_of_monte_carlo_samples]
-    I_IS_MPI = [dict_Integral_IS_MPI[str(i)] for i in number_of_monte_carlo_samples]
+            dict_Ground_state_IS[key] = np.mean(dict_Ground_state_IS[key])
+            dict_Error_Ground_state_IS[key] = np.mean(dict_Error_Ground_state_IS[key])
 
-    E_BF = [dict_Error_BF[str(i)] for i in number_of_monte_carlo_samples]
-    E_BF_MPI = [dict_Error_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
-    E_IS = [dict_Error_IS[str(i)] for i in number_of_monte_carlo_samples]
-    E_IS_MPI = [dict_Error_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
-
-    Std_BF = [dict_Std_BF[str(i)] for i in number_of_monte_carlo_samples]
-    Std_BF_MPI = [dict_Std_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
-    Std_IS = [dict_Std_IS[str(i)] for i in number_of_monte_carlo_samples]
-    Std_IS_MPI = [dict_Std_IS_MPI[str(i)] for i in number_of_monte_carlo_samples]
-
-    Time_BF = [dict_Time_BF[str(i)] for i in number_of_monte_carlo_samples]
-    Time_BF_MPI = [dict_Time_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
-    Time_IS = [dict_Time_IS[str(i)] for i in number_of_monte_carlo_samples]
-    Time_IS_MPI = [dict_Time_IS_MPI[str(i)] for i in number_of_monte_carlo_samples]
-
-    Ground_state_IS = [dict_Ground_state_IS[str(i)] for i in number_of_monte_carlo_samples]
-    E_Ground_state_IS = [dict_Error_Ground_state_IS[str(i)] for i in number_of_monte_carlo_samples]
-
-    Speedup_BF = [dict_Speedup_BF[str(i)] for i in number_of_monte_carlo_samples]
-    Speedup_IS = [dict_Speedup_IS[str(i)] for i in number_of_monte_carlo_samples]
+            dict_Speedup_BF[key] = float(dict_Time_BF[key])/float(dict_Time_BF_MPI[key])
+            dict_Speedup_IS[key] = float(dict_Time_IS[key])/float(dict_Time_IS_MPI[key])
 
 
+        I_BF = [dict_Integral_BF[str(i)] for i in number_of_monte_carlo_samples]
+        I_BF_MPI = [dict_Integral_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
+        I_IS = [dict_Integral_IS[str(i)] for i in number_of_monte_carlo_samples]
+        I_IS_MPI = [dict_Integral_IS_MPI[str(i)] for i in number_of_monte_carlo_samples]
 
-    Integrals = {\
-                    "$N$" : number_of_monte_carlo_samples,\
-                    "$I_\text{BF}$" : I_BF,\
-                    "$I_\text{BF}$ (MPI)" : I_BF_MPI,\
-                    "$I_\text{IS}$" : I_IS,\
-                    "$I_\text{IS}$ (MPI)$" : I_IS_MPI \
-                }
+        E_BF = [dict_Error_BF[str(i)] for i in number_of_monte_carlo_samples]
+        E_BF_MPI = [dict_Error_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
+        E_IS = [dict_Error_IS[str(i)] for i in number_of_monte_carlo_samples]
+        E_IS_MPI = [dict_Error_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
 
-    Errors = {\
-                    "$N$" : number_of_monte_carlo_samples,\
-                    "$\epsilon_\text{BF}$" : E_BF,\
-                    "$\epsilon_\text{BF}$ (MPI)" : E_BF_MPI,\
-                    "$\epsilon_\text{IS}$" : E_IS,\
-                    "$\epsilon_\text{IS}$ (MPI)$" : E_IS_MPI\
-                }
+        Std_BF = [dict_Std_BF[str(i)] for i in number_of_monte_carlo_samples]
+        Std_BF_MPI = [dict_Std_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
+        Std_IS = [dict_Std_IS[str(i)] for i in number_of_monte_carlo_samples]
+        Std_IS_MPI = [dict_Std_IS_MPI[str(i)] for i in number_of_monte_carlo_samples]
 
-    Standard_deviations = {\
-                    "$N$" : number_of_monte_carlo_samples,\
-                    "$\sigma_\text{BF}$" : Std_BF,\
-                    "$\sigma_\text{BF}$ (MPI)" : Std_BF_MPI,\
-                    "$\sigma_\text{IS}$" : Std_IS,\
-                    "$\sigma_\text{IS}$ (MPI)$" : Std_IS_MPI\
-                }
+        Time_BF = [dict_Time_BF[str(i)] for i in number_of_monte_carlo_samples]
+        Time_BF_MPI = [dict_Time_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
+        Time_IS = [dict_Time_IS[str(i)] for i in number_of_monte_carlo_samples]
+        Time_IS_MPI = [dict_Time_IS_MPI[str(i)] for i in number_of_monte_carlo_samples]
 
-    Times = {\
-                    "$N$" : number_of_monte_carlo_samples,\
-                    "$t_\text{BF}$" : Time_BF,\
-                    "$t_\text{BF}$ (MPI)" : Time_BF_MPI,\
-                    "$t_\text{IS}$" : Time_IS,\
-                    "$t_\text{IS}$ (MPI)$" : Time_IS_MPI\
-                }
+        Ground_state_IS = [dict_Ground_state_IS[str(i)] for i in number_of_monte_carlo_samples]
+        E_Ground_state_IS = [dict_Error_Ground_state_IS[str(i)] for i in number_of_monte_carlo_samples]
 
-    Ground_state = {\
-                    "$N$" : number_of_monte_carlo_samples,\
-                    "$\expval{H}$" : Ground_state_IS,\
-                    "$\epsilon$" : E_Ground_state_IS\
-                }
-
-    Speedup = {\
-               "$N$" : number_of_monte_carlo_samples,\
-               "$T_1/T_p$ (BF)" : Speedup_BF,\
-               "$T_1/T_p$ (IS)" : Speedup_IS\
-
-             }
-
-    Integrals = pd.DataFrame(Integrals)
-    Errors = pd.DataFrame(Errors)
-    Standard_deviations = pd.DataFrame(Standard_deviations)
-    Times = pd.DataFrame(Times)
-    Ground_state = pd.DataFrame(Ground_state)
-    Speedup = pd.DataFrame(Speedup)
+        Speedup_BF = [dict_Speedup_BF[str(i)] for i in number_of_monte_carlo_samples]
+        Speedup_IS = [dict_Speedup_IS[str(i)] for i in number_of_monte_carlo_samples]
 
 
-    outfilename_Integrals = "MC_Integrals.txt"
-    outfilename_Errors = "MC_Errors.txt"
-    outfilename_Standard_deviations = "MC_Standard_deviations.txt"
-    outfilename_Times = "MC_Times.txt"
-    outfilename_Ground_state = "MC_Ground_state.txt"
-    outfilename_Speedup = "MC_Speedup.txt"
+
+        Integrals = {\
+                        "$N$" : number_of_monte_carlo_samples,\
+                        "$I_\text{BF}$" : I_BF,\
+                        "$I_\text{BF}$ (MPI)" : I_BF_MPI,\
+                        "$I_\text{IS}$" : I_IS,\
+                        "$I_\text{IS}$ (MPI)$" : I_IS_MPI \
+                    }
+
+        Errors = {\
+                        "$N$" : number_of_monte_carlo_samples,\
+                        "$\epsilon_\text{BF}$" : E_BF,\
+                        "$\epsilon_\text{BF}$ (MPI)" : E_BF_MPI,\
+                        "$\epsilon_\text{IS}$" : E_IS,\
+                        "$\epsilon_\text{IS}$ (MPI)$" : E_IS_MPI\
+                    }
+
+        Standard_deviations = {\
+                        "$N$" : number_of_monte_carlo_samples,\
+                        "$\sigma_\text{BF}$" : Std_BF,\
+                        "$\sigma_\text{BF}$ (MPI)" : Std_BF_MPI,\
+                        "$\sigma_\text{IS}$" : Std_IS,\
+                        "$\sigma_\text{IS}$ (MPI)$" : Std_IS_MPI\
+                    }
+
+        Times = {\
+                        "$N$" : number_of_monte_carlo_samples,\
+                        "$t_\text{BF}$" : Time_BF,\
+                        "$t_\text{BF}$ (MPI)" : Time_BF_MPI,\
+                        "$t_\text{IS}$" : Time_IS,\
+                        "$t_\text{IS}$ (MPI)$" : Time_IS_MPI\
+                    }
+
+        Ground_state = {\
+                        "$N$" : number_of_monte_carlo_samples,\
+                        "$\expval{H}$" : Ground_state_IS,\
+                        "$\epsilon$" : E_Ground_state_IS\
+                    }
+
+        Speedup = {\
+                   "$N$" : number_of_monte_carlo_samples,\
+                   "$T_1/T_p$ (BF)" : Speedup_BF,\
+                   "$T_1/T_p$ (IS)" : Speedup_IS\
+
+                 }
+
+        Integrals = pd.DataFrame(Integrals)
+        Errors = pd.DataFrame(Errors)
+        Standard_deviations = pd.DataFrame(Standard_deviations)
+        Times = pd.DataFrame(Times)
+        Ground_state = pd.DataFrame(Ground_state)
+        Speedup = pd.DataFrame(Speedup)
 
 
-    Integrals.to_latex(outfilename_Integrals, encoding='utf-8', escape = False, index = False)
-    Errors.to_latex(outfilename_Errors, encoding='utf-8', escape = False, index = False)
-    Standard_deviations.to_latex(outfilename_Standard_deviations, encoding='utf-8', escape = False, index = False)
-    Times.to_latex(outfilename_Times, encoding='utf-8', escape = False, index = False)
-    Ground_state.to_latex(outfilename_Ground_state, encoding='utf-8', escape = False, index = False)
-    Speedup.to_latex(outfilename_Speedup, encoding='utf-8', escape = False, index = False)
+        outfilename_Integrals = "MC_Integrals.txt"
+        outfilename_Errors = "MC_Errors.txt"
+        outfilename_Standard_deviations = "MC_Standard_deviations.txt"
+        outfilename_Times = "MC_Times.txt"
+        outfilename_Ground_state = "MC_Ground_state.txt"
+        outfilename_Speedup = "MC_Speedup.txt"
 
-    files = outfilename_Integrals + " " + outfilename_Errors + " " + outfilename_Standard_deviations \
-            + " " + outfilename_Times + " " + outfilename_Ground_state + " " + outfilename_Speedup
 
-    path = "results/monte_carlo/benchmarks"
-    if not os.path.exists(path):
-        os.makedirs(path)
-    os.system("mv" + " " + files + " " + path)
+        Integrals.to_latex(outfilename_Integrals, encoding='utf-8', escape = False, index = False)
+        Errors.to_latex(outfilename_Errors, encoding='utf-8', escape = False, index = False)
+        Standard_deviations.to_latex(outfilename_Standard_deviations, encoding='utf-8', escape = False, index = False)
+        Times.to_latex(outfilename_Times, encoding='utf-8', escape = False, index = False)
+        Ground_state.to_latex(outfilename_Ground_state, encoding='utf-8', escape = False, index = False)
+        Speedup.to_latex(outfilename_Speedup, encoding='utf-8', escape = False, index = False)
 
-    print("Integrals:")
-    print("------------------------------------------------------------------------------------")
-    print(Integrals)
-    print("------------------------------------------------------------------------------------")
-    print("Ground state")
-    print("------------------------------------------------------------------------------------")
-    print(Ground_state)
-    print("------------------------------------------------------------------------------------")
+        files = outfilename_Integrals + " " + outfilename_Errors + " " + outfilename_Standard_deviations \
+                + " " + outfilename_Times + " " + outfilename_Ground_state + " " + outfilename_Speedup
+
+        path = "results/monte_carlo/benchmarks"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        os.system("mv" + " " + files + " " + path)
+
+        print("Integrals:")
+        print("------------------------------------------------------------------------------------")
+        print(Integrals)
+        print("------------------------------------------------------------------------------------")
+        print("Ground state")
+        print("------------------------------------------------------------------------------------")
+        print(Ground_state)
+        print("------------------------------------------------------------------------------------")
+
+    if compile == "no":
+        outfilename_Integrals = "MC_Integrals.txt"
+        outfilename_Errors = "MC_Errors.txt"
+        outfilename_Standard_deviations = "MC_Standard_deviations.txt"
+        outfilename_Times = "MC_Times.txt"
+        outfilename_Ground_state = "MC_Ground_state.txt"
+        outfilename_Speedup = "MC_Speedup.txt"
+
+
+        path ="results/monte_carlo/benchmarks/"
+        filenames = [outfilename_Integrals,outfilename_Errors,outfilename_Standard_deviations,outfilename_Times,outfilename_Ground_state,outfilename_Speedup]
+        for filename in filenames:
+            resultater = pd.read_csv(path+filename)
+            print(resultater)

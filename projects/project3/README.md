@@ -57,11 +57,10 @@ python3 main.py multiple_MC
 Produce new data? Type yes or no:
 ```
 
-  - Type yes to compile and produce new sets of data. Type no to use already existing datasets.
+  - Type yes to compile and produce new sets of data. Type no to use already existing datasets for sample sets N = [10,10^2,10^3,10^4,10^5,10^6] with m = 10 000 datasets (Don't try this at home).
   - If you type yes, you'll be prompted with
-  ```console
-  How many sets of data do you want?:
-  ```
-  - Here you choose how many times you want to run and produce datasets for sample sets N = [10,100,1000,10000,100000,1000000].
-
--
+    ```console
+    How many sets of data do you want?:
+    ```
+    - Here you choose how many times you want to run and produce datasets for   sample sets  N = [10,10^2,10^3,10^4,10^5,10^6].
+  - If you type no, you print results for m = 10 0000 datasets.
