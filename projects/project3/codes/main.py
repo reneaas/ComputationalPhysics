@@ -378,8 +378,8 @@ if compilation_instruction == "multiple_MC":
     b = 2.7
 
 
-    #How many times we want to run the code for the same value of monte carlo sample
-    m_runs = 50
+    #How many times we want to run the code for the same value of monte carlo samples
+    m_runs = 10000
 
     #Dictionaries to hold calculated values
     dict_Integral_BF = {str(i):[] for i in number_of_monte_carlo_samples}
@@ -418,7 +418,7 @@ if compilation_instruction == "multiple_MC":
         for n in number_of_monte_carlo_samples:
             outfilename = "MPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
             arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
-            os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
+            os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
         #Adding values to dictionary
         for n in number_of_monte_carlo_samples:
@@ -438,7 +438,7 @@ if compilation_instruction == "multiple_MC":
         for n in number_of_monte_carlo_samples:
             outfilename = "MPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
             arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
-            os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
+            os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
         #Adding values to dictionary
         for n in number_of_monte_carlo_samples:
