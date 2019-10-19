@@ -20,12 +20,131 @@ if compilation_instruction == "0":
     print("executing")
     os.system("./main.exe")
 
+if compilation_instruction == "find_lambda":
+    print("compiling")
+    os.system("c++ -O3 -c main.cpp lib.cpp")
+    os.system("c++ -O3 -o main.exe main.cpp lib.o")
+    print("executing")
+
+    data = str(input("Produce new data? Type yes or no: "))
+
+    path = "results/benchmarks/"
+    main_filename = "Rel_error_legendre_n29.txt"
+
+    h = 0.02
+    R = [2.9 + (i*h) for i in range(1,51)]
+
+    if data == "yes":
+
+        n = 29
+        #Radial distance
+        integration_method = "1"
+
+        with open(main_filename, "w") as outfile:
+            for r in R:
+                outfilename = "radial_distance_" + str(r) + "_.txt"
+                a = -r
+                b = r
+                print("executing for r = %f" % r)
+                os.system("./main.exe" + " " + outfilename + " "  + integration_method + " " + str(n) +" "+ str(a) +" "+ str(b))
+                with open(outfilename, "r") as infile:
+                    line = infile.readline()
+                    line = line.split()
+                    outfile.write(line[2] + "\n")
+                os.system("rm"+ " " + outfilename)
+
+        os.system("mv" + " " + main_filename + " " + path)
+
+    rel_error = []
+
+    with open(path +  main_filename, "r") as infile:
+        for i in range(len(R)):
+            line = infile.readline()
+            rel_error.append(float(line))
+
+
+    index = sum(np.where(rel_error == np.min(rel_error))[0])
+    print("Minimum relative error for R = ", R[index])
+
+    figurename = "finding_lamda.pdf"
+
+
+
+    Plotmaker = PlottingTool(R, rel_error, 1)
+    Plotmaker.plot("lol", "$\lambda$", "$\\xi(\lambda)$", figurename, "plot")
+
+
+    os.system("mv" + " " + figurename + " " + path)
+    print("Finished!")
+
+if compilation_instruction == "benchmark_legendre":
+    print("compiling")
+    os.system("c++ -O3 -c main.cpp lib.cpp")
+    os.system("c++ -O3 -o main.exe main.cpp lib.o")
+    print("executing")
+
+
+    path = "results/benchmarks/"
+    main_filename = "finding_N_legendre.txt"
+
+
+    N = [11,13,15,17,19,21,23,25]
+    integration_method = "1"
+
+    a = -3
+    b = -a
+
+    with open(main_filename, "w") as outfile:
+        for n in N:
+            outfilename = "integral_n_" + str(n) + "_.txt"
+            print("executing for n = %f" % n)
+            os.system("./main.exe" + " " + outfilename + " "  + integration_method + " " + str(n) +" "+ str(a) +" "+ str(b))
+            with open(outfilename, "r") as infile:
+                line = infile.readline()
+                line = line.split()
+                outfile.write(line[1] + " " + line[0] + " " + line[2] +" " + line[3] +" "+  "\n")
+            os.system("rm"+ " " + outfilename)
+
+
+    integral = []
+    rel_error = []
+    timeused = []
+
+    with open(main_filename, "r") as infile:
+        for i in range(len(N)):
+            line = infile.readline()
+            line = line.split()
+            integral.append(float(line[1]))
+            rel_error.append(float(line[2]))
+            timeused.append(float(line[3]))
+
+
+    data = {\
+            "n" : N,\
+            "Integration value" : integral,\
+            "Relative error" : rel_error, \
+            "Time used" : timeused, \
+            }
+
+
+
+    dataset = pd.DataFrame(data)
+    dataset.to_latex(main_filename, index = False)
+
+    os.system("mv" + " " + main_filename + " " + path)
+
+
+
+
 if compilation_instruction == "benchmark_laguerre":
     print("compiling")
     os.system("c++ -O3 -c main.cpp lib.cpp")
     os.system("c++ -O3 -o main.exe main.cpp lib.o")
 
     compile = str(input("Produce new data? Type yes or no: "))
+
+    main_filename_3_dim = "benchmark_dim_3_1.csv"
+    main_filename_6_dim = "benchmark_dim_6_1.csv"
 
     if compile == "yes":
 
@@ -62,9 +181,6 @@ if compilation_instruction == "benchmark_laguerre":
 
                 os.system("rm" + " " + filename)  #Delete .txt-files
 
-        #Writing the combined data to main file for each dimension
-        main_filename_3_dim = "benchmark_dim_3_1.csv"
-        main_filename_6_dim = "benchmark_dim_6_1.csv"
 
 
         data_3_dim = {\
@@ -119,32 +235,78 @@ if compilation_instruction == "benchmark_laguerre":
     plt.scatter(n, data_3_dim["int_val_3"], label="3 dimensions")
     plt.scatter(n, data_6_dim["int_val_6"], label="6 dimensions")
     plt.axhline(y = exact, ls = "--", label="Analytical value")
-    plt.xlabel("n")
-    plt.ylabel("Integration value")
-    plt.legend()
+    plt.xlabel("n", fontsize = 14)
+    plt.ylabel("Integration value", fontsize = 14)
+    plt.xticks(size = 14)
+    plt.yticks(size = 14)
+    plt.legend(fontsize = 14)
     plt.savefig(figname1)
     plt.close()
 
+
+
     plt.plot(np.log10(n), np.log(data_3_dim["time_3"]), label="3 dimensions")
     plt.plot(np.log10(n), np.log(data_6_dim["time_6"]), label="6 dimensions")
-    plt.xlabel("$log_{10}(n)$")
-    plt.ylabel("$log_{10}(Time)$")
-    plt.legend()
+    plt.xlabel("$log_{10}(n)$", fontsize = 14)
+    plt.ylabel("$log_{10}(Time)$", fontsize = 14)
+    plt.xticks(size = 14)
+    plt.yticks(size = 14)
+    plt.legend(fontsize = 14)
     plt.savefig(figname2)
     plt.close()
 
 
     plt.plot(n, (data_3_dim["rel_err_3"]), label="3 dimensions")
     plt.plot(n, (data_6_dim["rel_err_6"]), label="6 dimensions")
-    plt.xlabel("n")
-    plt.ylabel("$\epsilon_{relative}$")
-    plt.legend()
+    plt.xlabel("n", fontsize = 18)
+    plt.ylabel("$\epsilon_{relative}$", fontsize = 18)
+    plt.xticks(size = 14)
+    plt.yticks(size = 14)
+    plt.legend(fontsize = 14)
     plt.savefig(figname3)
     plt.close()
 
     if not os.path.exists(path):
         os.makedirs(path)
     os.system("mv" + " " +  figname1 + " " + figname2 + " " + figname3 + " " + path)
+
+
+if compilation_instruction == "compare_gauss":
+    #Make sure you have already run "benchmark_legendre" and "benckmark_laguerre" before running this section
+
+    #Reading the files from "benchmark_legendre"
+    path_legendre = "results/benchmarks/"
+
+    N = [11,13,17,19,21,23,25]
+    integral_legendre = []
+    rel_error_legendre = []
+    timeused_legendre = []
+
+
+    for i in range(len(N)):
+        with open(path_legendre + "finding_N_legendre.txt") as infile:
+            for i in range(4):
+                infile.readline()
+            line = infile.readline()
+            line = line.split()
+            integral_legendre.append(line[2])
+            rel_error_legendre.append(line[4])
+            timeused_legendre.append(line[6])
+
+    #Reding the files from "benchmark_laguerre"
+    path_laguerre = "results/laguerre/"
+    data = pd.read_csv(path_laguerre + "benchmark_dim_3_1.csv" , header = 0, names = ["n", "int_val", "rel_err", "time"])
+
+
+    plt.plot(N, integral_legendre, label="Legendre")
+    plt.plot(N, data["int_val"], label="Laguerre")
+    plt.show()
+
+
+
+
+
+
 
 if compilation_instruction == "multiple_MC":
 
