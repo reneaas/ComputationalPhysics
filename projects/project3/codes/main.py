@@ -31,7 +31,7 @@ if compilation_instruction == "benchmark_laguerre":
 
 
         dimensions = [3,6]
-        number_of_integration_points = [10*i for i in range(1,11)]
+        number_of_integration_points = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
 
         #Runs the program for Gauss-Laguerre for both 3 and 6 dimensions, writing the results to file
         for i in dimensions:
@@ -63,8 +63,8 @@ if compilation_instruction == "benchmark_laguerre":
                 os.system("rm" + " " + filename)  #Delete .txt-files
 
         #Writing the combined data to main file for each dimension
-        main_filename_3_dim = "benchmark_dim_3_.csv"
-        main_filename_6_dim = "benchmark_dim_6_.csv"
+        main_filename_3_dim = "benchmark_dim_3_1.csv"
+        main_filename_6_dim = "benchmark_dim_6_1.csv"
 
 
         data_3_dim = {\
@@ -86,7 +86,7 @@ if compilation_instruction == "benchmark_laguerre":
         dataset3.to_csv(main_filename_3_dim, index = False)
         dataset6.to_csv(main_filename_6_dim, index = False)
 
-        #Moves the files to appropriate file
+        #Moves the files to appropriate folder
         path = "results/laguerre";
         if not os.path.exists(path):
             os.makedirs(path)
@@ -96,24 +96,24 @@ if compilation_instruction == "benchmark_laguerre":
 
     #Reading the files generated above
 
-    data_3_dim = pd.read_csv(path + "benchmark_dim_3_.csv", header = 0, names = ["n_3", "int_val_3", "rel_err_3", "time_3"])
-    data_6_dim = pd.read_csv(path + "benchmark_dim_6_.csv", header = 0, names = ["n_6", "int_val_6", "rel_err_6", "time_6"])
+    data_3_dim = pd.read_csv(path + main_filename_3_dim, header = 0, names = ["n_3", "int_val_3", "rel_err_3", "time_3"])
+    data_6_dim = pd.read_csv(path + main_filename_6_dim, header = 0, names = ["n_6", "int_val_6", "rel_err_6", "time_6"])
 
     n = data_3_dim["n_3"]
     exact = 5*np.pi**2/(16*16)
 
     path = "results/laguerre/"
 
-    data_3_dim = pd.read_csv(path + "benchmark_dim_3_.csv", header = 0, names = ["n_3", "int_val_3", "rel_err_3", "time_3"])
-    data_6_dim = pd.read_csv(path + "benchmark_dim_6_.csv", header = 0, names = ["n_6", "int_val_6", "rel_err_6", "time_6"])
+    data_3_dim = pd.read_csv(path + main_filename_3_dim, header = 0, names = ["n_3", "int_val_3", "rel_err_3", "time_3"])
+    data_6_dim = pd.read_csv(path + main_filename_6_dim, header = 0, names = ["n_6", "int_val_6", "rel_err_6", "time_6"])
 
     n = data_3_dim["n_3"]
     exact = 5*np.pi**2/(16*16)
 
     #Comparing the results for 3 and 6 dimensions graphically
-    figname1 = "integration_value.pdf"
-    figname2 = "time_data.pdf"
-    figname3 = "relative_error.pdf"
+    figname1 = "integration_value1.pdf"
+    figname2 = "time_data1.pdf"
+    figname3 = "relative_error1.pdf"
 
 
     plt.scatter(n, data_3_dim["int_val_3"], label="3 dimensions")

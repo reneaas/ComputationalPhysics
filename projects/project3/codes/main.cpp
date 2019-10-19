@@ -114,6 +114,10 @@ int main(int nargs, char* args[]){
 
     double relative_error = abs((integral_gauss_legendre-exact)/exact);
 
+    cout<<"Integral value = "<<integral_gauss_legendre<<endl;
+    cout<<"Exact value = "<<exact<<endl;
+    cout<<"Relative error = "<<relative_error<<endl;
+
     if (nargs != 1){
       ofile.open(outfilename);
       ofile << integral_gauss_legendre << " " << n << " " << relative_error << " " << timeused << endl;
@@ -229,7 +233,7 @@ int main(int nargs, char* args[]){
       double timeused = (double) (finish - start)/CLOCKS_PER_SEC;
       double exact = 5*pow(M_PI, 2)/(16*16);
       double rel_error = abs(integral_gauss_laguerre - exact)/exact;
-      
+
       if (nargs == 1){
       cout<<"Exact"<<" "<<exact<<endl;
       cout<<"Calculated"<<" "<<integral_gauss_laguerre<<endl;
