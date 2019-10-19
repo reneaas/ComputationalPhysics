@@ -181,32 +181,42 @@ int main(int nargs, char* args[]){
   }
 
   if (integration_method == "3"){
-    int n, local_n, numprocs, my_rank, d;
+    int n, local_n, numprocs, my_rank;
     double total_integral, local_integral;
     double a, local_a, b, local_b, h, alpha;
     double time_start, time_end, total_time;
 
     double exact, rel_error;
     double *w1, *w2, *w3, *w4, *w5, *w6, *r1, *r2, *theta1, *theta2, *phi1, *phi2;
+    int local_n2;
 
-    a = -3;
-    b = 3;
-
+    a = 0;
+    b = M_PI;
+    n = 20;
 
     total_integral = 0.;
     local_integral = 0.;
+    alpha = 0;
+    h = (b-a)/((double) n);
+    r1 = new double[n+1];
+    r2 = new double[n+1];
+    w1 = new double[n+1];
+    w2 = new double[n+1];
 
+
+    gauss_laguerre(r1, w1, n, alpha);
+    gauss_laguerre(r2, w2, n, alpha);
+
+
+    MPI_Init(&nargs, &args);
+    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     local_n = n/numprocs;
-
-    w1 = new double[local_n+1];
-    w2 = new double[local_n+1];
     w3 = new double[local_n];
     w4 = new double[local_n];
     w5 = new double[local_n];
     w6 = new double[local_n];
 
-    r1 = new double[local_n+1];
-    r2 = new double[local_n+1];
 
     theta1 = new double[local_n];
     theta2 = new double[local_n];
@@ -214,41 +224,26 @@ int main(int nargs, char* args[]){
     phi1 = new double[local_n];
     phi2 = new double[local_n];
 
-    alpha = 0;
-
-    n = 25;
-
-    h = (b-a)/n;
-
-
-    total_integral = 0;
-    local_integral = 0;
-
-
-    MPI_Init(&nargs, &args);
-    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
-
     local_a = a + my_rank*local_n*h;
     local_b = local_a + local_n*h;
 
-    gauss_laguerre(r1, w1, local_n, alpha);
-    gauss_laguerre(r2, w2, local_n, alpha);
     gauleg(local_a, local_b, theta1, w3, local_n);
     gauleg(local_a, local_b, theta2,w4, local_n);
     gauleg(local_a, 2*local_b, phi1, w5, local_n);
     gauleg(local_a, 2*local_b, phi2, w6, local_n);
 
+    local_n2 = local_n*my_rank;
 
 
 
     time_start = MPI_Wtime();
 
-    for (int i = 1; i <= local_n; i++){
+
+    for (int i = 1 ; i <= n; i++){
       if (my_rank == 0){
         cout << "iteration = " << i << endl;
       }
-      for (int j = 1; j <= local_n; j++){
+      for (int j = 1; j <= n; j++){
         for (int k = 0; k < local_n; k++){
           for (int l = 0; l < local_n; l++){
             for (int p = 0; p < local_n; p++){
@@ -263,6 +258,7 @@ int main(int nargs, char* args[]){
 
 
 
+
     MPI_Reduce(&local_integral, &total_integral, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     time_end = MPI_Wtime();
 
@@ -271,19 +267,22 @@ int main(int nargs, char* args[]){
     rel_error = abs(total_integral - exact)/exact;
 
     if (my_rank == 0){
-    cout<<"Exact"<<" "<<exact<<endl;
-    cout<<"Calculated"<<" "<<total_integral<<endl;
-    cout<<"Total time "<<total_time<<endl;
-  }
-
-    if (my_rank == 200){
+    cout << "Exact = " << " " << exact << endl;
+    cout << "Calculated = " << " " <<total_integral << endl;
+    cout << "Total time =  " << total_time << endl;
+    }
+    /*
+    if (my_rank == 0){
     ofile.open(outfilename);
     ofile << n << " " << setprecision(9) << total_integral << " "<< setprecision(9) << rel_error << " " <<setprecision(9) <<total_time <<endl;
     ofile.close();
-}
+    */
 
     MPI_Finalize();
-  }
+    }
+
+
+
 
 
   return 0;
