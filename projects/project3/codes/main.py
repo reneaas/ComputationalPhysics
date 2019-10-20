@@ -95,7 +95,7 @@ if compilation_instruction == "benchmark_legendre":
     main_filename = "finding_N_legendre.txt"
 
 
-    N = [11,13,15,17,19,21,23,25]
+    N = [11,13,15,17,19,21,23,25,27,29]
     integration_method = "1"
 
     a = -3
@@ -140,9 +140,6 @@ if compilation_instruction == "benchmark_legendre":
 
     os.system("mv" + " " + main_filename + " " + path)
 
-
-
-
 if compilation_instruction == "benchmark_laguerre":
     print("compiling")
     os.system("c++ -O3 -c main.cpp lib.cpp")
@@ -150,14 +147,14 @@ if compilation_instruction == "benchmark_laguerre":
 
     compile = str(input("Produce new data? Type yes or no: "))
 
-    main_filename_3_dim = "benchmark_dim_3_1.csv"
-    main_filename_6_dim = "benchmark_dim_6_1.csv"
+    main_filename_3_dim = "benchmark_dim_3_.csv"
+    main_filename_6_dim = "benchmark_dim_6_.csv"
 
     if compile == "yes":
 
 
         dimensions = [3,6]
-        number_of_integration_points = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+        number_of_integration_points = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
 
         #Runs the program for Gauss-Laguerre for both 3 and 6 dimensions, writing the results to file
         for i in dimensions:
@@ -233,43 +230,53 @@ if compilation_instruction == "benchmark_laguerre":
     n = data_3_dim["n_3"]
     exact = 5*np.pi**2/(16*16)
 
+    def avg_speedup(t1,t2):
+        #t1, t2 are vectors
+        N = len(t1)
+        time = np.zeros(N)
+        for i in range(N):
+                time[i] = t1[i]/t2[i]
+
+        return np.sum(time)/N
+
+    print("Average speedup for Laguerre: ", avg_speedup(data_6_dim["time_6"],data_3_dim["time_3"]))
+
     #Comparing the results for 3 and 6 dimensions graphically
-    figname1 = "integration_value1.pdf"
-    figname2 = "time_data1.pdf"
-    figname3 = "relative_error1.pdf"
+    figname1 = "integration_value.pdf"
+    figname2 = "time_data.pdf"
+    figname3 = "relative_error.pdf"
 
 
     plt.scatter(n, data_3_dim["int_val_3"], label="3 dimensions")
     plt.scatter(n, data_6_dim["int_val_6"], label="6 dimensions")
     plt.axhline(y = exact, ls = "--", label="Analytical value")
-    plt.xlabel("n", fontsize = 14)
-    plt.ylabel("Integration value", fontsize = 14)
-    plt.xticks(size = 14)
-    plt.yticks(size = 14)
-    plt.legend(fontsize = 14)
+    plt.xlabel("N", fontsize = 16)
+    plt.ylabel("Integration value", fontsize = 16)
+    plt.xticks(size = 16)
+    plt.yticks(size = 16)
+    plt.legend(fontsize = 16)
     plt.savefig(figname1)
     plt.close()
 
 
-
-    plt.plot(np.log10(n), np.log(data_3_dim["time_3"]), label="3 dimensions")
-    plt.plot(np.log10(n), np.log(data_6_dim["time_6"]), label="6 dimensions")
-    plt.xlabel("$log_{10}(n)$", fontsize = 14)
-    plt.ylabel("$log_{10}(Time)$", fontsize = 14)
-    plt.xticks(size = 14)
-    plt.yticks(size = 14)
-    plt.legend(fontsize = 14)
+    plt.plot(np.log10(n), np.log10(data_3_dim["time_3"]), label="3 dimensions")
+    plt.plot(np.log10(n), np.log10(data_6_dim["time_6"]), label="6 dimensions")
+    plt.xlabel("$log_{10}(N)$", fontsize = 16)
+    plt.ylabel("$log_{10}(Time)$", fontsize = 16)
+    plt.xticks(size = 16)
+    plt.yticks(size = 16)
+    plt.legend(fontsize = 16)
     plt.savefig(figname2)
     plt.close()
 
 
     plt.plot(n, (data_3_dim["rel_err_3"]), label="3 dimensions")
     plt.plot(n, (data_6_dim["rel_err_6"]), label="6 dimensions")
-    plt.xlabel("n", fontsize = 18)
-    plt.ylabel("$\epsilon_{relative}$", fontsize = 18)
-    plt.xticks(size = 14)
-    plt.yticks(size = 14)
-    plt.legend(fontsize = 14)
+    plt.xlabel("N", fontsize = 16)
+    plt.ylabel("$\epsilon_{relative}$", fontsize = 16)
+    plt.xticks(size = 16)
+    plt.yticks(size = 16)
+    plt.legend(fontsize = 16)
     plt.savefig(figname3)
     plt.close()
 
@@ -277,14 +284,13 @@ if compilation_instruction == "benchmark_laguerre":
         os.makedirs(path)
     os.system("mv" + " " +  figname1 + " " + figname2 + " " + figname3 + " " + path)
 
-
 if compilation_instruction == "compare_gauss":
     #Make sure you have already run "benchmark_legendre" and "benckmark_laguerre" before running this section
 
     #Reading the files from "benchmark_legendre"
     path_legendre = "results/benchmarks/"
 
-    N = [11,13,15,17,19,21,23,25]
+    N = [11,13,15,17,19,21,23,25,27,29]
     integral_legendre = []
     rel_error_legendre = []
     timeused_legendre = []
@@ -312,32 +318,61 @@ if compilation_instruction == "compare_gauss":
     time_laguerre = []
 
 
-    for i in range(1,16,2):
+    for i in range(1,20,2):
         integral_laguerre.append(data["int_val"][i])
         rel_error_laguerre.append(data["rel_err"][i])
         time_laguerre.append(data["time"][i])
 
     exact = 5*np.pi**2/16**2
 
-    print(integral_legendre)
+    compare_integral = "compare_lag_leg.pdf"
+    compare_time = "time_lag_leg.pdf"
 
-    plt.plot(N, integral_legendre, label="Legendre")
-    plt.plot(N, integral_laguerre, label="Laguerre")
-    plt.axhline(y = exact, ls="--")
-    plt.legend()
+
+
+    fig, host = plt.subplots()
+    fig.subplots_adjust(right=0.75)
+
+
+    par1 = host.twinx()
+
+    p1, = host.plot(N, integral_legendre, "w")
+    p2, = par1.plot(N, rel_error_legendre)
+
+    plt.plot(N,rel_error_laguerre)
+
+
+    host.set_xlabel("N", fontsize = 22)
+    par1.set_ylabel("$\epsilon_{relative}$", fontsize = 22)
+    host.set_ylabel("Integral value", fontsize = 22)
+
+    #tkw = dict(size=16, width=1.5)
+    host.tick_params(axis='y', labelsize=22)
+    par1.tick_params(axis='y', labelsize=22)
+    host.tick_params(axis='x',length = 10, labelsize = 22)
+
+    #plt.xticks(size = 20)
+
+    plt.legend(["Legendre", "Laguerre"], fontsize = 22)
+    #plt.savefig(compare_integral)
+    #plt.close()
+    plt.show()
+
+    plt.plot(np.log10(N), np.log10(timeused_legendre), label="Legendre")
+    plt.plot(np.log10(N), np.log10(time_laguerre), label="Laguerre")
+    plt.xlabel("$log_{10}(N)$", fontsize = 22)
+    plt.ylabel("$log_{10}(Time)$", fontsize = 22)
+    plt.xticks(size = 22)
+    plt.yticks(size = 22)
+    plt.legend(fontsize = 22)
+    #plt.savefig(compare_time)
+    #plt.close()
     plt.show()
 
 
-    plt.plot(N, timeused_legendre, label="Legendre")
-    plt.plot(N, time_laguerre, label="Laguerre")
-    plt.legend()
-    plt.show()
-
-
-
-
-
-
+    if not os.path.exists(path_legendre):
+        os.makedirs(path_legendre)
+    os.system("mv" + " " + compare_integral + " " + compare_time  + " "+ path_legendre)
 
 if compilation_instruction == "multiple_MC":
 
