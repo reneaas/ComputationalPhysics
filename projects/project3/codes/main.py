@@ -29,14 +29,14 @@ if compilation_instruction == "find_lambda":
     data = str(input("Produce new data? Type yes or no: "))
 
     path = "results/benchmarks/"
-    main_filename = "Rel_error_legendre_n29.txt"
+    main_filename = "Rel_error_legendre.txt"
 
     h = 0.02
-    R = [2.9 + (i*h) for i in range(1,51)]
+    R = [1 + (i*h) for i in range(1,101)]
 
     if data == "yes":
 
-        n = 29
+        n = 25
         #Radial distance
         integration_method = "1"
 
@@ -66,12 +66,19 @@ if compilation_instruction == "find_lambda":
     index = sum(np.where(rel_error == np.min(rel_error))[0])
     print("Minimum relative error for R = ", R[index])
 
-    figurename = "finding_lamda.pdf"
+    figurename = "finding_lamda25.pdf"
 
 
+    plt.plot(R, rel_error, label="N = 25")
+    plt.axvline(x = 2.7, ls = "--", label="$\lambda$ = 2.7")
+    plt.xlabel("$\lambda$", fontsize = 16)
+    plt.ylabel("$\\xi(\lambda)$", fontsize = 16)
+    plt.xticks(size = 16)
+    plt.yticks(size = 16)
+    plt.legend(fontsize = 16)
+    plt.savefig(figurename)
+    plt.close()
 
-    Plotmaker = PlottingTool(R, rel_error, 1)
-    Plotmaker.plot("lol", "$\lambda$", "$\\xi(\lambda)$", figurename, "plot")
 
 
     os.system("mv" + " " + figurename + " " + path)
@@ -277,29 +284,53 @@ if compilation_instruction == "compare_gauss":
     #Reading the files from "benchmark_legendre"
     path_legendre = "results/benchmarks/"
 
-    N = [11,13,17,19,21,23,25]
+    N = [11,13,15,17,19,21,23,25]
     integral_legendre = []
     rel_error_legendre = []
     timeused_legendre = []
 
 
-    for i in range(len(N)):
-        with open(path_legendre + "finding_N_legendre.txt") as infile:
-            for i in range(4):
-                infile.readline()
-            line = infile.readline()
+
+    with open(path_legendre + "finding_N_legendre.txt") as infile:
+        for j in range(4):
+            infile.readline()
+        lines = infile.readlines()
+        del lines[-1]
+        del lines[-1]
+        for line in lines:
             line = line.split()
-            integral_legendre.append(line[2])
-            rel_error_legendre.append(line[4])
-            timeused_legendre.append(line[6])
+            integral_legendre.append(float(line[2]))
+            rel_error_legendre.append(float(line[4]))
+            timeused_legendre.append(float(line[6]))
 
     #Reding the files from "benchmark_laguerre"
     path_laguerre = "results/laguerre/"
     data = pd.read_csv(path_laguerre + "benchmark_dim_3_1.csv" , header = 0, names = ["n", "int_val", "rel_err", "time"])
 
+    integral_laguerre = []
+    rel_error_laguerre = []
+    time_laguerre = []
+
+
+    for i in range(1,16,2):
+        integral_laguerre.append(data["int_val"][i])
+        rel_error_laguerre.append(data["rel_err"][i])
+        time_laguerre.append(data["time"][i])
+
+    exact = 5*np.pi**2/16**2
+
+    print(integral_legendre)
 
     plt.plot(N, integral_legendre, label="Legendre")
-    plt.plot(N, data["int_val"], label="Laguerre")
+    plt.plot(N, integral_laguerre, label="Laguerre")
+    plt.axhline(y = exact, ls="--")
+    plt.legend()
+    plt.show()
+
+
+    plt.plot(N, timeused_legendre, label="Legendre")
+    plt.plot(N, time_laguerre, label="Laguerre")
+    plt.legend()
     plt.show()
 
 

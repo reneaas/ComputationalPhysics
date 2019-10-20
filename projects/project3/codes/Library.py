@@ -159,7 +159,7 @@ class PlottingTool:
                 plt.plot(self.X, self.Y, label = labeltexts)
                 plt.xlabel(xlabel, fontsize = 14)
                 plt.ylabel(ylabel, fontsize = 14)
-                #plt.legend(fontsize = 14)
+                plt.legend(fontsize = 14)
                 plt.xticks(size = 14)
                 plt.yticks(size = 14)
                 plt.savefig(figurename, dpi = 1000)
