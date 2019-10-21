@@ -126,14 +126,6 @@ int main(int nargs, char* args[]){
       cout << "----------------------------------------------------------------" << endl;
     }
 
-<<<<<<< HEAD
-    cout<<"Integral value = "<<integral_gauss_legendre<<endl;
-    cout<<"Exact value = "<<exact<<endl;
-    cout<<"Relative error = "<<relative_error<<endl;
-
-=======
-    //If run using main.py, all necessary arguments are provided and the results are written to file.
->>>>>>> 31fd5d611a85e88fdf000c44520a15c82b7f2b16
     if (nargs != 1){
       ofile.open(outfilename);
       ofile << integral_gauss_legendre << " " << n << " " << relative_error << " " << timeused << endl;
@@ -261,14 +253,7 @@ int main(int nargs, char* args[]){
       double exact = 5*pow(M_PI, 2)/(16*16);                                    //The analytical value of the integral
       double rel_error = abs(integral_gauss_laguerre - exact)/exact;            //Computes the relative error.
 
-<<<<<<< HEAD
-      double timeused = (double) (finish - start)/CLOCKS_PER_SEC;
-      double exact = 5*pow(M_PI, 2)/(16*16);
-      double rel_error = abs(integral_gauss_laguerre - exact)/exact;
-
-=======
       //If no command line arguments are provided, the computed results are printed to screen.
->>>>>>> 31fd5d611a85e88fdf000c44520a15c82b7f2b16
       if (nargs == 1){
         cout << "-------------------------------------------------------------------------" << endl;
         cout << "computed integral = " << integral_gauss_laguerre << endl;
@@ -289,7 +274,7 @@ int main(int nargs, char* args[]){
   //Integration method "3" implements Monte Carlo integration with brute force (uniform distributions)
   if (integration_method == "3"){
     //Declaration of variables
-    int n, d;                          
+    int n, d;
     double a, b, integral, sigma, variance, std_mean, jacobidet, func_value, exact, relative_error, timeused;
     double *x;
     clock_t start, finish;

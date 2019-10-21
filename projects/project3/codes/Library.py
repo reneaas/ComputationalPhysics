@@ -157,11 +157,11 @@ class PlottingTool:
         if self.number_of_datasets == 1:
             if type == "plot":
                 plt.plot(self.X, self.Y, label = labeltexts)
-                plt.xlabel(xlabel, fontsize = 18)
-                plt.ylabel(ylabel, fontsize = 18)
+                plt.xlabel(xlabel, fontsize = 14)
+                plt.ylabel(ylabel, fontsize = 14)
                 plt.legend(fontsize = 14)
-                plt.xticks(size = 12)
-                plt.yticks(size = 12)
+                plt.xticks(size = 14)
+                plt.yticks(size = 14)
                 plt.savefig(figurename, dpi = 1000)
                 plt.close()
 
@@ -170,8 +170,8 @@ class PlottingTool:
                 plt.xlabel(xlabel, fontsize = 18)
                 plt.ylabel(ylabel, fontsize = 18)
                 plt.legend(fontsize = 14)
-                plt.xticks(size = 12)
-                plt.yticks(size = 12)
+                plt.xticks(size = 14)
+                plt.yticks(size = 14)
                 plt.savefig(figurename, dpi = 1000)
                 plt.close()
 
