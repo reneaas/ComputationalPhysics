@@ -55,7 +55,7 @@ You then obtain the exact and calculated value for the integral.
 ```console
 python3 main.py benchmark_legendre
 ```
-* This compiles the main program and runs the legendre method. The results can be found in results\benchmarks.
+* This compiles the main program and runs the legendre method.
 
 3. Benchmarking the Laguerre method
 ```console
@@ -84,13 +84,13 @@ python3 main.py multiple_MC
 Produce new data? Type yes or no:
 ```
 
-  - Type yes to compile and produce new sets of data. Type no to use already existing datasets for sample sets N = [10,10^2,10^3,10^4,10^5,10^6] with m = 10 000 datasets (Don't try this at home).
+  - Type yes to compile and produce new sets of data. Type no to use already existing datasets for sample sets N = [100,...,10000] with a stepsize dN = 100.
   - If you type yes, you'll be prompted with
     ```console
     How many sets of data do you want?:
     ```
-    - Here you choose how many times you want to run and produce datasets for   sample sets  N = [10,10^2,10^3,10^4,10^5,10^6].
-  - If you type no, you print results for m = 10 0000 datasets.
+    - Here you choose how many times you want to run and produce datasets
+  - If you type no, you print results for m = 10 000 datasets (which is the current data stored in the repository).
 
 6. Estimating infinity (Lambda)
 ```console
