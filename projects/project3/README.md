@@ -2,7 +2,7 @@
 
 ## The report
 The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project3/report/Project3_report.pdf).
-The results produced here were:
+The results were computed on three different computes.:
 1. Computer 1:
   - CPU: Intel i7-8565U (8)
   - RAM: 16 GB
@@ -14,6 +14,9 @@ The results produced here were:
 3.Computer 3:
   - CPU: Intel i5-4260U (4)
   - RAM: 4 GB
+
+The results pertaining to Monte Carlo integration were primarily produced on computer 1 and 2, while the results of the Gaussian quadrature codes
+were produced on computer 3.
 
 
 ## Codes (Documentation)
