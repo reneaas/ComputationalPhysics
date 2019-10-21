@@ -1,7 +1,7 @@
 # Project 3: Numerical integration
 
 ## The report
-The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/Project_2_report.pdf).
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project3/report/Project3_report.pdf).
 The results produced here were:
 1. Computer 1:
   - CPU: Intel i7-8565U (8)
