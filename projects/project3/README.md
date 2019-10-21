@@ -1,7 +1,20 @@
 # Project 3: Numerical integration
 
 ## The report
-The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/Project_2_report.pdf). SETT INN LINK TIL RIKTIG RAPPORT
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/Project_2_report.pdf).
+The results produced here were:
+1. Computer 1:
+  - CPU: Intel i7-8565U (8)
+  - RAM: 16 GB
+
+2. Computer 2:
+  - CPU: Intel i5-7360U (4)
+  - RAM: 8 GB
+
+3.Computer 3:
+  - CPU: Intel i5-4260U (4)
+  - RAM: 4 GB
+
 
 ## Codes (Documentation)
 To run the codes of the project, I advise to clone the repository pertaining to this project and run the codes in the following way:
@@ -42,7 +55,7 @@ You then obtain the exact and calculated value for the integral.
 ```console
 python3 main.py benchmark_legendre
 ```
-* This compiles the main program and runs the legendre method. The results can be found in results\benchmarks.
+* This compiles the main program and runs the legendre method.
 
 3. Benchmarking the Laguerre method
 ```console
@@ -71,13 +84,13 @@ python3 main.py multiple_MC
 Produce new data? Type yes or no:
 ```
 
-  - Type yes to compile and produce new sets of data. Type no to use already existing datasets for sample sets N = [10,10^2,10^3,10^4,10^5,10^6] with m = 10 000 datasets (Don't try this at home).
+  - Type yes to compile and produce new sets of data. Type no to use already existing datasets for sample sets N = [100,...,10000] with a stepsize dN = 100.
   - If you type yes, you'll be prompted with
     ```console
     How many sets of data do you want?:
     ```
-    - Here you choose how many times you want to run and produce datasets for   sample sets  N = [10,10^2,10^3,10^4,10^5,10^6].
-  - If you type no, you print results for m = 10 0000 datasets.
+    - Here you choose how many times you want to run and produce datasets
+  - If you type no, you print results for m = 10 000 datasets (which is the current data stored in the repository).
 
 6. Estimating infinity (Lambda)
 ```console

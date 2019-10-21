@@ -392,7 +392,7 @@ if compilation_instruction == "multiple_MC":
         os.system("c++ -O3 -c main.cpp lib.cpp")
         os.system("c++ -O3 -o main.exe main.cpp lib.o")
 
-        number_of_monte_carlo_samples = [10**i for i in range(2,7)]
+        number_of_monte_carlo_samples = [100*i for i in range(1,101)]
         #number_of_monte_carlo_samples = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 100000000]
         max_radial_distance = 10
         a = -2.7
@@ -437,7 +437,7 @@ if compilation_instruction == "multiple_MC":
             for n in number_of_monte_carlo_samples:
                 outfilename = "MPI_integrationmethod_" + integration_method + "_cartesian_n_" + str(n) + ".txt"
                 arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(a) + " " + str(b)
-                os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
+                os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
             #Adding values to dictionary
             for n in number_of_monte_carlo_samples:
@@ -457,7 +457,7 @@ if compilation_instruction == "multiple_MC":
             for n in number_of_monte_carlo_samples:
                 outfilename = "MPI_integrationmethod_" + integration_method + "_spherical_n_" + str(n) + ".txt"
                 arguments = outfilename + " " + integration_method + " " + str(n) + " " + str(max_radial_distance)
-                os.system("mpirun -np 2 --oversubscribe ./main_mpi.exe" + " " + arguments)
+                os.system("mpirun -np 4 --oversubscribe ./main_mpi.exe" + " " + arguments)
 
             #Adding values to dictionary
             for n in number_of_monte_carlo_samples:
@@ -552,7 +552,7 @@ if compilation_instruction == "multiple_MC":
         E_BF = [dict_Error_BF[str(i)] for i in number_of_monte_carlo_samples]
         E_BF_MPI = [dict_Error_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
         E_IS = [dict_Error_IS[str(i)] for i in number_of_monte_carlo_samples]
-        E_IS_MPI = [dict_Error_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
+        E_IS_MPI = [dict_Error_IS_MPI[str(i)] for i in number_of_monte_carlo_samples]
 
         Std_BF = [dict_Std_BF[str(i)] for i in number_of_monte_carlo_samples]
         Std_BF_MPI = [dict_Std_BF_MPI[str(i)] for i in number_of_monte_carlo_samples]
@@ -573,47 +573,47 @@ if compilation_instruction == "multiple_MC":
 
 
         Integrals = {\
-                        "$N$" : number_of_monte_carlo_samples,\
-                        "$I_\text{BF}$" : I_BF,\
-                        "$I_\text{BF}$ (MPI)" : I_BF_MPI,\
-                        "$I_\text{IS}$" : I_IS,\
-                        "$I_\text{IS}$ (MPI)$" : I_IS_MPI \
+                        "N" : number_of_monte_carlo_samples,\
+                        "$BF" : I_BF,\
+                        "BF (MPI)" : I_BF_MPI,\
+                        "IS" : I_IS,\
+                        "IS (MPI)$" : I_IS_MPI \
                     }
 
         Errors = {\
-                        "$N$" : number_of_monte_carlo_samples,\
-                        "$\epsilon_\text{BF}$" : E_BF,\
-                        "$\epsilon_\text{BF}$ (MPI)" : E_BF_MPI,\
-                        "$\epsilon_\text{IS}$" : E_IS,\
-                        "$\epsilon_\text{IS}$ (MPI)$" : E_IS_MPI\
+                        "N" : number_of_monte_carlo_samples,\
+                        "BF" : E_BF,\
+                        "BF (MPI)" : E_BF_MPI,\
+                        "IS" : E_IS,\
+                        "IS (MPI)" : E_IS_MPI\
                     }
 
         Standard_deviations = {\
-                        "$N$" : number_of_monte_carlo_samples,\
-                        "$\sigma_\text{BF}$" : Std_BF,\
-                        "$\sigma_\text{BF}$ (MPI)" : Std_BF_MPI,\
-                        "$\sigma_\text{IS}$" : Std_IS,\
-                        "$\sigma_\text{IS}$ (MPI)$" : Std_IS_MPI\
+                        "N" : number_of_monte_carlo_samples,\
+                        "BF" : Std_BF,\
+                        "BF (MPI)" : Std_BF_MPI,\
+                        "IS" : Std_IS,\
+                        "IS (MPI)" : Std_IS_MPI\
                     }
 
         Times = {\
-                        "$N$" : number_of_monte_carlo_samples,\
-                        "$t_\text{BF}$" : Time_BF,\
-                        "$t_\text{BF}$ (MPI)" : Time_BF_MPI,\
-                        "$t_\text{IS}$" : Time_IS,\
-                        "$t_\text{IS}$ (MPI)$" : Time_IS_MPI\
+                        "N" : number_of_monte_carlo_samples,\
+                        "BF" : Time_BF,\
+                        "BF (MPI)" : Time_BF_MPI,\
+                        "IS" : Time_IS,\
+                        "IS (MPI)" : Time_IS_MPI\
                     }
 
         Ground_state = {\
-                        "$N$" : number_of_monte_carlo_samples,\
-                        "$\expval{H}$" : Ground_state_IS,\
-                        "$\epsilon$" : E_Ground_state_IS\
+                        "N" : number_of_monte_carlo_samples,\
+                        "H" : Ground_state_IS,\
+                        "Error" : E_Ground_state_IS\
                     }
 
         Speedup = {\
-                   "$N$" : number_of_monte_carlo_samples,\
-                   "$T_1/T_p$ (BF)" : Speedup_BF,\
-                   "$T_1/T_p$ (IS)" : Speedup_IS\
+                   "N" : number_of_monte_carlo_samples,\
+                   "Speedup (BF)" : Speedup_BF,\
+                   "Speedup (IS)" : Speedup_IS\
 
                  }
 
@@ -625,25 +625,33 @@ if compilation_instruction == "multiple_MC":
         Speedup = pd.DataFrame(Speedup)
 
 
-        outfilename_Integrals = "MC_Integrals.txt"
-        outfilename_Errors = "MC_Errors.txt"
-        outfilename_Standard_deviations = "MC_Standard_deviations.txt"
-        outfilename_Times = "MC_Times.txt"
-        outfilename_Ground_state = "MC_Ground_state.txt"
-        outfilename_Speedup = "MC_Speedup.txt"
+        outfilename_Integrals = "MC_Integrals.csv"
+        outfilename_Errors = "MC_Errors.csv"
+        outfilename_Standard_deviations = "MC_Standard_deviations.csv"
+        outfilename_Times = "MC_Times.csv"
+        outfilename_Ground_state = "MC_Ground_state.csv"
+        outfilename_Speedup = "MC_Speedup.csv"
 
-
+        """
         Integrals.to_latex(outfilename_Integrals, encoding='utf-8', escape = False, index = False)
         Errors.to_latex(outfilename_Errors, encoding='utf-8', escape = False, index = False)
         Standard_deviations.to_latex(outfilename_Standard_deviations, encoding='utf-8', escape = False, index = False)
         Times.to_latex(outfilename_Times, encoding='utf-8', escape = False, index = False)
         Ground_state.to_latex(outfilename_Ground_state, encoding='utf-8', escape = False, index = False)
         Speedup.to_latex(outfilename_Speedup, encoding='utf-8', escape = False, index = False)
+        """
+
+        Integrals.to_csv(outfilename_Integrals, index = False)
+        Errors.to_csv(outfilename_Errors, index = False)
+        Standard_deviations.to_csv(outfilename_Standard_deviations, index = False)
+        Times.to_csv(outfilename_Times, index = False)
+        Ground_state.to_csv(outfilename_Ground_state, index = False)
+        Speedup.to_csv(outfilename_Speedup, index = False)
 
         files = outfilename_Integrals + " " + outfilename_Errors + " " + outfilename_Standard_deviations \
                 + " " + outfilename_Times + " " + outfilename_Ground_state + " " + outfilename_Speedup
 
-        path = "results/monte_carlo/benchmarks"
+        path = "results/monte_carlo/benchmark_test"
         if not os.path.exists(path):
             os.makedirs(path)
         os.system("mv" + " " + files + " " + path)
@@ -658,16 +666,169 @@ if compilation_instruction == "multiple_MC":
         print("------------------------------------------------------------------------------------")
 
     if compile == "no":
-        outfilename_Integrals = "MC_Integrals.txt"
-        outfilename_Errors = "MC_Errors.txt"
-        outfilename_Standard_deviations = "MC_Standard_deviations.txt"
-        outfilename_Times = "MC_Times.txt"
-        outfilename_Ground_state = "MC_Ground_state.txt"
-        outfilename_Speedup = "MC_Speedup.txt"
+        outfilename_Integrals = "MC_Integrals.csv"
+        outfilename_Errors = "MC_Errors.csv"
+        outfilename_Standard_deviations = "MC_Standard_deviations.csv"
+        outfilename_Times = "MC_Times.csv"
+        outfilename_Ground_state = "MC_Ground_state.csv"
+        outfilename_Speedup = "MC_Speedup.csv"
 
 
         path ="results/monte_carlo/benchmarks/"
+
         filenames = [outfilename_Integrals,outfilename_Errors,outfilename_Standard_deviations,outfilename_Times,outfilename_Ground_state,outfilename_Speedup]
-        for filename in filenames:
-            resultater = pd.read_csv(path+filename)
-            print(resultater)
+
+        figurename_integrals = "MC_integrals.pdf"
+        figurename_STD = "MC_STDs.pdf"
+        figurename_times = "MC_timeused.pdf"
+        figurename_speedup = "MC_speedup.pdf"
+        figurename_Ground_state = "GS_helium.pdf"
+        figurename_Errors = "MC_errors.pdf"
+        figurename_STD_IS = "MC_STD_IS.pdf"
+        figurename_STD_ratio = "MC_STD_ratio.pdf"
+
+
+        #Plots the results
+        exact = 5*np.pi**2/16**2
+        integrals = pd.read_csv(path + outfilename_Integrals, header = 0, names = ["N", "BF", "BF_MPI", "IS", "IS_MPI"])
+        plt.scatter(np.log10(integrals["N"]), integrals["BF"], label = "Brute force", marker = "x")
+        plt.scatter(np.log10(integrals["N"]), integrals["BF_MPI"], label = "Brute force (MPI)", marker = "x")
+        plt.scatter(np.log10(integrals["N"]), integrals["IS"], label = "Importance sampling", marker = "x")
+        plt.scatter(np.log10(integrals["N"]), integrals["IS_MPI"], label = "Importance sampling (MPI)", marker = "x")
+        plt.axhline(y = exact, ls = "--", c = "k", label = "exact")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$I$", fontsize = 16)
+        plt.savefig(figurename_integrals, dpi = 1000)
+        plt.close()
+
+
+        Standard_deviations = pd.read_csv(path + outfilename_Standard_deviations, header = 0, names = ["N", "BF", "BF_MPI", "IS", "IS_MPI"])
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["BF"], label = "Brute force")
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["BF_MPI"], label = "Brute force (MPI)")
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS"], label = "Importance sampling")
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS_MPI"], label = "Importance sampling (MPI)")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\sigma$", fontsize = 16)
+        plt.savefig(figurename_STD, dpi = 1000)
+        plt.close()
+
+
+        Errors = pd.read_csv(path + outfilename_Errors, header = 0, names = ["N", "BF", "BF_MPI", "IS", "IS_MPI"])
+        plt.plot(np.log10(Errors["N"]), Errors["BF"], label = "Brute force")
+        plt.plot(np.log10(Errors["N"]), Errors["BF_MPI"], label = "Brute force (MPI)")
+        plt.plot(np.log10(Errors["N"]), Errors["IS"], label = "Importance sampling")
+        plt.plot(np.log10(Errors["N"]), Errors["IS_MPI"], label = "Importance sampling (MPI)")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\epsilon$", fontsize = 16)
+        plt.savefig(figurename_Errors, dpi = 1000)
+        plt.close()
+
+        Times = pd.read_csv(path + outfilename_Times, header = 0, names = ["N", "BF", "BF_MPI", "IS", "IS_MPI"])
+        plt.plot(np.log10(Times["N"]), Times["BF"], label = "Brute force")
+        plt.plot(np.log10(Times["N"]), Times["BF_MPI"], label = "Brute force (MPI)")
+        plt.plot(np.log10(Times["N"]), Times["IS"], label = "Importance sampling")
+        plt.plot(np.log10(Times["N"]), Times["IS_MPI"], label = "Importance sampling (MPI)")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\Delta t$ [s]", fontsize = 16)
+        plt.savefig(figurename_times, dpi = 1000)
+        plt.close()
+
+
+        Speedup = pd.read_csv(path + outfilename_Speedup, header = 0, names = ["N", "BF", "IS"])
+        plt.plot(np.log10(Speedup["N"]), Speedup["BF"], label = "Brute force")
+        plt.plot(np.log10(Speedup["N"]), Speedup["IS"], label = "Importance sampling")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel("Speedup", fontsize = 16)
+        plt.savefig(figurename_speedup, dpi = 1000)
+        plt.close()
+
+
+
+        Ground_state = pd.read_csv(path + outfilename_Ground_state, header = 0, names = ["N", "H", "error"])
+        plt.plot(np.log10(Ground_state["N"]), Ground_state["H"])
+        plt.axhline(y = -79, ls = "--", c = "k", label = "Ground state energy")
+        plt.axhline(y = -75, ls = "--", c = "r", label = "Exact expectation value")
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\langle H \rangle $", fontsize = 16)
+        plt.legend(fontsize = 12)
+        plt.savefig(figurename_Ground_state, dpi = 1000)
+        plt.close()
+
+        Standard_deviations = pd.read_csv(path + outfilename_Standard_deviations, header = 0, names = ["N", "BF", "BF_MPI", "IS", "IS_MPI"])
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS"], label = "Importance sampling")
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS_MPI"], label = "Importance sampling (MPI)")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\sigma$", fontsize = 16)
+        plt.savefig(figurename_STD_IS, dpi = 1000)
+        plt.close()
+
+        std_ratios = {}
+        std_ratios["N"] = Standard_deviations["N"]
+        std_ratios["ratio"] = []
+        std_ratios["ratio_mpi"] = []
+        for i in range(100):
+            std_ratios["ratio"].append(float(Standard_deviations["BF"][i])/float(Standard_deviations["IS"][i]))
+            std_ratios["ratio_mpi"].append(float(Standard_deviations["BF_MPI"][i])/float(Standard_deviations["IS_MPI"][i]))
+
+
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS"], label = "Importance sampling")
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS_MPI"], label = "Importance sampling (MPI)")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\sigma$", fontsize = 16)
+        plt.savefig(figurename_STD_IS, dpi = 1000)
+        plt.close()
+
+        plt.plot(np.log10(Standard_deviations["N"]), std_ratios["ratio"] , label = "Ratio")
+        plt.plot(np.log10(Standard_deviations["N"]), std_ratios["ratio_mpi"], label = "Ratio (MPI)")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\sigma_{BF} /\sigma_{IS} $", fontsize = 16)
+        plt.savefig(figurename_STD_ratio, dpi = 1000)
+
+        std_ratios["ratio"] = np.mean(std_ratios["ratio"])
+        std_ratios["ratio_mpi"] = np.mean(std_ratios["ratio_mpi"])
+        print(std_ratios["ratio"])
+        print(std_ratios["ratio_mpi"])
+
+        avg_speedup_BF = np.mean(Speedup["BF"])
+        avg_speedup_IS = np.mean(Speedup["IS"])
+        print("average speedup BF = ", avg_speedup_BF)
+        print("average speedup IS = ", avg_speedup_IS)
+
+
+
+
+
+
+        figurenames = figurename_integrals + " " + figurename_STD + " " + figurename_times + " " + figurename_speedup + " " + figurename_Ground_state\
+                        + " " + figurename_Errors + " " + figurename_STD_IS + " " + figurename_STD_ratio
+        path = "results/monte_carlo/plots"
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        os.system("mv" + " " + figurenames + " " + path)
