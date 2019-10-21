@@ -98,7 +98,7 @@ if compilation_instruction == "benchmark_legendre":
     N = [11,13,15,17,19,21,23,25,27,29]
     integration_method = "1"
 
-    a = -3
+    a = -3.12
     b = -a
 
     with open(main_filename, "w") as outfile:
