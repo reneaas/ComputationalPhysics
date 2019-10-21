@@ -37,7 +37,14 @@ You then obtain the exact and calculated value for the integral.
 - If you type 3, you'll have to specify number of monte carlo samples (an integer), then the integration limits [a,b] (two double floating point numbers). The results appear in the terminal.
 - If you type 4, you'll have to specify number of monte carlo samples (an integer), then the maximum radial distance (double floating point number). The results appear in the terminal.
 
-2. Benchmarking the Laguerre method
+
+2. Benchmarking the Legendre method
+```console
+python3 main.py benchmark_legendre
+```
+* This compiles the main program and runs the legendre method. The results can be found in results\benchmarks.
+
+3. Benchmarking the Laguerre method
 ```console
 python3 main.py benchmark_laguerre
 ```
@@ -47,7 +54,14 @@ Produce new data? Type yes or no:
 ```
   - Type yes to compile and produce new results and new plots. Type no to not compile and to produce results and plots with data already saved.
 
-3. Benchmarking the Monte Carlo methods and Ground State energy
+4. Comparing the Legendre and the Laguerre methods
+```console
+python3 main.py compare_gauss
+```
+
+* Running this produces plots that compares the relative error and CPU times of the gaussian quadrature methods.
+
+5. Benchmarking the Monte Carlo methods and Ground State energy
 ```console
 python3 main.py multiple_MC
 ```
@@ -64,3 +78,14 @@ Produce new data? Type yes or no:
     ```
     - Here you choose how many times you want to run and produce datasets for   sample sets  N = [10,10^2,10^3,10^4,10^5,10^6].
   - If you type no, you print results for m = 10 0000 datasets.
+
+6. Estimating infinity (Lambda)
+```console
+python3 main.py find_lambda
+```
+
+* Once this particular problem is run, you'll be prompted with:
+```console
+Produce new data? Type yes or no:
+```
+ * If you choose yes you'll compile the program and run the Laguerre method for several lambdas to estimate which value of lambda gives the lowest relative error for integration points N = 25 (If you wish, you can change N in the main.py program under "find_lambda"). If you choose no, you'll get the lambda which gives the lowest relative error for results already produced for N = 25.
