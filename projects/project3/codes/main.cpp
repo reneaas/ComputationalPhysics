@@ -127,7 +127,6 @@ int main(int nargs, char* args[]){
       cout << "----------------------------------------------------------------" << endl;
     }
 
-    //If run using main.py, all necessary arguments are provided and the results are written to file.
     if (nargs != 1){
       ofile.open(outfilename);
       ofile << integral_gauss_legendre << " " << n << " " << relative_error << " " << timeused << endl;
