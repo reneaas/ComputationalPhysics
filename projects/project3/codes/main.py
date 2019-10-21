@@ -683,6 +683,8 @@ if compilation_instruction == "multiple_MC":
         figurename_speedup = "MC_speedup.pdf"
         figurename_Ground_state = "GS_helium.pdf"
         figurename_Errors = "MC_errors.pdf"
+        figurename_STD_IS = "MC_STD_IS.pdf"
+        figurename_STD_ratio = "MC_STD_ratio.pdf"
 
 
         #Plots the results
@@ -701,6 +703,7 @@ if compilation_instruction == "multiple_MC":
         plt.savefig(figurename_integrals, dpi = 1000)
         plt.close()
 
+
         Standard_deviations = pd.read_csv(path + outfilename_Standard_deviations, header = 0, names = ["N", "BF", "BF_MPI", "IS", "IS_MPI"])
         plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["BF"], label = "Brute force")
         plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["BF_MPI"], label = "Brute force (MPI)")
@@ -713,6 +716,7 @@ if compilation_instruction == "multiple_MC":
         plt.ylabel(r"$\sigma$", fontsize = 16)
         plt.savefig(figurename_STD, dpi = 1000)
         plt.close()
+
 
         Errors = pd.read_csv(path + outfilename_Errors, header = 0, names = ["N", "BF", "BF_MPI", "IS", "IS_MPI"])
         plt.plot(np.log10(Errors["N"]), Errors["BF"], label = "Brute force")
@@ -752,6 +756,8 @@ if compilation_instruction == "multiple_MC":
         plt.savefig(figurename_speedup, dpi = 1000)
         plt.close()
 
+
+
         Ground_state = pd.read_csv(path + outfilename_Ground_state, header = 0, names = ["N", "H", "error"])
         plt.plot(np.log10(Ground_state["N"]), Ground_state["H"])
         plt.axhline(y = -79, ls = "--", c = "k", label = "Ground state energy")
@@ -764,8 +770,62 @@ if compilation_instruction == "multiple_MC":
         plt.savefig(figurename_Ground_state, dpi = 1000)
         plt.close()
 
+        Standard_deviations = pd.read_csv(path + outfilename_Standard_deviations, header = 0, names = ["N", "BF", "BF_MPI", "IS", "IS_MPI"])
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS"], label = "Importance sampling")
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS_MPI"], label = "Importance sampling (MPI)")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\sigma$", fontsize = 16)
+        plt.savefig(figurename_STD_IS, dpi = 1000)
+        plt.close()
 
-        figurenames = figurename_integrals + " " + figurename_STD + " " + figurename_times + " " + figurename_speedup + " " + figurename_Ground_state + " " + figurename_Errors
+        std_ratios = {}
+        std_ratios["N"] = Standard_deviations["N"]
+        std_ratios["ratio"] = []
+        std_ratios["ratio_mpi"] = []
+        for i in range(100):
+            std_ratios["ratio"].append(float(Standard_deviations["BF"][i])/float(Standard_deviations["IS"][i]))
+            std_ratios["ratio_mpi"].append(float(Standard_deviations["BF_MPI"][i])/float(Standard_deviations["IS_MPI"][i]))
+
+
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS"], label = "Importance sampling")
+        plt.plot(np.log10(Standard_deviations["N"]), Standard_deviations["IS_MPI"], label = "Importance sampling (MPI)")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\sigma$", fontsize = 16)
+        plt.savefig(figurename_STD_IS, dpi = 1000)
+        plt.close()
+
+        plt.plot(np.log10(Standard_deviations["N"]), std_ratios["ratio"] , label = "Ratio")
+        plt.plot(np.log10(Standard_deviations["N"]), std_ratios["ratio_mpi"], label = "Ratio (MPI)")
+        plt.legend(fontsize = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
+        plt.xlabel(r"$\log_{10} N$", fontsize = 16)
+        plt.ylabel(r"$\sigma_{BF} /\sigma_{IS} $", fontsize = 16)
+        plt.savefig(figurename_STD_ratio, dpi = 1000)
+
+        std_ratios["ratio"] = np.mean(std_ratios["ratio"])
+        std_ratios["ratio_mpi"] = np.mean(std_ratios["ratio_mpi"])
+        print(std_ratios["ratio"])
+        print(std_ratios["ratio_mpi"])
+
+        avg_speedup_BF = np.mean(Speedup["BF"])
+        avg_speedup_IS = np.mean(Speedup["IS"])
+        print("average speedup BF = ", avg_speedup_BF)
+        print("average speedup IS = ", avg_speedup_IS)
+
+
+
+
+
+
+        figurenames = figurename_integrals + " " + figurename_STD + " " + figurename_times + " " + figurename_speedup + " " + figurename_Ground_state\
+                        + " " + figurename_Errors + " " + figurename_STD_IS + " " + figurename_STD_ratio
         path = "results/monte_carlo/plots"
         if not os.path.exists(path):
             os.makedirs(path)

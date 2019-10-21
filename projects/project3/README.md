@@ -1,7 +1,20 @@
 # Project 3: Numerical integration
 
 ## The report
-The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/Project_2_report.pdf). SETT INN LINK TIL RIKTIG RAPPORT
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/Project_2_report.pdf).
+The results produced here were:
+1. Computer 1:
+  - CPU: Intel i7-8565U (8)
+  - RAM: 16 GB
+
+2. Computer 2:
+  - CPU: Intel i5-7360U (4)
+  - RAM: 8 GB
+
+3.Computer 3:
+  - CPU: Intel i5-4260U (4)
+  - RAM: 4 GB
+
 
 ## Codes (Documentation)
 To run the codes of the project, I advise to clone the repository pertaining to this project and run the codes in the following way:
