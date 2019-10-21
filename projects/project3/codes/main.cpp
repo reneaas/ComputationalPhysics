@@ -9,6 +9,7 @@
 #include "time.h"
 #include <random>
 #include <fstream>
+#include <omp.h>
 #define EPS 3.0e-14
 #define MAXIT 10
 
@@ -266,7 +267,7 @@ int main(int nargs, char* args[]){
       //If the code is run with main.py, the necessary command line arguments are provided and the results are written to file.
       if (nargs != 1){
       ofile.open(outfilename);
-      ofile << n << " " << setprecision(9) << integral_gauss_laguerre << " "<< setprecision(9) << rel_error << " " <<setprecision(9) <<timeused <<endl;
+      ofile << n << " " << setprecision(9) << integral_gauss_laguerre << " "<< setprecision(9) << rel_error << " " << setprecision(9) <<timeused <<endl;
       ofile.close();
     }
 
@@ -275,7 +276,7 @@ int main(int nargs, char* args[]){
   //Integration method "3" implements Monte Carlo integration with brute force (uniform distributions)
   if (integration_method == "3"){
     //Declaration of variables
-    int n, d;                          
+    int n, d;
     double a, b, integral, sigma, variance, std_mean, jacobidet, func_value, exact, relative_error, timeused;
     double *x;
     clock_t start, finish;
