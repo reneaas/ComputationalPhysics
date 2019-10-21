@@ -95,7 +95,7 @@ if compilation_instruction == "benchmark_legendre":
     main_filename = "finding_N_legendre.txt"
 
 
-    N = [11,13,15,17,19,21,23,25,27,29]
+    N = [11,13,15,17,19,21,23,25,27,29,31,33,35]
     integration_method = "1"
 
     a = -3.12
@@ -154,7 +154,7 @@ if compilation_instruction == "benchmark_laguerre":
 
 
         dimensions = [3,6]
-        number_of_integration_points = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+        number_of_integration_points = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]
 
         #Runs the program for Gauss-Laguerre for both 3 and 6 dimensions, writing the results to file
         for i in dimensions:
@@ -250,19 +250,20 @@ if compilation_instruction == "benchmark_laguerre":
     plt.scatter(n, data_3_dim["int_val_3"], label="3 dimensions")
     plt.scatter(n, data_6_dim["int_val_6"], label="6 dimensions")
     plt.axhline(y = exact, ls = "--", label="Analytical value")
-    plt.xlabel("N", fontsize = 16)
-    plt.ylabel("Integration value", fontsize = 16)
+    plt.xlabel(r"$N$", fontsize = 16)
+    plt.ylabel(r"$I$", fontsize = 16)
     plt.xticks(size = 16)
     plt.yticks(size = 16)
     plt.legend(fontsize = 16)
-    plt.savefig(figname1)
+    plt.show()
+    #plt.savefig(figname1)
     plt.close()
 
 
     plt.plot(np.log10(n), np.log10(data_3_dim["time_3"]), label="3 dimensions")
     plt.plot(np.log10(n), np.log10(data_6_dim["time_6"]), label="6 dimensions")
-    plt.xlabel("$log_{10}(N)$", fontsize = 16)
-    plt.ylabel("$log_{10}(Time)$", fontsize = 16)
+    plt.xlabel(r"$\log_{10}N$", fontsize = 16)
+    plt.ylabel(r"$\log_{10}t$", fontsize = 16)
     plt.xticks(size = 16)
     plt.yticks(size = 16)
     plt.legend(fontsize = 16)
@@ -272,8 +273,8 @@ if compilation_instruction == "benchmark_laguerre":
 
     plt.plot(n, (data_3_dim["rel_err_3"]), label="3 dimensions")
     plt.plot(n, (data_6_dim["rel_err_6"]), label="6 dimensions")
-    plt.xlabel("N", fontsize = 16)
-    plt.ylabel("$\epsilon_{relative}$", fontsize = 16)
+    plt.xlabel(r"$N$", fontsize = 16)
+    plt.ylabel("$\epsilon$", fontsize = 16)
     plt.xticks(size = 16)
     plt.yticks(size = 16)
     plt.legend(fontsize = 16)
@@ -290,7 +291,7 @@ if compilation_instruction == "compare_gauss":
     #Reading the files from "benchmark_legendre"
     path_legendre = "results/benchmarks/"
 
-    N = [11,13,15,17,19,21,23,25,27,29]
+    N = [11,13,15,17,19,21,23,25,27,29,31,33,35]
     integral_legendre = []
     rel_error_legendre = []
     timeused_legendre = []
@@ -311,14 +312,14 @@ if compilation_instruction == "compare_gauss":
 
     #Reding the files from "benchmark_laguerre"
     path_laguerre = "results/laguerre/"
-    data = pd.read_csv(path_laguerre + "benchmark_dim_3_1.csv" , header = 0, names = ["n", "int_val", "rel_err", "time"])
+    data = pd.read_csv(path_laguerre + "benchmark_dim_3_.csv" , header = 0, names = ["n", "int_val", "rel_err", "time"])
 
     integral_laguerre = []
     rel_error_laguerre = []
     time_laguerre = []
 
 
-    for i in range(1,20,2):
+    for i in range(1,26,2):
         integral_laguerre.append(data["int_val"][i])
         rel_error_laguerre.append(data["rel_err"][i])
         time_laguerre.append(data["time"][i])
@@ -342,9 +343,9 @@ if compilation_instruction == "compare_gauss":
     plt.plot(N,rel_error_laguerre)
 
 
-    host.set_xlabel("N", fontsize = 22)
-    par1.set_ylabel("$\epsilon_{relative}$", fontsize = 22)
-    host.set_ylabel("Integral value", fontsize = 22)
+    host.set_xlabel(r"$N$", fontsize = 22)
+    par1.set_ylabel("$\epsilon$", fontsize = 22)
+    host.set_ylabel(r"$I$", fontsize = 22)
 
     #tkw = dict(size=16, width=1.5)
     host.tick_params(axis='y', labelsize=22)
@@ -360,8 +361,8 @@ if compilation_instruction == "compare_gauss":
 
     plt.plot(np.log10(N), np.log10(timeused_legendre), label="Legendre")
     plt.plot(np.log10(N), np.log10(time_laguerre), label="Laguerre")
-    plt.xlabel("$log_{10}(N)$", fontsize = 22)
-    plt.ylabel("$log_{10}(Time)$", fontsize = 22)
+    plt.xlabel(r"$\log_{10}N$", fontsize = 22)
+    plt.ylabel(r"$\log_{10}t$", fontsize = 22)
     plt.xticks(size = 22)
     plt.yticks(size = 22)
     plt.legend(fontsize = 22)
