@@ -27,5 +27,5 @@ Here are the [codes](https://github.com/reneaas/ComputationalPhysics/tree/master
 In [project 3](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project3), we solve an integral that is used in quantum mechanics to approximate the ground state
 of two-electron systems such as the Helium atom. We derive an analytical expression for the integral before we proceed to solve this using two forms of Gaussian quadrature, Gauss-Legendre and Gauss-Laguerre quadrature. We proceed then to solve the same integral using Monte Carlo integration, both with and without importance sampling.
 
-The [report]((https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/Project3_report.pdf).
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project2/report/Project3_report.pdf).
 The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project3/codes)
