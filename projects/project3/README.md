@@ -20,7 +20,7 @@ were produced on computer 3.
 
 
 ## Codes (Documentation)
-To run the codes of the project, I advise to clone the repository pertaining to this project and run the codes in the following way:
+To run the codes of the project, we advise to clone the repository pertaining to this project and run the codes in the following way:
 
 The primary code of the numerical project is [main.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project3/codes/main.py). It automates pretty much everything. A call to this can be done in the following way with respect to which problem one wants to solve:
 
