@@ -13,23 +13,20 @@ using namespace  std;
 
 
 void initialize(int, int **, double&, double&);
-double Monte_Carlo();
 
 
 ofstream ofile;               //Global variable for writing results to file.
 
-inline int periodic(int coordinate, int dimensions, int step) {   //
+inline int periodic(int coordinate, int dimensions, int step) {
   return (coordinate+dimensions+step) % (dimensions);
 }
 
 int main(int nargs, char* args[]){
 
   string outfilename, number_of_temperatures;
-  double E, M,boltzmann_distribution[9],eps;
+  double E, M,boltzmann_distribution[9];
   double T_initial, T_final, step_size;   //Variables to define temperature vector
   int n, MC_cycles;
-
-  eps = 1e-14;
 
   //Read from command line
   number_of_temperatures = atoi(args[1]);
@@ -51,7 +48,7 @@ int main(int nargs, char* args[]){
     spin_matrix[i] = new int[n];
   }
 
-  //Computing the boltzmann distribution function with the different dE
+  //Computing the boltzmann distribution for 5 values of dE
   double beta = 1/(T);                //k_B = 1
   for (int i = 0; i < 9; i+=4){
     boltzmann_distribution[i] = exp(-beta*i);
@@ -63,24 +60,28 @@ int main(int nargs, char* args[]){
   //filling spin matrix with arbitrary spin values
   initialize(n, spin_matrix, E, M);
 
+  random_device rd;
+  mt19937_64 gen(rd());
+  uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
+  uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
+
+    int x_flip, y_flip, J;
+    double dE, dM, dE_squared, dM_squared;                //Change in energy and magnetization
+
+    dE_squared = 0;
+    dM_squared = 0;
+
+    J = 1;
 
   //Running over Monte Carlo samples
-  void Monte_Carlo_metropolis(int J, ){
   for (int k = 0; k < MC; k++){
-
-    random_device rd;
-    mt19937_64 gen(rd());
-    uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
-    uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
-
-      int x_flip, y_flip, J;
-      
-
 
     x_flip = RandomIntegerGenerator(gen);
     y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
 
     spin_matrix[x_flip][y_flip] *= (-1);
+
+    dM = M + 2*spin_matrix[x_flip][y_flip]*spin_matrix[x_flip][y_flip];
 
     for (int i = 0; i < n; i++){
       for (int j = 0; j < n; j++){
@@ -88,21 +89,22 @@ int main(int nargs, char* args[]){
       }
     }
 
+    //Metropolis algorithm
     if (dE >= 0){
       r = RandomNumberGenerator(gen);
-      P = boltzmann_distribution[dE];   //Picks out the probability of closing in on the ground state from the boltzmann distribution
-      if (r <= P){
+      P = boltzmann_distribution[dE];          //Probability from boltzmann distribution
+      if (r > P){
+        spin_matrix[x_flip][y_flip] *= (-1);   //Rejecting the flip
 
       }
     }
 
-    E += dE;
-    if ((anal_E - E)<=eps){
-
-    }
-
+    E += dE;                //Computing change in energy
+    M += dM;                //Computing change in magnetization
+    dE_squared += dE*dE;
+    dM_squared += dM*dM;
   }
-}
+
 
   return 0;
 }
@@ -122,3 +124,19 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M){
       }
     }
   }
+
+
+void Monte_Carlo_Metropolis(int J, ){
+
+  random_device rd;
+  mt19937_64 gen(rd());
+  uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
+  uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
+
+  int x_flip, y_flip;
+
+
+
+
+
+}
