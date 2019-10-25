@@ -24,7 +24,7 @@ inline int periodic(int coordinate, int dimensions, int step) {
 int main(int nargs, char* args[]){
 
   string outfilename, number_of_temperatures;
-  double E, M,exponential[9];
+  double E, M,boltzmann_distribution[9];
   double T_initial, T_final, step_size;   //Variables to define temperature vector
   int n, MC_cycles;
 
@@ -48,16 +48,10 @@ int main(int nargs, char* args[]){
     spin_matrix[i] = new int[n];
   }
 
-  //Computing the exponential function with the different dE
+  //Computing the boltzmann distribution for 5 values of dE
   double beta = 1/(T);                //k_B = 1
   for (int i = 0; i < 9; i+=4){
-    exponential[i] = exp(-beta*i);
-  }
-
-
-  //Hardcoding the inital expectation values to zero
-  for (int i; i < 4; i++){
-    expec_value[i] = 0;
+    boltzmann_distribution[i] = exp(-beta*i);
   }
 
   E = 0;
@@ -72,8 +66,12 @@ int main(int nargs, char* args[]){
   uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
 
     int x_flip, y_flip, J;
-    double dE;
+    double dE, dM, dE_squared, dM_squared;                //Change in energy and magnetization
 
+    dE_squared = 0;
+    dM_squared = 0;
+
+    J = 1;
 
   //Running over Monte Carlo samples
   for (int k = 0; k < MC; k++){
@@ -82,19 +80,29 @@ int main(int nargs, char* args[]){
     y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
 
     spin_matrix[x_flip][y_flip] *= (-1);
+
+    dM = M + 2*spin_matrix[x_flip][y_flip]*spin_matrix[x_flip][y_flip];
+
     for (int i = 0; i < n; i++){
       for (int j = 0; j < n; j++){
         dE = (double) 2*J*spin_matrix[x_flip][y_flip] * (spin_matrix[periodic(x_flip,dimensions,1)][y_flip] + spin_matrix[periodic(x_flip, dimensions,-1)][y_flip] + spin_matrix[x_flip][periodic(y_flip, dimensions,1)] + spin_matrix[x_flip][periodic(y_flip, dimensions,-1)]);
       }
     }
 
+    //Metropolis algorithm
     if (dE >= 0){
       r = RandomNumberGenerator(gen);
-      P = exponential[dE];
-      if (r <= P){
+      P = boltzmann_distribution[dE];          //Probability from boltzmann distribution
+      if (r > P){
+        spin_matrix[x_flip][y_flip] *= (-1);   //Rejecting the flip
 
       }
     }
+
+    E += dE;                //Computing change in energy
+    M += dM;                //Computing change in magnetization
+    dE_squared += dE*dE;
+    dM_squared += dM*dM;
   }
 
 
@@ -116,3 +124,10 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M){
       }
     }
   }
+
+
+void Monte_Carlo_Metropolis(){
+
+
+
+}
