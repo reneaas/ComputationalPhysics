@@ -80,7 +80,7 @@ int main(int nargs, char* args[]){
     T_final = atof(args[6]);           //Final temperature
     step_size = atof(args[7]);
 
-
+    //Store temperatures to loop over.
     double* temperatures;
     temperatures = new double[number_of_temperatures+1];
     for (int i = 0; i <= number_of_temperatures; i++){
@@ -156,8 +156,8 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
     E_sum += (double) E;
     M_sum += (double) M;
 
-    E_squared += (double) E_sum*E_sum;
-    M_squared += (double) dM*dM;
+    E_squared += (double) E*E;
+    M_squared += (double) M*M;
   }
 
   E_sum /= (double) (MC);
@@ -165,8 +165,9 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
   E_squared /= MC;
   M_squared /= MC;
 
-
   cout<<"Magnetization:" << M_sum <<endl;
+  cout << "M_squared = " << M_squared << endl;
   cout << "E = " << E_sum << endl;
+  cout << "E^2 = " << E_squared << endl;
 
 }

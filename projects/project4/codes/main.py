@@ -17,7 +17,8 @@ if number_of_temperatures == 1:
 
 
     print("executing")
-    command_line_args = str(number_of_temperatures) + " " + outfilename + " " + str(n_spins) + " " + str(MC_cycles) + " " + str(T)
+    command_line_args = str(number_of_temperatures) + " " + outfilename + " " + str(n_spins)\
+                        + " " + str(MC_cycles) + " " + str(T)
     os.system("./main.exe" + " " + command_line_args)
     #antall temp - outfilename - grid - MC_cycles - temp
 
