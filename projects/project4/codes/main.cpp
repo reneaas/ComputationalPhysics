@@ -160,13 +160,13 @@ int main(int nargs, char* args[]){
       Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values[i], analytical_values[i],beta);
 
       //Computing magnetic susceptibility and heat capacity for each temperature
-      
+      /*
       heat_capacity_analytical[i] = (analytical_values[1]-analytical_values[0]*analytical_values[0])*beta*beta;     //Stores the analytical expectation value for heat capacity for a given temperature
       magnetic_susceptibility_analytical[i] = (analytical_values[5])*beta;                                          //Stores the analytical expectation value for susceptibility for a given temperature
 
       heat_capacity[i] = (expectation_values[1]-expectation_values[0]*expectation_values[0])*beta*beta;             //Stores the computed expectation value for heat capacity for a given temperature
       magnetic_susceptibility[i] = (expectation_values[5]-expectation_values[4]*expectation_values[4])*beta;        //Stores the computed expectation value for susceptibility for a given temperature
-
+      */
     }
 
     //Printing out just to test.
@@ -176,10 +176,13 @@ int main(int nargs, char* args[]){
 
 
     //Write the computed expectation values to file here...
+    for (int i=0;i<=number_of_temperatures;i++){
+     cout<<"CompVal"<< *expectation_values[i] <<endl;
+    }
+    return 0;
 
   }
 
-  return 0;
 }
 
 void initialize(int dimensions, int **spin_matrix, double& E, double& M){
