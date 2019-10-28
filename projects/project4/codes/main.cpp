@@ -11,13 +11,13 @@
 #include <omp.h>
 using namespace  std;
 
-ofstream ofile;               //Global variable for writing results to file.
+ofstream ofile, ofile2;               //Global variable for writing results to file.
 
 
 //Declaration of functions.
 void initialize_ordered(int, int **, double&, double&);
 void initialize_random(int, int **, double&, double&);
-void Monte_Carlo_Metropolis(int, int, int **, int, double&, double&, double&, double&, double*, double*, double);
+void Monte_Carlo_Metropolis(int, int, int **, int, double&, double&, double*, double*, double);
 void analytical_values_2x2Lattice(double*, double);
 
 
@@ -32,6 +32,13 @@ int main(int nargs, char* args[]){
   double E, M,boltzmann_distribution[17];
   double T_initial, T_final, step_size;   //Variables to define temperature vector
   int n, MC_cycles, J, number_of_temperatures;
+  double E_squared, M_squared;
+  int **spin_matrix;
+  int number_of_MC_runs;
+  int** initial_spin_matrix;                      //Stores the initial spin matrix.
+  double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
+  int n_spins;                              //Total number of spins.
+  double beta;
 
   //Read from command line
   number_of_temperatures = atoi(args[1]);
@@ -39,57 +46,146 @@ int main(int nargs, char* args[]){
   outfilename = string(args[2]);         //Name of the file to write the results to
   n = atoi(args[3]);                    //Dimension of spin matrix
   MC_cycles = atoi(args[4]);            //Number of Monte Carlo cycles
+  number_of_MC_runs = atoi(args[5]);
+  initialize = string(args[6]);
+  n_spins = n*n;
+  J = 1;                                     //Coupling constant
+
 
 
   //initialize matrix
-  int **spin_matrix;
-  spin_matrix = new int*[n];
+  initial_spin_matrix = new int*[n];
   for (int i = 0; i < n; i++){
-    spin_matrix[i] = new int[n];
+    initial_spin_matrix[i] = new int[n];
   }
 
-  E = 0;
-  M = 0;
+  E_initial = 0;
+  M_initial = 0;
 
-  initialize = atos(args[5]);
+
 
   //filling spin matrix with s = +1 for all elements
   if (initialize == "ordered"){
-  initialize_ordered(n, spin_matrix, E, M);
+  initialize_ordered(n, initial_spin_matrix, E_initial, M_initial);
   }
 
   //filling spin matrix with arbitrary spin values
   if (initialize == "random"){
-    initialize_random(n, spin_matrix, E, M);
+    initialize_random(n, initial_spin_matrix, E_initial, M_initial);
   }
 
-  double E_squared, M_squared;                //Change in energy and magnetization
+  if (number_of_temperatures == 1 && number_of_MC_runs > 1){
+    double T = atof(args[7]);
+    int initial_MC_cycle = atoi(args[8]);
+    double stepsize = atof(args[9]);
+    double *expectation_values, *initial_expectation_values, *MC_cycles;
+    expectation_values = new double[5];
+    MC_cycles = new double[number_of_MC_runs + 1];
+    double magnetic_susceptibility;                //Stores the computed magnetic susceptibilities for each temperature
+    double heat_capacity;                          //Stores the computed heat capacity for each temperature.
 
-  E_squared = E*E;
-  M_squared = M*M;
-  J = 1;                                     //Coupling constant
+    //Hardcode initial expectation values to zero and store them for future usage.
+    for (int i = 0; i < 5; i++){
+      expectation_values[i] = 0.;
+    }
+    initial_expectation_values = expectation_values;
 
-  if (number_of_temperatures == 1){
-    double T = atof(args[6]);
+    //Compute Boltzmann factors.
+    beta = 1/(T);                //k_B = 1
+    for (int i = -8; i < 9; i+=4){
+      boltzmann_distribution[i + 8] = exp(-beta*i);
+    }
+
+    for (int i = 0; i <= number_of_MC_runs; i++){
+      MC_cycles[i] = initial_MC_cycle + (int) i*stepsize;
+    }
+
+    if (n == 2){
+      double* analytical_values;
+      double* relative_error;
+      string outfilename2 = "Relative_error_n_2.txt";
+      analytical_values = new double[6];
+      relative_error = new double[7];
+      double magnetic_susceptibility_analytical;     //Stores the analytical magnetic susceptibilities for each temperature
+      double heat_capacity_analytical;               //Stores the analytical heat capacity for each temperature.
+
+      for (int i = 0; i < 6; i++){
+        analytical_values[i] = 0.0;
+      }
+
+      for (int i = 0; i < 7; i++){
+        relative_error[i] = 0.0;
+      }
+
+      analytical_values_2x2Lattice(analytical_values, T);
+      heat_capacity_analytical = (analytical_values[1]-analytical_values[0]*analytical_values[0])*beta*beta;     //Stores the analytical expectation value for heat capacity
+      magnetic_susceptibility_analytical = (analytical_values[5])*beta;                                          //Stores the analytical expectation value for susceptibility
+
+
+      ofile.open(outfilename);
+      ofile2.open(outfilename2);
+      for (int i = 0; i <= number_of_MC_runs; i++){
+        E = E_initial;
+        M = M_initial;
+        spin_matrix = initial_spin_matrix;
+        expectation_values = initial_expectation_values;
+
+        //Main algo
+        Monte_Carlo_Metropolis(MC_cycles[i], n, spin_matrix, J, E, M, boltzmann_distribution, expectation_values, beta);
+
+
+        heat_capacity = (expectation_values[1]-expectation_values[0]*expectation_values[0])*beta*beta;             //Stores the computed expectation value for heat capacity
+        magnetic_susceptibility = (expectation_values[5]-(expectation_values[4]*expectation_values[4]))*beta;      //Stores the computed expectation value for susceptibility
+
+
+        relative_error[0] = abs((analytical_values[0]-expectation_values[0])/analytical_values[0]);   //Stores relative error in E
+        relative_error[1] = abs((analytical_values[1]-expectation_values[1])/analytical_values[1]);   //Stores relative error in E_squared
+        relative_error[2] = abs((analytical_values[2]-expectation_values[2])/analytical_values[2]);   //Stores relative error in Mabs
+        relative_error[3] = abs((analytical_values[3]-expectation_values[3])/analytical_values[3]);   //Stores relative error in Mabs_squared
+        relative_error[4] = abs((analytical_values[5]-expectation_values[5])/analytical_values[5]);   //Stores relative error in M_squared
+        relative_error[5] = abs((heat_capacity_analytical-heat_capacity)/heat_capacity_analytical);   //Stores relative error in Heat Capacity
+        relative_error[6] = abs((magnetic_susceptibility_analytical-magnetic_susceptibility)/magnetic_susceptibility_analytical);  //Stores relative error in Magnetic susceptibility
+
+    ofile << setprecision(9) << MC_cycles[i] << " " << setprecision(9) << expectation_values[0] << " " << setprecision(9) << expectation_values[1] << " " << setprecision(9) << expectation_values[2]
+    << " " << setprecision(9) << expectation_values[3]<< " " << setprecision(9) << expectation_values[4] << " " << setprecision(9) << expectation_values[5] << " " << setprecision(9) << heat_capacity
+    << " " << setprecision(9) << magnetic_susceptibility << endl ;
+
+
+    ofile2 << setprecision(9) << MC_cycles[i] << " " << setprecision(9) << relative_error[0] << " " << setprecision(9) << relative_error[1] << " " << setprecision(9) << relative_error[2]
+    << " " << setprecision(9) << relative_error[3]<< " " << setprecision(9) << relative_error[4] << " " << setprecision(9) << relative_error[5] << " " << setprecision(9) << relative_error[6] << endl;
+    }
+    ofile.close();
+    ofile2.close();
+  }
+
+
+    ofile.open(outfilename);
+    for (int i = 0; i <= number_of_MC_runs; i++){
+      E = E_initial;
+      M = M_initial;
+      spin_matrix = initial_spin_matrix;
+
+      //Main algo
+      Monte_Carlo_Metropolis(MC_cycles[i], n, spin_matrix, J, E, M, boltzmann_distribution, expectation_values, beta);
+
+      ofile << setprecision(9) << MC_cycles[i] << " " << setprecision(9) << expectation_values[0] << " " << setprecision(9) << expectation_values[1] << " " << setprecision(9) << expectation_values[2]
+      << " " << setprecision(9) << expectation_values[3]<< " " << setprecision(9) << expectation_values[4] << " " << setprecision(9) << expectation_values[5] << endl;
+
+    }
+    ofile.close();
+
+
+  }
+
+  if (number_of_temperatures == 1 && number_of_MC_runs == 1){
+    double T = atof(args[7]);
     double* expectation_values;
-    double* analytical_values;
-    double* relative_error;
     expectation_values = new double[6];         //expectation_values = (E, E^2, |M|, |M|^2, M, M^2).
-    analytical_values = new double[6];
-    relative_error = new double[7];
-    double n_spins = (double) n*n;
+
 
     //Hardcode initial expectation values to zero.
     for (int i = 0; i < 6; i++){
       expectation_values[i] = 0.0;
-    }
-
-    for (int i = 0; i < 6; i++){
-      analytical_values[i] = 0.0;
-    }
-
-    for (int i = 0; i < 7; i++){
-      relative_error[i] = 0.0;
     }
 
     //Computing the boltzmann distribution for 5 values of dE
@@ -98,80 +194,18 @@ int main(int nargs, char* args[]){
       boltzmann_distribution[i + 8] = exp(-beta*i);
     }
 
-    Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values, beta);
-    analytical_values_2x2Lattice(analytical_values, T);
-
-    double magnetic_susceptibility;                //Stores the computed magnetic susceptibilities for each temperature
-    double magnetic_susceptibility_analytical;     //Stores the analytical magnetic susceptibilities for each temperature
-    double heat_capacity;                          //Stores the computed heat capacity for each temperature.
-    double heat_capacity_analytical;               //Stores the analytical heat capacity for each temperature.
-
-    heat_capacity_analytical = (analytical_values[1]-analytical_values[0]*analytical_values[0])*beta*beta;     //Stores the analytical expectation value for heat capacity
-    magnetic_susceptibility_analytical = (analytical_values[5])*beta;                                          //Stores the analytical expectation value for susceptibility
-
-
-    heat_capacity = (expectation_values[1]-expectation_values[0]*expectation_values[0])*beta*beta;             //Stores the computed expectation value for heat capacity
-    magnetic_susceptibility = (expectation_values[5]-(expectation_values[4]*expectation_values[4]))*beta;      //Stores the computed expectation value for susceptibility
-
-
-
-    //Stores relative error in E, E_squared, Mabs, Mabs_squared, M_squared (in that order)
-
-    relative_error[0] = abs((analytical_values[0]-expectation_values[0])/analytical_values[0]);   //Stores relative error in E
-    relative_error[1] = abs((analytical_values[1]-expectation_values[1])/analytical_values[1]);   //Stores relative error in E_squared
-    relative_error[2] = abs((analytical_values[2]-expectation_values[2])/analytical_values[2]);   //Stores relative error in Mabs
-    relative_error[3] = abs((analytical_values[3]-expectation_values[3])/analytical_values[3]);   //Stores relative error in Mabs_squared
-    relative_error[4] = abs((analytical_values[5]-expectation_values[5])/analytical_values[5]);    //Stores relative error in M_squared
-    relative_error[5] = abs((heat_capacity_analytical-heat_capacity)/heat_capacity_analytical);   //Stores relative error in Heat Capacity
-    relative_error[6] = abs((magnetic_susceptibility_analytical-magnetic_susceptibility)/magnetic_susceptibility_analytical);  //Stores relative error in Magnetic susceptibility
-
-    //Prints exact and computed values to screen for the case T = 1 with a (2 x 2)-lattice.
-    cout << "----------------Exact Values--------------------------- " << endl;
-    cout << "E = " << analytical_values[0] << endl;
-    cout << " E^2 = " << analytical_values[1] << endl;
-    cout << "|M| = " << analytical_values[2] << endl;
-    cout << "|M|^2 = " << analytical_values[3] << endl;
-    cout << "M = "<< analytical_values[4] << endl;
-    cout << "M^2 = " << analytical_values[5] << endl;
-    cout << "C_v = " << heat_capacity_analytical << endl;
-    cout << "X = "  << magnetic_susceptibility_analytical << endl;
-    cout << "-------------------Computed Values-------------------------" << endl;
-    cout << "E = " << expectation_values[0] << endl;              // E =
-    cout << "E^2 = " << expectation_values[1] << endl;
-    cout << "|M| = " << expectation_values[2] << endl;
-    cout << "|M|^2 = " << expectation_values[3] << endl;
-    cout << "M = " << expectation_values[4] << endl;
-    cout << "M^2 = " << expectation_values[5] << endl;
-    cout << "C_v = " << heat_capacity << endl;
-    cout << "X = "  << magnetic_susceptibility << endl;
-    cout << "-------------------Relative Error-------------------------" << endl;
-    cout << "E = " << relative_error[0] << endl;              // E =
-    cout << "E^2 = " << relative_error[1] << endl;
-    cout << "|M| = " << relative_error[2] << endl;
-    cout << "|M|^2 = " << relative_error[3] << endl;
-    cout << "M^2 = " << relative_error[4] << endl;
-    cout << "C_v = " << relative_error[5] << endl;
-    cout << "X = "  << relative_error[6] << endl;
-
-
-
-
-
+    Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, boltzmann_distribution, expectation_values, beta);
 
   }
 
 
-  if (number_of_temperatures > 1){
-    T_initial = atof(args[6]);                      //Initial temperature
-    T_final = atof(args[7]);                        //Final temperature
+  if (number_of_temperatures > 1 && number_of_MC_runs == 1){
+    T_initial = atof(args[7]);                      //Initial temperature
     step_size = atof(args[8]);                      //temperature step size.
 
     double** expectation_values;                    //matrix to store computed expectation values.
-    int** initial_spin_matrix;                      //Stores the initial spin matrix.
-    double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
     double* magnetic_susceptibility;                //Stores the computed magnetic susceptibilities for each temperature
     double* heat_capacity;                          //Stores the computed heat capacity for each temperature.
-    int n_spins = n*n;                              //Total number of spins.
 
     magnetic_susceptibility = new double[number_of_temperatures + 1];
     heat_capacity = new double[number_of_temperatures + 1];
@@ -208,7 +242,7 @@ int main(int nargs, char* args[]){
       }
 
       //Metro time.
-      Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values[i],beta);
+      Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, boltzmann_distribution, expectation_values[i],beta);
 
       //Computing magnetic susceptibility and heat capacity for each temperature
 
@@ -234,6 +268,9 @@ int main(int nargs, char* args[]){
     //Write the computed expectation values to file here...
 
   }
+
+
+
 
   return 0;
 }
@@ -284,25 +321,26 @@ void initialize_random(int dimensions, int **spin_matrix, double& E, double& M){
   }
 
 
-void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, double& M, double& E_squared, double& M_squared,
-                            double* boltzmann_distribution, double* expectation_values, double beta){
+void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* expectation_values, double beta){
 
 
-  //SPØR OM DET HER!!!!! 
+  //SPØR OM DET HER KAN SENDES INN SÅ DET IKKE MÅ LAGES HVER ITERASJON!!!!!
   random_device rd;
   mt19937_64 gen(rd());
   uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
   uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
 
   int x_flip, y_flip, dE, dM, n_spins;
-  double E_sum, M_sum, Mabs_sum, Mabs_sum_squared;
+  double E_sum, M_sum, Mabs_sum, Mabs_sum_squared, E_squared, M_squared;
 
   n_spins = n*n;
 
-  E_sum = 0;
-  M_sum = 0;
+  E_sum = 0.0;
+  M_sum = 0.0;
   Mabs_sum = 0.;
   Mabs_sum_squared = 0.;
+  E_squared = E*E;
+  M_squared = M*M;
 
   //Running over Monte Carlo samples
   for (int k = 0; k < MC; k++){
@@ -395,3 +433,34 @@ void analytical_values_2x2Lattice(double* analytical_values, double T){
   analytical_values[5] = M_squared_a;
 
 }
+
+
+/*
+//Prints exact and computed values to screen for the case T = 1 with a (2 x 2)-lattice.
+cout << "----------------Exact Values--------------------------- " << endl;
+cout << "E = " << analytical_values[0] << endl;
+cout << " E^2 = " << analytical_values[1] << endl;
+cout << "|M| = " << analytical_values[2] << endl;
+cout << "|M|^2 = " << analytical_values[3] << endl;
+cout << "M = "<< analytical_values[4] << endl;
+cout << "M^2 = " << analytical_values[5] << endl;
+cout << "C_v = " << heat_capacity_analytical << endl;
+cout << "X = "  << magnetic_susceptibility_analytical << endl;
+cout << "-------------------Computed Values-------------------------" << endl;
+cout << "E = " << expectation_values[0] << endl;              // E =
+cout << "E^2 = " << expectation_values[1] << endl;
+cout << "|M| = " << expectation_values[2] << endl;
+cout << "|M|^2 = " << expectation_values[3] << endl;
+cout << "M = " << expectation_values[4] << endl;
+cout << "M^2 = " << expectation_values[5] << endl;
+cout << "C_v = " << heat_capacity << endl;
+cout << "X = "  << magnetic_susceptibility << endl;
+cout << "-------------------Relative Error-------------------------" << endl;
+cout << "E = " << relative_error[0] << endl;              // E =
+cout << "E^2 = " << relative_error[1] << endl;
+cout << "|M| = " << relative_error[2] << endl;
+cout << "|M|^2 = " << relative_error[3] << endl;
+cout << "M^2 = " << relative_error[4] << endl;
+cout << "C_v = " << relative_error[5] << endl;
+cout << "X = "  << relative_error[6] << endl;
+*/
