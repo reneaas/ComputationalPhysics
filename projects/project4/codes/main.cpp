@@ -153,6 +153,7 @@ int main(int nargs, char* args[]){
       Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values[i]);
 
       //Compute magnetic susceptibility and heat capacity for each temperature here...
+      magnetic_susceptibility[i] = (analytical_values[1]-analytical_values[0]*analytical_values[0])/(i*i);
 
     }
 
