@@ -67,7 +67,7 @@ int main(int nargs, char* args[]){
 
     //Hardcode initial expectation values to zero.
     for (int i = 0; i < 6; i++){
-      expectation_values[i] = 0.;
+      expectation_values[i] = 0.0;
     }
     //Computing the boltzmann distribution for 5 values of dE
     double beta = 1/(T);                //k_B = 1
@@ -118,10 +118,17 @@ int main(int nargs, char* args[]){
     M_initial = M;
     initial_spin_matrix = spin_matrix;
 
-    expectation_values = new double*[number_of_temperatures + 1];       //a vector for each temperature.
+    expectation_values = new double*[number_of_temperatures + 1];       //a vector for computed expectation values for each temperature.
     for (int i = 0; i <= number_of_temperatures; i++){
       expectation_values[i] = new double[5];
     }
+
+    analytical_values = new double*[number_of_temperatures + 1];
+    for (int i = 0; i <= number_of_temperatures; i++){
+      analytical_values[i] = new double[5];
+    }
+
+
 
     //Store temperatures to loop over.
     double* temperatures;
@@ -146,6 +153,7 @@ int main(int nargs, char* args[]){
       Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values[i]);
 
       //Compute magnetic susceptibility and heat capacity for each temperature here...
+
     }
 
     //Printing out just to test.
@@ -220,7 +228,7 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
         dM = 2*spin_matrix[x_flip][y_flip];
       }
       else{
-        dE = 0;
+        dE = 0;                             //Rejecting the flip
         dM = 0;
       }
 
@@ -253,6 +261,23 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
   expectation_values[4] = M_sum;
   expectation_values[5] = Mabs_sum_squared;
 
+  double Z_a,E_a,M_a,E_squared_a,M_squared_a, Mabs_a, Mabs_squared_a;
+
+  Z_a =  4*(3 + cosh(8/T));
+  E_a = -32*sinh(8/T)/Z;
+  E_squared_a = 256*cosh(8*Tk_inv)/Z
+  M_a = 0;
+  M_squared_a = 32*(exp(8*Tk_inv) + 1)*Tk_inv/Z ;
+  Mabs_a =  8*(exp(8*Tk_inv) + 2)/Z;
+  Mabs_squared_a = (32*exp(8*Tk_inv) + 4)/Z);
+
+  analytical_values[0] = E_a;
+  analytical_values[1] = E_squared_a;
+  analytical_values[2] = Mabs_a;
+  analytical_values[3] = Mabs_squared_a;
+  analytical_values[4] = M_a;
+  analytical_values[5] = M_squared_a;
+
   /*
   //Store the computed expectation values per spin.
   expectation_values[0] = E_sum/((double) n_spins);
@@ -262,6 +287,5 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
   expectation_values[4] = M_sum/((double) n_spins);
   expectation_values[5] = Mabs_sum_squared/((double) n_spins);
   */
-
 
 }
