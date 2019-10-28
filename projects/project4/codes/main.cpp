@@ -16,7 +16,7 @@ ofstream ofile;               //Global variable for writing results to file.
 
 //Declaration of functions.
 void initialize(int, int **, double&, double&);
-void Monte_Carlo_Metropolis(int, int, int **, int, double&, double&, double&, double&, double*, double*);
+void Monte_Carlo_Metropolis(int, int, int **, int, double&, double&, double&, double&, double*, double*, double*, double);
 
 inline int periodic(int coordinate, int dimensions, int step) {
   return (coordinate+dimensions+step) % (dimensions);
@@ -62,6 +62,7 @@ int main(int nargs, char* args[]){
   if (number_of_temperatures == 1){
     double T = atof(args[5]);
     double* expectation_values;
+    double* analytical_values;
     expectation_values = new double[6];         //expectation_values = (E, E^2, |M|, |M|^2, M, M^2).
     double n_spins = (double) n*n;
 
@@ -75,7 +76,7 @@ int main(int nargs, char* args[]){
       boltzmann_distribution[i + 8] = exp(-beta*i);
     }
 
-    Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values);
+    Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values, analytical_values, beta);
 
     //Prints exact and computed values to screen for the case T = 1 with a (2 x 2)-lattice.
     cout << "----------------Exact values--------------------------- " << endl;
@@ -99,18 +100,24 @@ int main(int nargs, char* args[]){
 
 
   if (number_of_temperatures > 1){
-    T_initial = atof(args[5]);          //Initial temperature
-    T_final = atof(args[6]);            //Final temperature
-    step_size = atof(args[7]);          //temperature step size.
-    double** expectation_values;        //matrix to store expectation values.
-    int** initial_spin_matrix;          //Stores the initial spin matrix.
-    double E_initial, M_initial;        //Stores initial energy and magnetization of system.
-    double* magnetic_susceptibility;    //Stores the computed magnetic susceptibilities for each temperature
-    double* heat_capacity;              //Stores heat capacity for each temperature.
-    int n_spins = n*n;                  //Total number of spins.
+    T_initial = atof(args[5]);                      //Initial temperature
+    T_final = atof(args[6]);                        //Final temperature
+    step_size = atof(args[7]);                      //temperature step size.
+    double** expectation_values;                    //matrix to store computed expectation values.
+    double** analytical_values;                     //matrix to store analytical expectation values.
+    int** initial_spin_matrix;                      //Stores the initial spin matrix.
+    double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
+    double* magnetic_susceptibility;                //Stores the computed magnetic susceptibilities for each temperature
+    double* magnetic_susceptibility_analytical;     //Stores the analytical magnetic susceptibilities for each temperature
+    double* heat_capacity;                          //Stores the computed heat capacity for each temperature.
+    double* heat_capacity_analytical;               //Stores the analytical heat capacity for each temperature.
+    int n_spins = n*n;                              //Total number of spins.
 
     magnetic_susceptibility = new double[number_of_temperatures + 1];
     heat_capacity = new double[number_of_temperatures + 1];
+
+    magnetic_susceptibility_analytical = new double[number_of_temperatures + 1];
+    heat_capacity_analytical = new double[number_of_temperatures + 1];
 
 
     //Store the initial values of the system.
@@ -123,7 +130,7 @@ int main(int nargs, char* args[]){
       expectation_values[i] = new double[5];
     }
 
-    analytical_values = new double*[number_of_temperatures + 1];
+    analytical_values = new double*[number_of_temperatures + 1];        //a vector for analytical expectation values for each temperature.
     for (int i = 0; i <= number_of_temperatures; i++){
       analytical_values[i] = new double[5];
     }
@@ -150,10 +157,15 @@ int main(int nargs, char* args[]){
       }
 
       //Metro time.
-      Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values[i]);
+      Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values[i], analytical_values[i],beta);
 
-      //Compute magnetic susceptibility and heat capacity for each temperature here...
-      magnetic_susceptibility[i] = (analytical_values[1]-analytical_values[0]*analytical_values[0])/(i*i);
+      //Computing magnetic susceptibility and heat capacity for each temperature
+      
+      heat_capacity_analytical[i] = (analytical_values[1]-analytical_values[0]*analytical_values[0])*beta*beta;     //Stores the analytical expectation value for heat capacity for a given temperature
+      magnetic_susceptibility_analytical[i] = (analytical_values[5])*beta;                                          //Stores the analytical expectation value for susceptibility for a given temperature
+
+      heat_capacity[i] = (expectation_values[1]-expectation_values[0]*expectation_values[0])*beta*beta;             //Stores the computed expectation value for heat capacity for a given temperature
+      magnetic_susceptibility[i] = (expectation_values[5]-expectation_values[4]*expectation_values[4])*beta;        //Stores the computed expectation value for susceptibility for a given temperature
 
     }
 
@@ -188,7 +200,7 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M){
 
 
 void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, double& M, double& E_squared, double& M_squared,
-                            double* boltzmann_distribution, double* expectation_values){
+                            double* boltzmann_distribution, double* expectation_values, double* analytical_values, double beta){
 
   random_device rd;
   mt19937_64 gen(rd());
@@ -264,13 +276,13 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
 
   double Z_a,E_a,M_a,E_squared_a,M_squared_a, Mabs_a, Mabs_squared_a;
 
-  Z_a =  4*(3 + cosh(8/T));
-  E_a = -32*sinh(8/T)/Z;
-  E_squared_a = 256*cosh(8*Tk_inv)/Z
+  Z_a =  4*(3 + cosh(8*beta));
+  E_a = -32*sinh(8*beta)/Z_a;
+  E_squared_a = 256*cosh(8*beta)/Z_a;
   M_a = 0;
-  M_squared_a = 32*(exp(8*Tk_inv) + 1)*Tk_inv/Z ;
-  Mabs_a =  8*(exp(8*Tk_inv) + 2)/Z;
-  Mabs_squared_a = (32*exp(8*Tk_inv) + 4)/Z);
+  M_squared_a = 32*(exp(8*beta) + 1)*beta/Z_a ;
+  Mabs_a =  8*(exp(8*beta) + 2)/Z_a;
+  Mabs_squared_a = (32*exp(8*beta) + 4)/Z_a;
 
   analytical_values[0] = E_a;
   analytical_values[1] = E_squared_a;
