@@ -150,12 +150,15 @@ int main(int nargs, char* args[]){
     << " " << setprecision(9) << expectation_values[3]<< " " << setprecision(9) << expectation_values[4] << " " << setprecision(9) << expectation_values[5] << " " << setprecision(9) << heat_capacity
     << " " << setprecision(9) << magnetic_susceptibility << endl ;
 
+    cout << expectation_values[0] << endl;
 
     ofile2 << setprecision(9) << MC_cycles[i] << " " << setprecision(9) << relative_error[0] << " " << setprecision(9) << relative_error[1] << " " << setprecision(9) << relative_error[2]
     << " " << setprecision(9) << relative_error[3]<< " " << setprecision(9) << relative_error[4] << " " << setprecision(9) << relative_error[5] << " " << setprecision(9) << relative_error[6] << endl;
     }
     ofile.close();
     ofile2.close();
+
+
   }
 
 
@@ -194,7 +197,18 @@ int main(int nargs, char* args[]){
       boltzmann_distribution[i + 8] = exp(-beta*i);
     }
 
-    Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, boltzmann_distribution, expectation_values, beta);
+    Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, expectation_values, beta);
+
+
+    cout << "-------------------Computed Values-------------------------" << endl;
+    cout << "E = " << expectation_values[0] << endl;              // E =
+    cout << "E^2 = " << expectation_values[1] << endl;
+    cout << "|M| = " << expectation_values[2] << endl;
+    cout << "|M|^2 = " << expectation_values[3] << endl;
+    cout << "M = " << expectation_values[4] << endl;
+    cout << "M^2 = " << expectation_values[5] << endl;
+
+
 
   }
 
@@ -346,7 +360,7 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
   for (int k = 0; k < MC; k++){
 
 
-    for (int j = 0; j < n_spins; j++){
+    //for (int j = 0; j < n_spins; j++){
       x_flip = RandomIntegerGenerator(gen);
       y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
 
@@ -373,7 +387,7 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
       E += dE;
       M += dM;
 
-    }
+    //}
 
     E_sum += (double) E;
     M_sum += (double) M;
