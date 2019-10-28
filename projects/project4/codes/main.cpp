@@ -51,7 +51,7 @@ int main(int nargs, char* args[]){
   E = 0;
   M = 0;
 
-  initialize = atos(args[5]);
+  initialize = string(args[5]);
 
   //filling spin matrix with s = +1 for all elements
   if (initialize == "ordered"){
@@ -99,6 +99,9 @@ int main(int nargs, char* args[]){
     }
 
     Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values, beta);
+
+
+    if (n == 2){
     analytical_values_2x2Lattice(analytical_values, T);
 
     double magnetic_susceptibility;                //Stores the computed magnetic susceptibilities for each temperature
@@ -154,6 +157,9 @@ int main(int nargs, char* args[]){
     cout << "X = "  << relative_error[6] << endl;
 
 
+    
+
+  }
 
 
 
@@ -288,7 +294,7 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
                             double* boltzmann_distribution, double* expectation_values, double beta){
 
 
-  //SPØR OM DET HER!!!!! 
+  //SPØR OM DET HER!!!!!
   random_device rd;
   mt19937_64 gen(rd());
   uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
