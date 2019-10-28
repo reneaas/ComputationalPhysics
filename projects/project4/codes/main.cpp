@@ -117,17 +117,13 @@ int main(int nargs, char* args[]){
         relative_error[i] = 0.0;
       }
 
-<<<<<<< HEAD
-    Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values, beta);
-
 
     if (n == 2){
-    analytical_values_2x2Lattice(analytical_values, T);
-=======
+      
       analytical_values_2x2Lattice(analytical_values, T);
       heat_capacity_analytical = (analytical_values[1]-analytical_values[0]*analytical_values[0])*beta*beta;     //Stores the analytical expectation value for heat capacity
       magnetic_susceptibility_analytical = (analytical_values[5])*beta;                                          //Stores the analytical expectation value for susceptibility
->>>>>>> a6ecffac8ba71c1d1930854ca1bfe9b0c071817a
+
 
 
       ofile.open(outfilename);
