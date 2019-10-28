@@ -25,8 +25,13 @@ inline int periodic(int coordinate, int dimensions, int step) {
 //Main program
 int main(int nargs, char* args[]){
 
+<<<<<<< HEAD
+  string outfilename, number_of_temperatures;
+  double E, M,boltzmann_distribution[9];
+=======
   string outfilename;
   double E, M,boltzmann_distribution[17];
+>>>>>>> f120a5b26d26e3bdb94c414b49193a8286232487
   double T_initial, T_final, step_size;   //Variables to define temperature vector
   int n, MC_cycles, J, number_of_temperatures;
 
@@ -45,13 +50,37 @@ int main(int nargs, char* args[]){
     spin_matrix[i] = new int[n];
   }
 
+<<<<<<< HEAD
+  //Computing the boltzmann distribution for 5 values of dE
+  double beta = 1/(T);                //k_B = 1
+  for (int i = 0; i < 9; i+=4){
+    boltzmann_distribution[i] = exp(-beta*i);
+  }
+
+=======
+>>>>>>> f120a5b26d26e3bdb94c414b49193a8286232487
   E = 0;
   M = 0;
 
   //filling spin matrix with arbitrary spin values
   initialize(n, spin_matrix, E, M);
 
+<<<<<<< HEAD
+
+<<<<<<< HEAD
+    int x_flip, y_flip, J;
+    double dE, dM, dE_squared, dM_squared;                //Change in energy and magnetization
+
+    dE_squared = 0;
+    dM_squared = 0;
+
+    J = 1;
+=======
+
+=======
+>>>>>>> 2eac3fd99d72ff368461d68a37957b095cacb5ec
   double E_squared, M_squared;                //Change in energy and magnetization
+>>>>>>> f120a5b26d26e3bdb94c414b49193a8286232487
 
   E_squared = E*E;
   M_squared = M*M;
@@ -64,6 +93,24 @@ int main(int nargs, char* args[]){
     expectation_values = new double[6];         //expectation_values = (E, E^2, |M|, |M|^2, M, M^2).
     double n_spins = (double) n*n;
 
+<<<<<<< HEAD
+    spin_matrix[x_flip][y_flip] *= (-1);
+
+    dM = M + 2*spin_matrix[x_flip][y_flip]*spin_matrix[x_flip][y_flip];
+
+    for (int i = 0; i < n; i++){
+      for (int j = 0; j < n; j++){
+        dE = (double) 2*J*spin_matrix[x_flip][y_flip] * (spin_matrix[periodic(x_flip,dimensions,1)][y_flip] + spin_matrix[periodic(x_flip, dimensions,-1)][y_flip] + spin_matrix[x_flip][periodic(y_flip, dimensions,1)] + spin_matrix[x_flip][periodic(y_flip, dimensions,-1)]);
+      }
+    }
+
+    //Metropolis algorithm
+    if (dE >= 0){
+      r = RandomNumberGenerator(gen);
+      P = boltzmann_distribution[dE];          //Probability from boltzmann distribution
+      if (r > P){
+        spin_matrix[x_flip][y_flip] *= (-1);   //Rejecting the flip
+=======
     //Hardcode initial expectation values to zero.
     for (int i = 0; i < 6; i++){
       expectation_values[i] = 0.0;
@@ -93,6 +140,7 @@ int main(int nargs, char* args[]){
     cout << "M = " << expectation_values[4] << endl;
     cout << "M^2 = " << expectation_values[5] << endl;
 
+>>>>>>> f120a5b26d26e3bdb94c414b49193a8286232487
 
   }
 
@@ -176,7 +224,17 @@ int main(int nargs, char* args[]){
       cout << "Computed = " << heat_capacity[i] << endl;
       cout << "Analytical = " << heat_capacity_analytical[i] << endl;
 
+
     }
+<<<<<<< HEAD
+
+    E += dE;                //Computing change in energy
+    M += dM;                //Computing change in magnetization
+    dE_squared += dE*dE;
+    dM_squared += dM*dM;
+  }
+=======
+>>>>>>> f120a5b26d26e3bdb94c414b49193a8286232487
 
     //Printing out just to test.
     for (int i = 0; i <= number_of_temperatures; i++){
@@ -185,13 +243,10 @@ int main(int nargs, char* args[]){
 
 
     //Write the computed expectation values to file here...
-    for (int i=0;i<=number_of_temperatures;i++){
-     cout<<"CompVal"<< *expectation_values[i] <<endl;
-    }
-    return 0;
 
   }
 
+  return 0;
 }
 
 void initialize(int dimensions, int **spin_matrix, double& E, double& M){
@@ -211,6 +266,11 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M){
   }
 
 
+<<<<<<< HEAD
+void Monte_Carlo_Metropolis(){
+
+
+=======
 void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, double& M, double& E_squared, double& M_squared,
                             double* boltzmann_distribution, double* expectation_values, double* analytical_values, double beta){
 
@@ -312,5 +372,6 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
   expectation_values[4] = M_sum/((double) n_spins);
   expectation_values[5] = Mabs_sum_squared/((double) n_spins);
   */
+>>>>>>> f120a5b26d26e3bdb94c414b49193a8286232487
 
 }
