@@ -10,7 +10,7 @@ os.system("c++ -O3 -o main.exe main.cpp")
 number_of_temperatures = int(input("Number of temperatures: "))
 
 if number_of_temperatures == 1:
-    T = float(input("T: "))
+    T = float(input("Temperature: "))
     MC_cycles = int(input("Number of Monte Carlo cycles: "))
     n_spins = int(input("Number of spins in each direction = "))
     outfilename = "random.txt"

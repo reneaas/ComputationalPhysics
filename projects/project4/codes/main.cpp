@@ -53,7 +53,7 @@ int main(int nargs, char* args[]){
 
 
 
-  double E_squared, M_squared;                //Change in energy and magnetization
+  double E_squared, M_squared;                //Variables to store energy and magnetization squared
 
   E_squared = E*E;
   M_squared = M*M;
@@ -69,11 +69,13 @@ int main(int nargs, char* args[]){
     for (int i = 0; i < 6; i++){
       expectation_values[i] = 0.0;
     }
-    //Computing the boltzmann distribution for 5 values of dE
+
+    //Computing the boltzmann distribution for 5 values of possible changes in energy (dE)
     double beta = 1/(T);                //k_B = 1
     for (int i = -8; i < 9; i+=4){
       boltzmann_distribution[i + 8] = exp(-beta*i);
     }
+
 
     Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values);
 
@@ -123,11 +125,12 @@ int main(int nargs, char* args[]){
       expectation_values[i] = new double[5];
     }
 
+/*
     analytical_values = new double*[number_of_temperatures + 1];
     for (int i = 0; i <= number_of_temperatures; i++){
       analytical_values[i] = new double[5];
     }
-
+*/
 
 
     //Store temperatures to loop over.
@@ -152,9 +155,12 @@ int main(int nargs, char* args[]){
       //Metro time.
       Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values[i]);
 
-      //Compute magnetic susceptibility and heat capacity for each temperature here...
-      magnetic_susceptibility[i] = (analytical_values[1]-analytical_values[0]*analytical_values[0])/(i*i);
 
+/*
+      //Compute magnetic susceptibility and heat capacity for each temperature here...
+      heat_capacity[i] = (analytical_values[1]-analytical_values[0]*analytical_values[0])*beta*beta;
+      magnetic_susceptibility[i] =
+*/
     }
 
     //Printing out just to test.
@@ -211,7 +217,7 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
 
     for (int j = 0; j < n_spins; j++){
       x_flip = RandomIntegerGenerator(gen);
-      y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
+      y_flip = RandomIntegerGenerator(gen);      //Randomized indices for the flipped matrix element
 
 
       dE =  2*J*spin_matrix[x_flip][y_flip] * (spin_matrix[periodic(x_flip,n,1)][y_flip]
@@ -254,6 +260,7 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
   Mabs_sum /= (double) MC;
   Mabs_sum_squared /= (double) MC;
 
+
   //Store the computed expectation values
   expectation_values[0] = E_sum;
   expectation_values[1] = E_squared;
@@ -262,6 +269,7 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
   expectation_values[4] = M_sum;
   expectation_values[5] = Mabs_sum_squared;
 
+/*
   double Z_a,E_a,M_a,E_squared_a,M_squared_a, Mabs_a, Mabs_squared_a;
 
   Z_a =  4*(3 + cosh(8/T));
@@ -279,7 +287,7 @@ void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, 
   analytical_values[4] = M_a;
   analytical_values[5] = M_squared_a;
 
-  /*
+
   //Store the computed expectation values per spin.
   expectation_values[0] = E_sum/((double) n_spins);
   expectation_values[1] = E_squared/((double) n_spins);
