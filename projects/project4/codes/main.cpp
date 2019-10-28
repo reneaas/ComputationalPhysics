@@ -51,8 +51,6 @@ int main(int nargs, char* args[]){
   //filling spin matrix with arbitrary spin values
   initialize(n, spin_matrix, E, M);
 
-
-
   double E_squared, M_squared;                //Change in energy and magnetization
 
   E_squared = E*E;
@@ -103,6 +101,7 @@ int main(int nargs, char* args[]){
     T_initial = atof(args[5]);                      //Initial temperature
     T_final = atof(args[6]);                        //Final temperature
     step_size = atof(args[7]);                      //temperature step size.
+
     double** expectation_values;                    //matrix to store computed expectation values.
     double** analytical_values;                     //matrix to store analytical expectation values.
     int** initial_spin_matrix;                      //Stores the initial spin matrix.
@@ -136,13 +135,13 @@ int main(int nargs, char* args[]){
     }
 
 
-
     //Store temperatures to loop over.
     double* temperatures;
     temperatures = new double[number_of_temperatures+1];
     for (int i = 0; i <= number_of_temperatures; i++){
       temperatures[i] = T_initial + (double) step_size*i;
     }
+
 
     for (int i = 0; i <= number_of_temperatures; i++){
       //Makes sure that we use the same initial state for each simulation.
@@ -160,9 +159,23 @@ int main(int nargs, char* args[]){
       Monte_Carlo_Metropolis(MC_cycles, n, spin_matrix, J, E, M, E_squared,  M_squared, boltzmann_distribution, expectation_values[i], analytical_values[i],beta);
 
       //Computing magnetic susceptibility and heat capacity for each temperature
-      /*
-      heat_capacity_analytical[i] = (analytical_values[1]-analytical_values[0]*analytical_values[0])*beta*beta;     //Stores the analytical expectation value for heat capacity for a given temperature
-      magnetic_susceptibility_analytical[i] = (analytical_values[5])*beta;                                          //Stores the analytical expectation value for susceptibility for a given temperature
+      heat_capacity_analytical[i] = (analytical_values[i][1]-analytical_values[i][0]*analytical_values[i][0])*beta*beta;     //Stores the analytical expectation value for heat capacity for a given temperature
+      magnetic_susceptibility_analytical[i] = (analytical_values[i][5])*beta;                                                //Stores the analytical expectation value for susceptibility for a given temperature
+
+
+      heat_capacity[i] = (expectation_values[i][1]-expectation_values[i][0]*expectation_values[i][0])*beta*beta;             //Stores the computed expectation value for heat capacity for a given temperature
+      magnetic_susceptibility[i] = (expectation_values[i][5]-(expectation_values[i][4]*expectation_values[i][4]))*beta;        //Stores the computed expectation value for susceptibility for a given temperature
+
+
+      //Prints exact and computed values to screen
+      cout << "----------------T = " << temperatures[i] <<"---------------" << endl;
+      cout << "----------------Magnetic susceptibility------------- " << endl;
+      cout << "Computed = " << magnetic_susceptibility[i] << endl;
+      cout << "Analytical = " << magnetic_susceptibility_analytical[i] << endl;
+      cout << "-------------------Heat capacity ------------------" << endl;
+      cout << "Computed = " << heat_capacity[i] << endl;
+      cout << "Analytical = " << heat_capacity_analytical[i] << endl;
+
 
       heat_capacity[i] = (expectation_values[1]-expectation_values[0]*expectation_values[0])*beta*beta;             //Stores the computed expectation value for heat capacity for a given temperature
       magnetic_susceptibility[i] = (expectation_values[5]-expectation_values[4]*expectation_values[4])*beta;        //Stores the computed expectation value for susceptibility for a given temperature
