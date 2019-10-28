@@ -215,7 +215,7 @@ int main(int nargs, char* args[]){
       heat_capacity[i] = (expectation_values[i][1]-expectation_values[i][0]*expectation_values[i][0])*beta*beta;             //Stores the computed expectation value for heat capacity for a given temperature
       magnetic_susceptibility[i] = (expectation_values[i][5]-(expectation_values[i][4]*expectation_values[i][4]))*beta;        //Stores the computed expectation value for susceptibility for a given temperature
 
-      
+
       //Prints exact and computed values to screen
       cout << "----------------T = " << temperatures[i] <<"---------------" << endl;
       cout << "----------------Magnetic susceptibility------------- " << endl;
@@ -287,6 +287,8 @@ void initialize_random(int dimensions, int **spin_matrix, double& E, double& M){
 void Monte_Carlo_Metropolis(int MC, int n, int **spin_matrix, int J, double& E, double& M, double& E_squared, double& M_squared,
                             double* boltzmann_distribution, double* expectation_values, double beta){
 
+
+  //SPØR OM DET HER!!!!! 
   random_device rd;
   mt19937_64 gen(rd());
   uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
