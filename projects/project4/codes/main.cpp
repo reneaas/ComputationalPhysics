@@ -176,10 +176,6 @@ int main(int nargs, char* args[]){
       cout << "Computed = " << heat_capacity[i] << endl;
       cout << "Analytical = " << heat_capacity_analytical[i] << endl;
 
-
-      heat_capacity[i] = (expectation_values[1]-expectation_values[0]*expectation_values[0])*beta*beta;             //Stores the computed expectation value for heat capacity for a given temperature
-      magnetic_susceptibility[i] = (expectation_values[5]-expectation_values[4]*expectation_values[4])*beta;        //Stores the computed expectation value for susceptibility for a given temperature
-      */
     }
 
     //Printing out just to test.
