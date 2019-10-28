@@ -14,11 +14,11 @@ if number_of_temperatures == 1:
     MC_cycles = int(input("Number of Monte Carlo cycles: "))
     n_spins = int(input("Number of spins in each direction = "))
     outfilename = "random.txt"
-
+    initialize = "ordered"
 
     print("executing")
     command_line_args = str(number_of_temperatures) + " " + outfilename + " " + str(n_spins)\
-                        + " " + str(MC_cycles) + " " + str(T)
+                        + " " + str(MC_cycles) + " " + initialize + " " + str(T)
     os.system("./main.exe" + " " + command_line_args)
     #antall temp - outfilename - grid - MC_cycles - temp
 
@@ -29,7 +29,8 @@ else:
     step_size = (T_final - T_initial)/number_of_temperatures
     MC_cycles = int(input("Number of Monte Carlo cycles: "))
     n_spins = int(input("Number of spins in each direction = "))
+    initialize = "ordered"
     command_line_args = str(number_of_temperatures) + " " + outfilename + " " + str(n_spins)\
-                        + " " + str(MC_cycles) + " " + str(T_initial) + " " + str(T_final) + " " + str(step_size)
+                        + " " + str(MC_cycles) + " " + initialize + " " + str(T_initial) + " " + str(T_final) + " " + str(step_size)
 
     os.system("./main.exe" + " " + command_line_args)

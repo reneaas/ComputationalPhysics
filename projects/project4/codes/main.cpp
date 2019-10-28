@@ -26,7 +26,7 @@ inline int periodic(int coordinate, int dimensions, int step) {
 //Main program
 int main(int nargs, char* args[]){
 
-  string outfilename;
+  string outfilename, initialize;
   double E, M,boltzmann_distribution[17];
   double T_initial, T_final, step_size;   //Variables to define temperature vector
   int n, MC_cycles, J, number_of_temperatures;
@@ -49,8 +49,17 @@ int main(int nargs, char* args[]){
   E = 0;
   M = 0;
 
-  //filling spin matrix with arbitrary spin values
+  initialize = atos(args[5]);
+
+  //filling spin matrix with s = +1 for all elements
+  if (initialize == "ordered"){
   initialize_ordered(n, spin_matrix, E, M);
+  }
+
+  //filling spin matrix with arbitrary spin values
+  if (initialize == "random"){
+    initialize_random(n, spin_matrix, E, M);
+  }
 
   double E_squared, M_squared;                //Change in energy and magnetization
 
@@ -59,13 +68,13 @@ int main(int nargs, char* args[]){
   J = 1;                                     //Coupling constant
 
   if (number_of_temperatures == 1){
-    double T = atof(args[5]);
+    double T = atof(args[6]);
     double* expectation_values;
     double* analytical_values;
     double* relative_error;
-    expectation_values = new double[6];         //expectation_values = (E, E^2, |M|, |M|^2, M, M^2).
-    analytical_values = new double[6];
-    relative_error = new double[8];
+    expectation_values = new double[7];         //expectation_values = (E, E^2, |M|, |M|^2, M, M^2).
+    analytical_values = new double[8];
+    relative_error = new double[9];
     double n_spins = (double) n*n;
 
     //Hardcode initial expectation values to zero.
@@ -117,9 +126,9 @@ int main(int nargs, char* args[]){
 
 
   if (number_of_temperatures > 1){
-    T_initial = atof(args[5]);                      //Initial temperature
-    T_final = atof(args[6]);                        //Final temperature
-    step_size = atof(args[7]);                      //temperature step size.
+    T_initial = atof(args[6]);                      //Initial temperature
+    T_final = atof(args[7]);                        //Final temperature
+    step_size = atof(args[8]);                      //temperature step size.
 
     double** expectation_values;                    //matrix to store computed expectation values.
     double** analytical_values;                     //matrix to store analytical expectation values.
@@ -247,6 +256,8 @@ void initialize_random(int dimensions, int **spin_matrix, double& E, double& M){
     random_device rd;
     mt19937_64 gen(rd());
     uniform_real_distribution<double> RandomNumberGenerator(0,1);
+
+    double x;
 
     // setup spin matrix and intial magnetization
     for(int i = 0; i <dimensions; i++) {
