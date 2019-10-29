@@ -6,9 +6,10 @@ import os
 part = str(input("Which part of the project to run: [b,c,d]"))
 
 if part == "c":
+    T = 2.4
     path = "results/partC/"
-    infilename_ordered = "MC_" + str(int(4e7)) + "_n_20_ordered_.txt"
-    infilename_random = "MC_" + str(int(4e7)) + "_n_20_random_.txt"
+    infilename_ordered = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_ordered_.txt"
+    infilename_random = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_random_.txt"
     E_ordered = []
     M_ordered = []
     acceptance_ordered = []
@@ -35,14 +36,23 @@ if part == "c":
             acceptance_random.append(float(values[3]))
 
 
-    plt.plot(time[:10000], E_ordered[:10000], label = "E ordered")
-    plt.plot(time[:10000], E_random[:10000], label = "E random")
+    plt.plot(time[:], E_ordered[:], label = "E ordered")
+    plt.plot(time[:], E_random[:], label = "E random")
     plt.xlabel("t [cycles/spins]")
     plt.ylabel("E/spins")
+    plt.legend()
     plt.figure()
 
-    plt.plot(time[:10000], M_ordered[:10000], label = "M ordered")
-    plt.plot(time[:10000], M_random[:10000], label = "M random")
+    plt.plot(time[:], M_ordered[:], label = "M ordered")
+    plt.plot(time[:], M_random[:], label = "M random")
     plt.xlabel("t [cycles/spins]")
-    plt.ylabel("E/spins")
+    plt.ylabel("M/spins")
+    plt.legend()
+    plt.figure()
+
+    plt.plot(time[:], acceptance_random[:], label = "Accepted states (random)")
+    plt.plot(time[:], acceptance_ordered[:], label = "Accepted states (ordered)")
+    plt.xlabel("t [cycles/spins]")
+    plt.ylabel("Accepted spins")
+    plt.legend()
     plt.show()
