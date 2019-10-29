@@ -2,7 +2,6 @@ import numpy as np
 import os
 
 
-
 print("compiling")
 os.system("c++ -O3 -c main.cpp")
 os.system("c++ -O3 -o main.exe main.cpp")
