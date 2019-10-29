@@ -29,7 +29,7 @@ inline int periodic(int coordinate, int dimensions, int step) {
 //Main program
 int main(int nargs, char* args[]){
 
-  string outfilename, initializing;
+  string outfilename, outfilename2, initializing;
   double boltzmann_distribution[17];
   int n, MC_samples, J, number_of_temperatures;
   double E_squared, M_squared;
@@ -37,7 +37,7 @@ int main(int nargs, char* args[]){
   double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
   int n_spins;                                     //Total number of spins.
   double beta;
-  string outfilename2;
+
 
   //Read from command line
   number_of_temperatures = atoi(args[1]);
@@ -94,6 +94,7 @@ int main(int nargs, char* args[]){
     for (int k = 0; k < MC_samples; k++){
       ofile2 << energies[k] << endl;
     }
+    ofile2.close();
 
   }
 
