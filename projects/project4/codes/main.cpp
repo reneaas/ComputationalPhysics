@@ -11,7 +11,7 @@
 #include <omp.h>
 using namespace  std;
 
-ofstream ofile, ofile2;               //Global variable for writing results to file.
+ofstream ofile;               //Global variable for writing results to file.
 
 
 //Declaration of functions.
@@ -29,7 +29,7 @@ inline int periodic(int coordinate, int dimensions, int step) {
 //Main program
 int main(int nargs, char* args[]){
 
-  string outfilename, initializing;
+  string outfilename, outfilename2, initializing;
   double boltzmann_distribution[17];
   int n, MC_samples, J, number_of_temperatures;
   double E_squared, M_squared;
@@ -37,7 +37,7 @@ int main(int nargs, char* args[]){
   double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
   int n_spins;                                     //Total number of spins.
   double beta;
-  string outfilename2;
+
 
   //Read from command line
   number_of_temperatures = atoi(args[1]);
@@ -90,75 +90,14 @@ int main(int nargs, char* args[]){
     }
     ofile.close();
 
-    ofile2.open(outfilename2);
-    for (int k = 0; k < MC_samples; k++){
-      ofile2 << energies[k] << endl;
-    }
-
-  }
-
-  if (n == 2){
-    double *time, *acceptance;
-    double T = atof(args[6]);
-    double** expectation_values;
-    double* analytical_values;
-    double** relative_error;
-    int n_times;
-    string outfilename2 = "Expectation_values_n_2.txt";
-    string outfilename3 = "Relative_error_n_2.txt";
-
-    n_times = MC_samples/n_spins;
-    analytical_values = new double[8];
-    expectation_values = new double*[8];
-    relative_error = new double*[7];
-
-    time = new double[n_times];
-    acceptance = new double[n_times];
-
-    for (int i = 0; i < 8; i++){
-      expectation_values[i] = new double[n_times];
-    }
-
-    for (int i=0; i < 7; i++){
-      relative_error[i] = new double[n_times];
-    }
-
-
-    //Computing the boltzmann distribution for 5 values of dE
-    double beta = 1/(T);                //k_B = 1
-    for (int i = -8; i < 9; i+=4){
-      boltzmann_distribution[i + 8] = exp(-beta*i);
-    }
-
-
-    Monte_Carlo_Metropolis_2x2(MC_samples, n, spin_matrix, J,  E_initial, M_initial, boltzmann_distribution, time, acceptance, beta, expectation_values);
-
-    analytical_values_2x2Lattice(analytical_values, T);
-
     ofile.open(outfilename2);
-    ofile2.open(outfilename3);
-    for (int i = 0; i <= n_times; i++){
-
-      relative_error[0][i] = abs((analytical_values[0]-expectation_values[0][i])/analytical_values[0]);   //Stores relative error in E
-      relative_error[1][i] = abs((analytical_values[1]-expectation_values[1][i])/analytical_values[1]);   //Stores relative error in E_squared
-      relative_error[2][i] = abs((analytical_values[2]-expectation_values[2][i])/analytical_values[2]);   //Stores relative error in Mabs
-      relative_error[3][i] = abs((analytical_values[3]-expectation_values[3][i])/analytical_values[3]);   //Stores relative error in Mabs_squared
-      relative_error[4][i] = abs((analytical_values[5]-expectation_values[5][i])/analytical_values[5]);   //Stores relative error in M_squared
-      relative_error[5][i] = abs((analytical_values[6]-expectation_values[6][i])/analytical_values[6]);   //Stores relative error in Heat Capacity
-      relative_error[6][i] = abs((analytical_values[7]-expectation_values[7][i])/analytical_values[7]);   //Stores relative error in Magnetic susceptibility
-      cout << time[i] << endl;
-    ofile << setprecision(9) << time[i] << " " << setprecision(9) << expectation_values[0][i] << " " << setprecision(9) << expectation_values[1][i] << " " << setprecision(9) << expectation_values[2][i]
-    << " " << setprecision(9) << expectation_values[3][i]<< " " << setprecision(9) << expectation_values[4][i] << " " << setprecision(9) << expectation_values[5][i] << " " << setprecision(9) << expectation_values[6][i]
-    << " " << setprecision(9) << expectation_values[7][i] << endl ;
-
-
-    ofile2 << setprecision(9) << time[i] << " " << setprecision(9) << relative_error[0][i] << " " << setprecision(9) << relative_error[1][i] << " " << setprecision(9) << relative_error[2][i]
-    << " " << setprecision(9) << relative_error[3][i]<< " " << setprecision(9) << relative_error[4][i] << " " << setprecision(9) << relative_error[5][i] << " " << setprecision(9) << relative_error[6][i] << endl;
+    for (int k = 0; k < MC_samples; k++){
+      ofile << energies[k] << endl;
     }
-
     ofile.close();
-    ofile2.close();
+
   }
+
 
   return 0;
 }

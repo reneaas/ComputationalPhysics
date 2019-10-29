@@ -46,15 +46,11 @@ if part == "c":
     outfilename2 = "boltzmann_distribution_T_" + str(temperature) + ".txt"
 
     command_line_args = number_of_temperatures + " " + outfilename + " " + dimension \
-<<<<<<< HEAD
-                    + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + str(temperature)
-=======
                     + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + str(temperature) + " " + outfilename2
->>>>>>> 550b874a9103f0074750b48ac9267524db162167
     print("executing")
     os.system("./main.exe" + " " + command_line_args)
 
-
+    print("moving files")
     path = "results/partC"
     if not os.path.exists(path):
         os.makedirs(path)
