@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
-part = str(input("Which part of the project to run: [b,c,d] \n"))
+part = str(input("Which part of the project to run: [b,c,d]"))
 
 if part == "c":
     T = 2.4
@@ -60,7 +60,8 @@ if part == "c":
 
 if part == "d":
     energies = []
-    infilename = "boltzmann_distribution.txt"
+    T = float(input("Temperature = "))
+    infilename =  "boltzmann_distribution_T_" + str(temperature) + ".txt"
     path = "results/partC/"
     with open(path + infilename, "r") as infile:
         lines = infile.readlines()
