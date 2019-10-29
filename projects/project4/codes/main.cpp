@@ -261,6 +261,9 @@ int main(int nargs, char* args[]){
     ofile2.close();
 }
 
+return 0;
+}
+
 void initialize(int dimensions, int **spin_matrix, double& E, double& M, string initialize){
   if (initialize == "ordered"){
     // setup spin matrix and intial magnetization
