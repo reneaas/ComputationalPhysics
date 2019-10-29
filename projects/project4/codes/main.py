@@ -8,13 +8,34 @@ os.system("c++ -O3 -Wall -o main.exe main.cpp")
 
 part = str(input("Which part of the project would you run? [b, c, d] \n" ))
 
+if part == "b":
+    number_of_temperatures = "1"
+    dimension = "2"
+    outfilename = "lol"
+    initialize_spin_matrix = "ordered"
+    MC_samples = int(input("Specify number of Monte Carlo samples: "))
+    temperature = "1"
+    filename1 = "Expectation_values_n_2.txt"
+    filename2 = "Relative_error_n_2.txt"
+
+    command_line_args = number_of_temperatures + " " + outfilename + " " + dimension \
+                        + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + temperature
+    print("executing")
+    os.system("./main.exe" + " " + command_line_args)
+
+    path = "results/2x2"
+    if not os.path.exists(path):
+        os.makedirs(path)
+    os.system("mv" + " " + filename1 + " " + filename2 + " " + path)
+
+
 if part == "c":
     number_of_temperatures = "1"
     dimension = "20";
     MC_samples = int(input("Specify number of Monte Carlo samples: "))
-    initialize_spin_matrix = "random"
-    outfilename = "MC_" + str(MC_samples) + "_n_" + dimension + "_" + initialize_spin_matrix + "_.txt"
-    temperature = "1"
+    initialize_spin_matrix = "ordered"
+    temperature = "2.4"
+    outfilename = "MC_" + str(MC_samples) + "_n_" + dimension + "_T_" + temperature + "_" + initialize_spin_matrix + "_.txt"
 
     command_line_args = number_of_temperatures + " " + outfilename + " " + dimension \
                         + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + temperature
@@ -25,3 +46,4 @@ if part == "c":
     if not os.path.exists(path):
         os.makedirs(path)
     os.system("mv" + " " + outfilename + " " + path)
+    print("Finito!!!!")
