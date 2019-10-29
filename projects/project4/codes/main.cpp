@@ -16,7 +16,7 @@ ofstream ofile, ofile2;               //Global variable for writing results to f
 
 //Declaration of functions.
 void initialize(int, int **, double&, double&, string);
-void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*, double*, double*, double);
+void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*, double*, double*, double, double*);
 void analytical_values_2x2Lattice(double*, double);
 void Monte_Carlo_Metropolis_2x2(int, int, int **, int, double&, double&, double*, double*, double*, double, double**);
 
@@ -37,6 +37,7 @@ int main(int nargs, char* args[]){
   double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
   int n_spins;                                     //Total number of spins.
   double beta;
+  string outfilename2;
 
   //Read from command line
   number_of_temperatures = atoi(args[1]);
@@ -44,6 +45,7 @@ int main(int nargs, char* args[]){
   n = atoi(args[3]);                    //Dimension of spin matrix
   MC_samples = atoi(args[4]);            //Number of Monte Carlo samples
   initializing = string(args[5]);
+
 
   //initialize matrix
   spin_matrix = new int*[n];
@@ -61,8 +63,9 @@ int main(int nargs, char* args[]){
   if (number_of_temperatures == 1){
     double magnetic_susceptibility;                //Stores the computed magnetic susceptibilities for each temperature
     double heat_capacity;                          //Stores the computed heat capacity for each temperature.
-    double *energy, *magnetization, *time, *acceptance;
+    double *energy, *magnetization, *time, *acceptance, *energies;
     double T = atof(args[6]);
+    outfilename2 = string(args[7]);
     int n_times = MC_samples/n_spins;
 
 
@@ -70,6 +73,7 @@ int main(int nargs, char* args[]){
     magnetization = new double[n_times];
     time = new double[n_times];
     acceptance = new double[n_times];
+    energies = new double[MC_samples];
 
     //Compute Boltzmann factors.
     beta = 1/(T);                //k_B = 1
@@ -78,13 +82,18 @@ int main(int nargs, char* args[]){
     }
 
 
-    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta);
+    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta, energies);
 
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
       ofile << time[i] << " " << setprecision(8) << energy[i] << " " << setprecision(8) << " " << magnetization[i] << " " << acceptance[i] << endl;
     }
     ofile.close();
+
+    ofile2.open(outfilename2);
+    for (int k = 0; k < MC_samples; k++){
+      ofile2 << energies[k] << endl;
+    }
 
   }
 
@@ -223,7 +232,7 @@ void analytical_values_2x2Lattice(double* analytical_values, double T){
 
   }
 
-void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta){
+void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta, double* energies){
 
 
   //SPØR OM DET HER KAN SENDES INN SÅ DET IKKE MÅ LAGES HVER ITERASJON!!!!!
@@ -275,6 +284,7 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
 
       E += dE;
       M += dM;
+      energies[k-1] = E;
 
     //}
 
