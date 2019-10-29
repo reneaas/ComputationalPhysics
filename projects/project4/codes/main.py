@@ -45,9 +45,9 @@ if part == "c":
     outfilename = "MC_" + str(MC_samples) + "_n_" + dimension + "_T_" + str(temperature) + "_" + initialize + "_.txt"
 
     command_line_args = number_of_temperatures + " " + outfilename + " " + dimension \
-                    + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + temperature
-                    print("executing")
-                    os.system("./main.exe" + " " + command_line_args)
+                    + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + str(temperature)
+    print("executing")
+    os.system("./main.exe" + " " + command_line_args)
 
 
     path = "results/partC"
