@@ -18,7 +18,7 @@ ofstream ofile, ofile2;               //Global variable for writing results to f
 void initialize(int, int **, double&, double&, string);
 void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*, double*, double);
 void analytical_values_2x2Lattice(double*, double);
-void Monte_Carlo_Metropolis_2x2(int, int, int **, int, double&, double&, double*, double*, double*, double,double**);
+void Monte_Carlo_Metropolis_2x2(int, int, int **, int, double&, double&, double*, double*, double*, double, double**);
 
 
 
@@ -196,13 +196,14 @@ int main(int nargs, char* args[]){
   }
 
 
-  if (n == 2){
+  if (n == 2 && number_of_temperatures == 1){
     double *time, *acceptance;
     double T = atof(args[6]);
     double** expectation_values;
     double*analytical_values;
     double** relative_error;
     int n_times;
+    string outfilename = "Expectation_values_n_2.txt"
     string outfilename2 = "Relative_error_n_2.txt";
 
     energy = new double[n_times];
@@ -231,11 +232,12 @@ int main(int nargs, char* args[]){
     }
 
 
-    Monte_Carlo_Metropolis_2x2( MC, n, spin_matrix, J,  E, M, boltzmann_distribution, time, acceptance, beta);
+    Monte_Carlo_Metropolis_2x2( MC, n, spin_matrix, J,  E, M, boltzmann_distribution, time, acceptance, beta, expectation_values[i]);
 
     analytical_values_2x2Lattice(analytical_values, T);
 
-
+    ofile.open(outfilename);
+    ofile2.open(outfilename2);
     for (int i = 0; i <= n_times; i++){
 
       relative_error[i][0] = abs((analytical_values[0]-expectation_values[i][0])/analytical_values[0]);   //Stores relative error in E
@@ -245,10 +247,19 @@ int main(int nargs, char* args[]){
       relative_error[i][4] = abs((analytical_values[5]-expectation_values[i][5])/analytical_values[5]);   //Stores relative error in M_squared
       relative_error[i][5] = abs((analytical_values[6]-expectation_values[i][6])/analytical_values[6]);   //Stores relative error in Heat Capacity
       relative_error[i][6] = abs((analytical_values[7]-expectation_values[i][7])/analytical_values[7]);   //Stores relative error in Magnetic susceptibility
-      }
+
+    ofile << setprecision(9) << time[i] << " " << setprecision(9) << expectation_values[i][0] << " " << setprecision(9) << expectation_values[i][1] << " " << setprecision(9) << expectation_values[i][2]
+    << " " << setprecision(9) << expectation_values[i][3]<< " " << setprecision(9) << expectation_values[i][4] << " " << setprecision(9) << expectation_values[i][5] << " " << setprecision(9) << expectation_values[i][6]
+    << " " << setprecision(9) << expectation_values[i][7] << endl ;
 
 
+    ofile2 << setprecision(9) << time[i] << " " << setprecision(9) << relative_error[i][0] << " " << setprecision(9) << relative_error[i][1] << " " << setprecision(9) << relative_error[i][2]
+    << " " << setprecision(9) << relative_error[i][3]<< " " << setprecision(9) << relative_error[i][4] << " " << setprecision(9) << relative_error[i][5] << " " << setprecision(9) << relative_error[i][6] << endl;
     }
+
+    ofile.close();
+    ofile2.close();
+}
 
 void initialize(int dimensions, int **spin_matrix, double& E, double& M, string initialize){
   if (initialize == "ordered"){
@@ -414,7 +425,7 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
 
 }
 
-void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* time, double* acceptance, double beta,double** expectation_values,){
+void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* time, double* acceptance, double beta,double** expectation_values){
 
 
   //SPØR OM DET HER KAN SENDES INN SÅ DET IKKE MÅ LAGES HVER ITERASJON!!!!!
