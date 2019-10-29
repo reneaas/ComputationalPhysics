@@ -60,7 +60,7 @@ int main(int nargs, char* args[]){
 
 
   if (number_of_temperatures == 1 && n > 2){
-    double *energy, *magnetization, *time, *acceptance, *energies, variance_squared;
+    double *energy, *magnetization, *time, *acceptance, *energies, variance;
     double T = atof(args[6]);
     outfilename2 = string(args[7]);
     int n_times = MC_samples/n_spins;
@@ -71,7 +71,7 @@ int main(int nargs, char* args[]){
     time = new double[n_times];
     acceptance = new double[n_times];
     energies = new double[MC_samples];
-    variance_squared = 0;
+    variance = 0;
 
     //Compute Boltzmann factors.
     beta = 1/(T);                //k_B = 1
@@ -80,7 +80,7 @@ int main(int nargs, char* args[]){
     }
 
 
-    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta, energies, variance_squared);
+    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta, energies, variance);
 
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
@@ -93,8 +93,8 @@ int main(int nargs, char* args[]){
       ofile2 << energies[k] << endl;
     }
 
-    cout << "Variance squared squared for T = " << T << ":" <<endl;
-    cout << variance_squared << endl;
+    cout << "Standard deviation for T = " << T << ": " << sqrt(variance) <<endl;
+
 
   }
 
@@ -233,7 +233,7 @@ void analytical_values_2x2Lattice(double* analytical_values, double T){
 
   }
 
-void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta, double* energies, double& variance_squared){
+void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta, double* energies, double& variance){
 
 
   //SPØR OM DET HER KAN SENDES INN SÅ DET IKKE MÅ LAGES HVER ITERASJON!!!!!
@@ -306,13 +306,13 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
     }
   }
 
-  cout << E_sum/(MC*n_spins) << endl;
+  //cout << E_sum/(MC*n_spins) << endl;
   E_sum /= (double) (MC*n_spins);
   E_squared /= (double) (MC*n_spins);
   M_squared /= (double) (MC*n_spins);
   Mabs_sum /= (double) (MC*n_spins);
   Mabs_sum_squared /= (double) (MC*n_spins);
-  variance_squared = sqrt(E_squared - E_sum*E_sum);
+  variance = (E_squared - E_sum*E_sum);
 
 }
 
