@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
-part = str(input("Which part of the project to run: [b,c,d]"))
+part = str(input("Which part of the project to run: [b,c,d] \n"))
 
 if part == "c":
     T = 2.4

@@ -33,6 +33,7 @@ if part == "c":
     number_of_temperatures = "1"
     dimension = "20";
     MC_samples = int(input("Specify number of Monte Carlo samples: "))
+<<<<<<< HEAD
     initialize_spin_matrix = "ordered"
     temperature = "2.4"
     outfilename = "MC_" + str(MC_samples) + "_n_" + dimension + "_T_" + temperature + "_" + initialize_spin_matrix + "_.txt"
@@ -42,6 +43,24 @@ if part == "c":
                         + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + temperature + " " + outfilename2
     print("executing")
     os.system("./main.exe" + " " + command_line_args)
+=======
+    initialize_spin_matrix = str(input("Ordered or randomized inital spin matrix? [o/r] \n"))
+    temperature = float(input("Temperature? "))
+
+    if initialize_spin_matrix == "o":
+        initialize = "ordered"
+
+    if initialize_spin_matrix == "r":
+        initialize = "random"
+
+    outfilename = "MC_" + str(MC_samples) + "_n_" + dimension + "_T_" + str(temperature) + "_" + initialize + "_.txt"
+
+    command_line_args = number_of_temperatures + " " + outfilename + " " + dimension \
+                    + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + temperature
+                    print("executing")
+                    os.system("./main.exe" + " " + command_line_args)
+
+>>>>>>> 8870eb1344fa323f8f6f271538abbfa662dcc8ed
 
     path = "results/partC"
     if not os.path.exists(path):
