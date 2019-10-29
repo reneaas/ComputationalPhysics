@@ -39,7 +39,6 @@ if part == "c":
     plt.plot(time, E_random, label = "E random")
     plt.xlabel("t [cycles/spins]")
     plt.ylabel("E/spins")
-
     plt.figure()
 
     plt.plot(time, M_ordered, label = "M ordered")
@@ -48,3 +47,4 @@ if part == "c":
     plt.ylabel("E/spins")
 
     plt.figure()
+    plt.show()
