@@ -11,12 +11,12 @@
 #include <omp.h>
 using namespace  std;
 
-ofstream ofile;               //Global variable for writing results to file.
+ofstream ofile, ofile2;               //Global variable for writing results to file.
 
 
 //Declaration of functions.
 void initialize(int, int **, double&, double&, string);
-void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*, double*, double*, double, double*);
+void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*, double*, double*, double, double*, double&);
 void analytical_values_2x2Lattice(double*, double);
 void Monte_Carlo_Metropolis_2x2(int, int, int **, int, double&, double&, double*, double*, double*, double, double**);
 
@@ -32,7 +32,6 @@ int main(int nargs, char* args[]){
   string outfilename, outfilename2, initializing;
   double boltzmann_distribution[17];
   int n, MC_samples, J, number_of_temperatures;
-  double E_squared, M_squared;
   int **spin_matrix;
   double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
   int n_spins;                                     //Total number of spins.
@@ -60,10 +59,8 @@ int main(int nargs, char* args[]){
   initialize(n, spin_matrix, E_initial, M_initial, initializing);
 
 
-  if (number_of_temperatures == 1){
-    double magnetic_susceptibility;                //Stores the computed magnetic susceptibilities for each temperature
-    double heat_capacity;                          //Stores the computed heat capacity for each temperature.
-    double *energy, *magnetization, *time, *acceptance, *energies;
+  if (number_of_temperatures == 1 && n > 2){
+    double *energy, *magnetization, *time, *acceptance, *energies, variance_squared;
     double T = atof(args[6]);
     outfilename2 = string(args[7]);
     int n_times = MC_samples/n_spins;
@@ -74,6 +71,7 @@ int main(int nargs, char* args[]){
     time = new double[n_times];
     acceptance = new double[n_times];
     energies = new double[MC_samples];
+    variance_squared = 0;
 
     //Compute Boltzmann factors.
     beta = 1/(T);                //k_B = 1
@@ -82,7 +80,7 @@ int main(int nargs, char* args[]){
     }
 
 
-    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta, energies);
+    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta, energies, variance_squared);
 
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
@@ -90,14 +88,78 @@ int main(int nargs, char* args[]){
     }
     ofile.close();
 
-    ofile.open(outfilename2);
+    ofile2.open(outfilename2);
     for (int k = 0; k < MC_samples; k++){
-      ofile << energies[k] << endl;
+      ofile2 << energies[k] << endl;
     }
-    ofile.close();
+
+    cout << "Variance squared squared for T = " << T << ":" <<endl;
+    cout << variance_squared << endl;
 
   }
 
+  if (n == 2){
+    double *time, *acceptance;
+    double T = atof(args[6]);
+    double** expectation_values;
+    double* analytical_values;
+    double** relative_error;
+    int n_times;
+    string outfilename2 = "Expectation_values_n_2.txt";
+    string outfilename3 = "Relative_error_n_2.txt";
+
+    n_times = MC_samples/n_spins;
+    analytical_values = new double[8];
+    expectation_values = new double*[8];
+    relative_error = new double*[7];
+
+    time = new double[n_times];
+    acceptance = new double[n_times];
+
+    for (int i = 0; i < 8; i++){
+      expectation_values[i] = new double[n_times];
+    }
+
+    for (int i=0; i < 7; i++){
+      relative_error[i] = new double[n_times];
+    }
+
+
+    //Computing the boltzmann distribution for 5 values of dE
+    double beta = 1/(T);                //k_B = 1
+    for (int i = -8; i < 9; i+=4){
+      boltzmann_distribution[i + 8] = exp(-beta*i);
+    }
+
+
+    Monte_Carlo_Metropolis_2x2(MC_samples, n, spin_matrix, J,  E_initial, M_initial, boltzmann_distribution, time, acceptance, beta, expectation_values);
+
+    analytical_values_2x2Lattice(analytical_values, T);
+
+    ofile.open(outfilename2);
+    ofile2.open(outfilename3);
+    for (int i = 0; i <= n_times; i++){
+
+      relative_error[0][i] = abs((analytical_values[0]-expectation_values[0][i])/analytical_values[0]);   //Stores relative error in E
+      relative_error[1][i] = abs((analytical_values[1]-expectation_values[1][i])/analytical_values[1]);   //Stores relative error in E_squared
+      relative_error[2][i] = abs((analytical_values[2]-expectation_values[2][i])/analytical_values[2]);   //Stores relative error in Mabs
+      relative_error[3][i] = abs((analytical_values[3]-expectation_values[3][i])/analytical_values[3]);   //Stores relative error in Mabs_squared
+      relative_error[4][i] = abs((analytical_values[5]-expectation_values[5][i])/analytical_values[5]);   //Stores relative error in M_squared
+      relative_error[5][i] = abs((analytical_values[6]-expectation_values[6][i])/analytical_values[6]);   //Stores relative error in Heat Capacity
+      relative_error[6][i] = abs((analytical_values[7]-expectation_values[7][i])/analytical_values[7]);   //Stores relative error in Magnetic susceptibility
+      cout << time[i] << endl;
+    ofile << setprecision(9) << time[i] << " " << setprecision(9) << expectation_values[0][i] << " " << setprecision(9) << expectation_values[1][i] << " " << setprecision(9) << expectation_values[2][i]
+    << " " << setprecision(9) << expectation_values[3][i]<< " " << setprecision(9) << expectation_values[4][i] << " " << setprecision(9) << expectation_values[5][i] << " " << setprecision(9) << expectation_values[6][i]
+    << " " << setprecision(9) << expectation_values[7][i] << endl ;
+
+
+    ofile2 << setprecision(9) << time[i] << " " << setprecision(9) << relative_error[0][i] << " " << setprecision(9) << relative_error[1][i] << " " << setprecision(9) << relative_error[2][i]
+    << " " << setprecision(9) << relative_error[3][i]<< " " << setprecision(9) << relative_error[4][i] << " " << setprecision(9) << relative_error[5][i] << " " << setprecision(9) << relative_error[6][i] << endl;
+    }
+
+    ofile.close();
+    ofile2.close();
+  }
 
   return 0;
 }
@@ -105,7 +167,7 @@ int main(int nargs, char* args[]){
 void initialize(int dimensions, int **spin_matrix, double& E, double& M, string initialize){
   if (initialize == "ordered"){
     // setup spin matrix and intial magnetization
-    for(int i =0; i <dimensions; i++) {
+    for(int i =0; i < dimensions; i++) {
       for (int j= 0; j < dimensions; j++){
         spin_matrix[i][j] = 1; // spin orientation for the ground state
         M +=  (double) spin_matrix[i][j];
@@ -120,7 +182,7 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M, string 
     double x;
 
     // setup spin matrix and intial magnetization
-    for(int i = 0; i <dimensions; i++) {
+    for(int i = 0; i < dimensions; i++) {
       for (int j= 0; j < dimensions; j++){
         x = RandomNumberGenerator(gen);
         if (x <= 0.5){
@@ -171,7 +233,7 @@ void analytical_values_2x2Lattice(double* analytical_values, double T){
 
   }
 
-void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta, double* energies){
+void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta, double* energies, double& variance_squared){
 
 
   //SPØR OM DET HER KAN SENDES INN SÅ DET IKKE MÅ LAGES HVER ITERASJON!!!!!
@@ -244,11 +306,13 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
     }
   }
 
-
-  E_squared /= (double) MC;
-  M_squared /= (double) MC;
-  Mabs_sum /= (double) MC;
-  Mabs_sum_squared /= (double) MC;
+  cout << E_sum/(MC*n_spins) << endl;
+  E_sum /= (double) (MC*n_spins);
+  E_squared /= (double) (MC*n_spins);
+  M_squared /= (double) (MC*n_spins);
+  Mabs_sum /= (double) (MC*n_spins);
+  Mabs_sum_squared /= (double) (MC*n_spins);
+  variance_squared = sqrt(E_squared - E_sum*E_sum);
 
 }
 
