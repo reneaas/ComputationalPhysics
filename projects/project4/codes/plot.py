@@ -55,4 +55,18 @@ if part == "c":
     plt.xlabel("t [cycles/spins]")
     plt.ylabel("Accepted spins")
     plt.legend()
+    plt.figure()
+    plt.show()
+
+if part == "d":
+    energies = []
+    infilename = "boltzmann_distribution.txt"
+    path = "results/partC/"
+    with open(path + infilename, "r") as infile:
+        lines = infile.readlines()
+        for line in lines:
+            values = line.split()
+            energies.append(float(values[0]))
+
+    plt.hist(energies, 2*400 +1, normed = 1)
     plt.show()

@@ -36,14 +36,15 @@ if part == "c":
     initialize_spin_matrix = "ordered"
     temperature = "2.4"
     outfilename = "MC_" + str(MC_samples) + "_n_" + dimension + "_T_" + temperature + "_" + initialize_spin_matrix + "_.txt"
+    outfilename2 = "boltzmann_distribution_T_" + temperature + ".txt"
 
     command_line_args = number_of_temperatures + " " + outfilename + " " + dimension \
-                        + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + temperature
+                        + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + temperature + " " + outfilename2
     print("executing")
     os.system("./main.exe" + " " + command_line_args)
 
     path = "results/partC"
     if not os.path.exists(path):
         os.makedirs(path)
-    os.system("mv" + " " + outfilename + " " + path)
+    os.system("mv" + " " + outfilename + " " + outfilename2 + " " + path)
     print("Finito!!!!")
