@@ -43,10 +43,10 @@ if part == "c":
         initialize = "random"
 
     outfilename = "MC_" + str(MC_samples) + "_n_" + dimension + "_T_" + str(temperature) + "_" + initialize + "_.txt"
-    outfilename2 = "boltzmann_distribution_T_" + str(temperature) + ".txt"
+    outfilename2 = "boltzmann_distribution_T_" + str(temperature) + "_" + initialize + ".txt"
 
     command_line_args = number_of_temperatures + " " + outfilename + " " + dimension \
-                    + " " + str(MC_samples) + " " + initialize_spin_matrix + " " + str(temperature) + " " + outfilename2
+                    + " " + str(MC_samples) + " " + initialize + " " + str(temperature) + " " + outfilename2
     print("executing")
     os.system("./main.exe" + " " + command_line_args)
 
