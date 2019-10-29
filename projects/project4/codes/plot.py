@@ -60,7 +60,7 @@ if part == "c":
 
 if part == "d":
     energies = []
-    T = float(input("Temperature = "))
+    temperature = float(input("Temperature = "))
     infilename =  "boltzmann_distribution_T_" + str(temperature) + ".txt"
     path = "results/partC/"
     with open(path + infilename, "r") as infile:
@@ -69,5 +69,5 @@ if part == "d":
             values = line.split()
             energies.append(float(values[0]))
 
-    plt.hist(energies, 2*400 +1, normed = 1)
+    plt.hist(energies, 400 + 1, density = True)
     plt.show()
