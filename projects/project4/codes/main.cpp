@@ -307,11 +307,11 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
   }
 
   //cout << E_sum/(MC*n_spins) << endl;
-  E_sum /= (double) (MC*n_spins);
-  E_squared /= (double) (MC*n_spins);
-  M_squared /= (double) (MC*n_spins);
-  Mabs_sum /= (double) (MC*n_spins);
-  Mabs_sum_squared /= (double) (MC*n_spins);
+  E_sum /= (double) (MC);
+  E_squared /= (double) (MC);
+  M_squared /= (double) (MC);
+  Mabs_sum /= (double) (MC);
+  Mabs_sum_squared /= (double) (MC);
   variance = (E_squared - E_sum*E_sum);
 
 }
