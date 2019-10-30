@@ -36,4 +36,4 @@ by using the Metropolis algorithm to sample spin states and compute expectation 
 Furthermore, since the Ising model in 2D displays a phase transition, one overarching aim of the project to confirm the existence of the phase transition
 that arises in the thermodynamic limit (an infinite 2D lattice). The codes and report are still a work in progress...
 
-The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4/codes)
+The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4/codes).
