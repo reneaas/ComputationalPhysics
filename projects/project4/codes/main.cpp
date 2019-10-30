@@ -1,5 +1,4 @@
 #include <iostream>
-#include "lib.h"
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
@@ -59,8 +58,8 @@ int main(int nargs, char* args[]){
   initialize(n, spin_matrix, E_initial, M_initial, initializing);
 
 
-  if (number_of_temperatures == 1 && n > 2){
-    double *energy, *magnetization, *time, *acceptance, *energies, variance;
+  if (number_of_temperatures == 1){
+    double *energy, *magnetization, *time, *acceptance, *energies;
     double T = atof(args[6]);
     outfilename2 = string(args[7]);
     int n_times = MC_samples/n_spins;
@@ -92,6 +91,7 @@ int main(int nargs, char* args[]){
     for (int k = 0; k < MC_samples; k++){
       ofile2 << energies[k] << endl;
     }
+    ofile2.close();
 
     cout << "Standard deviation for T = " << T << ": " << sqrt(variance) <<endl;
 
@@ -259,35 +259,33 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
   //Running over Monte Carlo samples
   for (int k = 1; k <= MC; k++){
 
-    //for (int j = 0; j < n_spins; j++){
-      x_flip = RandomIntegerGenerator(gen);
-      y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
+
+    x_flip = RandomIntegerGenerator(gen);
+    y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
 
 
-      dE = (int) 2*J*spin_matrix[x_flip][y_flip] * (spin_matrix[periodic(x_flip,n,1)][y_flip] + spin_matrix[periodic(x_flip, n,-1)][y_flip]
-                                                    + spin_matrix[x_flip][periodic(y_flip, n,1)] + spin_matrix[x_flip][periodic(y_flip, n,-1)]);
+    dE = (int) 2*J*spin_matrix[x_flip][y_flip] * (spin_matrix[periodic(x_flip,n,1)][y_flip] + spin_matrix[periodic(x_flip, n,-1)][y_flip]
+                                                  + spin_matrix[x_flip][periodic(y_flip, n,1)] + spin_matrix[x_flip][periodic(y_flip, n,-1)]);
 
-      //Metropolis algorithm
-      if(dE < 0){
-        spin_matrix[x_flip][y_flip] *= (-1);   //Accepting the flip
-        dM = 2*spin_matrix[x_flip][y_flip];
-        accept += 1;
-      }
-      else if(RandomNumberGenerator(gen) < boltzmann_distribution[dE + 8]){
-        spin_matrix[x_flip][y_flip] *= (-1);     //Accepting flip
-        dM = 2*spin_matrix[x_flip][y_flip];
-        accept += 1;
-      }
-      else{
-        dE = 0;                             //Rejecting the flip
-        dM = 0;
-      }
+    //Metropolis algorithm
+    if(dE < 0){
+      spin_matrix[x_flip][y_flip] *= (-1);   //Accepting the flip
+      dM = 2*spin_matrix[x_flip][y_flip];
+      accept += 1;
+    }
+    else if(RandomNumberGenerator(gen) < boltzmann_distribution[dE + 8]){
+      spin_matrix[x_flip][y_flip] *= (-1);     //Accepting flip
+      dM = 2*spin_matrix[x_flip][y_flip];
+      accept += 1;
+    }
+    else{
+      dE = 0;                             //Rejecting the flip
+      dM = 0;
+    }
 
-      E += dE;
-      M += dM;
-      energies[k-1] = E;
-
-    //}
+    E += dE;
+    M += dM;
+    energies[k-1] = E;
 
     E_sum += (double) E;
     M_sum += (double) M;
@@ -305,14 +303,13 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
       acceptance[i] = accept;
     }
   }
-
-  //cout << E_sum/(MC*n_spins) << endl;
-  E_sum /= (double) (MC);
+  E_sum /= (MC);
   E_squared /= (double) (MC);
-  M_squared /= (double) (MC);
-  Mabs_sum /= (double) (MC);
-  Mabs_sum_squared /= (double) (MC);
-  variance = (E_squared - E_sum*E_sum);
+  M_squared /= (double) (MC*n_spins);
+  Mabs_sum /= (double) (MC*n_spins);
+  Mabs_sum_squared /= (double) (MC*n_spins);
+  double variance = E_squared - E_sum*E_sum;
+  cout << "Variance = " << sqrt(variance) << endl;
 
 }
 
