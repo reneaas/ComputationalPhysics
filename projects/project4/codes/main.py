@@ -9,12 +9,15 @@ os.system("c++ -O3 -Wall -o main.exe main.cpp")
 part = str(input("Which part of the project would you run? [b, c, d] \n" ))
 
 if part == "b":
+    spin_matrix = str(input("Would you like an ordered or random iniitial spin matrix? [o/r] \n" ))
     number_of_temperatures = "1"
     dimension = "2"
     outfilename = "lol"
     initialize_spin_matrix = "ordered"
     MC_samples = int(input("Specify number of Monte Carlo samples: "))
     temperature = "1"
+    if spin_matrix == "o":
+        outfilename =
     filename1 = "Expectation_values_n_2.txt"
     filename2 = "Relative_error_n_2.txt"
 
