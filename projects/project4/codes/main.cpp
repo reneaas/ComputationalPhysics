@@ -7,7 +7,6 @@
 #include "time.h"
 #include <random>
 #include <fstream>
-#include <omp.h>
 using namespace  std;
 
 ofstream ofile, ofile2;               //Global variable for writing results to file.
