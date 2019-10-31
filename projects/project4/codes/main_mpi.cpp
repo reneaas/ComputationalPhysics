@@ -14,7 +14,39 @@ inline int periodic(int coordinate, int dimensions, int step) {
   return (coordinate+dimensions+step) % (dimensions);
 
 int main(int nargs, char* args[]){
+  string outfilename;
+  double boltzmann_distribution[17];
+  int n, MC_samples, , J;
+  int **spin_matrix, my_rank, numprocs;
+  double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
+  int n_spins;                                     //Total number of spins.
+  double beta;
+  double*
 
+
+  //Read from command line
+  outfilename = string(args[1]);         //Name of the file to write the results to
+  n = atoi(args[2]);                    //Dimension of spin matrix
+  MC_samples = atoi(args[3]);            //Number of Monte Carlo samples
+
+
+  //initialize matrix
+  spin_matrix = new int*[n];
+  for (int i = 0; i < n; i++){
+    spin_matrix[i] = new int[n];
+  }
+
+  E_initial = 0;
+  M_initial = 0;
+  n_spins = n*n;
+  J = 1;                                     //Coupling constant
+  initialize(n, spin_matrix, E_initial, M_initial, "random");
+
+
+// MPI initializations
+MPI_Init (&nargs, &args);
+MPI_Comm_size (MPI_COMM_WORLD, &numprocs);
+MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
 
   return 0;
 
