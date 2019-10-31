@@ -16,8 +16,6 @@ inline int periodic(int coordinate, int dimensions, int step) {
 int main(int nargs, char* args[]){
 
 
-
-
   return 0;
 
 }
