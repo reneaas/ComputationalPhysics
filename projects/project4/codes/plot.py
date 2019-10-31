@@ -7,7 +7,11 @@ plt.rc("text", usetex = True)
 part = str(input("Which part of the project to run: [b,c,d] \n"))
 
 if part == "c":
+<<<<<<< HEAD
     T = float(input("Temperature: [1.0 or 2.4] \n"))
+=======
+    T = float(input("Give temperature: "))
+>>>>>>> 2c16a4a4027a4534f2561de4601f463fa4a1fec6
     path = "results/partC/"
     infilename_ordered = "MC_" + str(int(4e6)) + "_n_20_T_" + str(T) + "_ordered_.txt"
     infilename_random = "MC_" + str(int(4e6)) + "_n_20_T_" + str(T) + "_random_.txt"
