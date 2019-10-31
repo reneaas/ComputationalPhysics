@@ -14,7 +14,8 @@ ofstream ofile;               //Global variable for writing results to file.
 
 //Declaration of functions.
 void initialize(int, int **, double&, double&, string);
-void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*, double*, double*, double, double*, double&);
+void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*,
+                                  double*, double*, double, double*, double&, mt19937_64, uniform_int_distribution<int>, uniform_real_distribution<double>);
 void analytical_values_2x2Lattice(double*, double);
 void Monte_Carlo_Metropolis_2x2(int, int, int **, int, double&, double&, double*, double*, double*, double, double**);
 
@@ -34,6 +35,8 @@ int main(int nargs, char* args[]){
   double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
   int n_spins;                                     //Total number of spins.
   double beta;
+  double variance;
+
 
 
   //Read from command line
@@ -42,6 +45,13 @@ int main(int nargs, char* args[]){
   n = atoi(args[3]);                    //Dimension of spin matrix
   MC_samples = atoi(args[4]);            //Number of Monte Carlo samples
   initializing = string(args[5]);
+
+  random_device rd;
+  cout << "random number yo = " << rd() << endl;
+  mt19937_64 gen(rd());
+  uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
+  uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
+
 
 
   //initialize matrix
@@ -55,6 +65,7 @@ int main(int nargs, char* args[]){
   n_spins = n*n;
   J = 1;                                     //Coupling constant
   initialize(n, spin_matrix, E_initial, M_initial, initializing);
+
 
 
   if (number_of_temperatures == 1){
@@ -78,7 +89,8 @@ int main(int nargs, char* args[]){
     }
 
 
-    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta, energies, variance);
+    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution,
+                                energy, magnetization, time, acceptance, beta, energies, variance, gen, RandomIntegerGenerator, RandomNumberGenerator);
 
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
@@ -241,14 +253,10 @@ void analytical_values_2x2Lattice(double* analytical_values, double T){
     }
 
 
-void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta, double* energies, double& variance){
+void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution,
+                                  double* energy, double* magnetization, double* time, double* acceptance, double beta,
+                                  double* energies, double& variance, mt19937_64 gen, uniform_int_distribution<int> RandomIntegerGenerator, uniform_real_distribution<double> RandomNumberGenerator){
 
-
-  //SPØR OM DET HER KAN SENDES INN SÅ DET IKKE MÅ LAGES HVER ITERASJON!!!!!
-  random_device rd;
-  mt19937_64 gen(rd());
-  uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
-  uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
 
   int x_flip, y_flip, dE, dM, n_spins, i, accept;
   double E_sum, M_sum, Mabs_sum, Mabs_sum_squared, E_squared, M_squared;
@@ -295,29 +303,36 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
     M += dM;
     energies[k-1] = E;
 
-    E_sum += (double) E;
-    M_sum += (double) M;
-    Mabs_sum += (double) abs(M);
 
-    E_squared += (double) E*E;
-    M_squared += (double) M*M;
-    Mabs_sum_squared += (double) abs(M)*abs(M);
+    if (k > 4000){
+      E_sum += (double) E;
+      M_sum += (double) M;
+      Mabs_sum += (double) abs(M);
 
-    if (k % n_spins == 0){
+      E_squared += (double) E*E;
+      M_squared += (double) M*M;
+      Mabs_sum_squared += (double) abs(M)*abs(M);
+    }
+
+    /*
+    if (k % n_spins == 0 && k > 4000){
       i = k / n_spins - 1 ;
-      energy[i] = E_sum/ ((double) k * n_spins);
-      magnetization[i] = Mabs_sum / ((double) k * n_spins);
+      energy[i] = E_sum/ ((double) k * n_spins - 4000);
+      //energy[i] = E/n_spins;
+      magnetization[i] = Mabs_sum / ((double) k * n_spins - 4000);
+      //magnetization[i] = M/n_spins;
       time[i] = i+1;
       acceptance[i] = accept;
     }
+    */
+
   }
   E_sum /= (MC);
   E_squared /= (double) (MC);
   M_squared /= (double) (MC*n_spins);
   Mabs_sum /= (double) (MC*n_spins);
   Mabs_sum_squared /= (double) (MC*n_spins);
-  double variance = E_squared - E_sum*E_sum;
-  cout << "Variance = " << sqrt(variance) << endl;
+  variance = E_squared - E_sum*E_sum;
 
 }
 

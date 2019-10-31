@@ -258,7 +258,7 @@ if part == "c":
 
 
     plt.plot(time[:], E_ordered[:], label = "ground state initiation")
-    plt.plot(time[:], E_random[:], label = "random initiation")
+    #plt.plot(time[:], E_random[:], label = "random initiation")
     plt.xlabel(r"$t$ [cycles/spins]", size = 14)
     plt.ylabel(r"$\langle E \rangle $/spins", size = 14)
     plt.xticks(size = 14)
@@ -267,7 +267,7 @@ if part == "c":
     plt.figure()
 
     plt.plot(time[:], M_ordered[:], label = "ground state initiation")
-    plt.plot(time[:], M_random[:], label = "random initiation")
+    #plt.plot(time[:], M_random[:], label = "random initiation")
     plt.xlabel("$t$ [cycles/spins]", size = 14)
     plt.ylabel(r"$\langle |M| \rangle $/spins", size = 14)
     plt.xticks(size = 14)
@@ -275,7 +275,7 @@ if part == "c":
     plt.legend(fontsize = 12)
     plt.figure()
 
-    plt.plot(time[:], acceptance_random[:], label = "Accepted states (random initiation)")
+    #plt.plot(time[:], acceptance_random[:], label = "Accepted states (random initiation)")
     plt.plot(time[:], acceptance_ordered[:], label = "Accepted states (ground state initiation)")
     plt.xlabel("$t$ [cycles/spins]", size = 14)
     plt.ylabel("Accepted spins", size = 14)
