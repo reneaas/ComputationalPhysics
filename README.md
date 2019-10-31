@@ -29,3 +29,11 @@ of two-electron systems such as the Helium atom. We derive an analytical express
 
 The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project3/report/Project3_report.pdf).
 The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project3/codes)
+
+### Project 4: Monte Carlo Methods, the Metropolis algorithm and the 2D Ising model
+In [project 4](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4), we study the 2-dimensional Ising model (square lattice)
+by using the Metropolis algorithm to sample spin states and compute expectation values and related quantities.
+Furthermore, since the Ising model in 2D displays a phase transition, one overarching aim of the project to confirm the existence of the phase transition
+that arises in the thermodynamic limit (an infinite 2D lattice). The codes and report are still a work in progress...
+
+The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4/codes).
