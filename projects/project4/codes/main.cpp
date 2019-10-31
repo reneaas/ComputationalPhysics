@@ -7,15 +7,14 @@
 #include "time.h"
 #include <random>
 #include <fstream>
-#include <omp.h>
 using namespace  std;
 
-ofstream ofile, ofile2;               //Global variable for writing results to file.
+ofstream ofile;               //Global variable for writing results to file.
 
 
 //Declaration of functions.
 void initialize(int, int **, double&, double&, string);
-void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*, double*, double*, double, double*);
+void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*, double*, double*, double, double*, double&);
 void analytical_values_2x2Lattice(double*, double);
 void Monte_Carlo_Metropolis_2x2(int, int, int **, int, double&, double&, double*, double*, double*, double, double**);
 
@@ -70,6 +69,7 @@ int main(int nargs, char* args[]){
     time = new double[n_times];
     acceptance = new double[n_times];
     energies = new double[MC_samples];
+    variance = 0;
 
     //Compute Boltzmann factors.
     beta = 1/(T);                //k_B = 1
@@ -78,7 +78,7 @@ int main(int nargs, char* args[]){
     }
 
 
-    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta, energies);
+    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta, energies, variance);
 
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
@@ -86,11 +86,14 @@ int main(int nargs, char* args[]){
     }
     ofile.close();
 
-    ofile2.open(outfilename2);
+    ofile.open(outfilename2);
     for (int k = 0; k < MC_samples; k++){
-      ofile2 << energies[k] << endl;
+      ofile << energies[k] << endl;
     }
-    ofile2.close();
+    ofile.close();
+
+    cout << "Standard deviation for T = " << T << ": " << sqrt(variance) <<endl;
+
 
   }
 
@@ -101,8 +104,8 @@ int main(int nargs, char* args[]){
     double* analytical_values;
     double** relative_error;
     int n_times;
-    string outfilename2 = "Expectation_values_n_2.txt";
-    string outfilename3 = "Relative_error_n_2.txt";
+    string outfilename2 = string(args[7]);
+
 
     n_times = MC_samples/n_spins;
     analytical_values = new double[8];
@@ -132,9 +135,7 @@ int main(int nargs, char* args[]){
 
     analytical_values_2x2Lattice(analytical_values, T);
 
-    ofile.open(outfilename2);
-    ofile2.open(outfilename3);
-    for (int i = 0; i <= n_times; i++){
+    for (int i = 0; i < n_times; i++){
 
       relative_error[0][i] = abs((analytical_values[0]-expectation_values[0][i])/analytical_values[0]);   //Stores relative error in E
       relative_error[1][i] = abs((analytical_values[1]-expectation_values[1][i])/analytical_values[1]);   //Stores relative error in E_squared
@@ -144,18 +145,26 @@ int main(int nargs, char* args[]){
       relative_error[5][i] = abs((analytical_values[6]-expectation_values[6][i])/analytical_values[6]);   //Stores relative error in Heat Capacity
       relative_error[6][i] = abs((analytical_values[7]-expectation_values[7][i])/analytical_values[7]);   //Stores relative error in Magnetic susceptibility
       cout << time[i] << endl;
-    ofile << setprecision(9) << time[i] << " " << setprecision(9) << expectation_values[0][i] << " " << setprecision(9) << expectation_values[1][i] << " " << setprecision(9) << expectation_values[2][i]
-    << " " << setprecision(9) << expectation_values[3][i]<< " " << setprecision(9) << expectation_values[4][i] << " " << setprecision(9) << expectation_values[5][i] << " " << setprecision(9) << expectation_values[6][i]
-    << " " << setprecision(9) << expectation_values[7][i] << endl ;
+    }
+
+    ofile.open(outfilename);
+    for (int i = 0; i < n_times; i++){
+      ofile << setprecision(9) << time[i] << " " << setprecision(9) << expectation_values[0][i] << " " << setprecision(9) << expectation_values[1][i] << " " << setprecision(9) << expectation_values[2][i]
+      << " " << setprecision(9) << expectation_values[3][i]<< " " << setprecision(9) << expectation_values[4][i] << " " << setprecision(9) << expectation_values[5][i] << " " << setprecision(9) << expectation_values[6][i]
+      << " " << setprecision(9) << expectation_values[7][i] << endl ;
+    }
+    ofile.close();
 
 
-    ofile2 << setprecision(9) << time[i] << " " << setprecision(9) << relative_error[0][i] << " " << setprecision(9) << relative_error[1][i] << " " << setprecision(9) << relative_error[2][i]
-    << " " << setprecision(9) << relative_error[3][i]<< " " << setprecision(9) << relative_error[4][i] << " " << setprecision(9) << relative_error[5][i] << " " << setprecision(9) << relative_error[6][i] << endl;
+    ofile.open(outfilename2);
+    for (int i = 0; i < n_times; i++){
+      ofile << setprecision(9) << time[i] << " " << setprecision(9) << relative_error[0][i] << " " << setprecision(9) << relative_error[1][i] << " " << setprecision(9) << relative_error[2][i]
+      << " " << setprecision(9) << relative_error[3][i]<< " " << setprecision(9) << relative_error[4][i] << " " << setprecision(9) << relative_error[5][i] << " " << setprecision(9) << relative_error[6][i] << endl;
     }
 
     ofile.close();
-    ofile2.close();
-  }
+
+    }
 
   return 0;
 }
@@ -163,7 +172,7 @@ int main(int nargs, char* args[]){
 void initialize(int dimensions, int **spin_matrix, double& E, double& M, string initialize){
   if (initialize == "ordered"){
     // setup spin matrix and intial magnetization
-    for(int i =0; i <dimensions; i++) {
+    for(int i =0; i < dimensions; i++) {
       for (int j= 0; j < dimensions; j++){
         spin_matrix[i][j] = 1; // spin orientation for the ground state
         M +=  (double) spin_matrix[i][j];
@@ -178,7 +187,7 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M, string 
     double x;
 
     // setup spin matrix and intial magnetization
-    for(int i = 0; i <dimensions; i++) {
+    for(int i = 0; i < dimensions; i++) {
       for (int j= 0; j < dimensions; j++){
         x = RandomNumberGenerator(gen);
         if (x <= 0.5){
@@ -202,34 +211,37 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M, string 
 
 void analytical_values_2x2Lattice(double* analytical_values, double T){
 
-    double Z_a,E_a,M_a,E_squared_a,M_squared_a, Mabs_a, Mabs_squared_a,beta;
+      double Z_a,E_a,M_a,E_squared_a,M_squared_a, Mabs_a, Mabs_squared_a,beta;
 
-    beta = 1/T;
+      int n_spins = 4;
 
-    //Calculates the analytical expectation values
-    Z_a =  4*(3 + cosh(8*beta));
-    E_a = -32*sinh(8*beta)/Z_a;
-    E_squared_a = 256*cosh(8*beta)/Z_a;
-    M_a = 0;
-    M_squared_a = 32*(exp(8*beta) + 1)*beta/Z_a ;
-    Mabs_a =  8*(exp(8*beta) + 2)/Z_a;
-    Mabs_squared_a = (32*exp(8*beta) + 4)/Z_a;
+      beta = 1/T;
 
-
-    //Stores the analytical expectation values
-    analytical_values[0] = E_a;
-    analytical_values[1] = E_squared_a;
-    analytical_values[2] = Mabs_a;
-    analytical_values[3] = Mabs_squared_a;
-    analytical_values[4] = M_a;
-    analytical_values[5] = M_squared_a;
-    analytical_values[6] = (analytical_values[1]-analytical_values[0]*analytical_values[0])*beta*beta;    //Heat Capacity
-    analytical_values[7] = (analytical_values[5])*beta;                                                   //Magnetic susceptibility
+      //Calculates the analytical expectation values
+      Z_a =  4*(3 + cosh(8*beta));
+      E_a = -32*sinh(8*beta)/Z_a;
+      E_squared_a = 256*cosh(8*beta)/Z_a;
+      M_a = 0;
+      M_squared_a = 32*(exp(8*beta) + 1)*beta/Z_a ;
+      Mabs_a =  8*(exp(8*beta) + 2)/Z_a;
+      Mabs_squared_a = (32*exp(8*beta) + 4)/Z_a;
 
 
-  }
+      //Stores the analytical expectation values
+      analytical_values[0] = E_a/n_spins;
+      analytical_values[1] = E_squared_a/n_spins;
+      analytical_values[2] = Mabs_a/n_spins;
+      analytical_values[3] = Mabs_squared_a/n_spins;
+      analytical_values[4] = M_a/n_spins;
+      analytical_values[5] = M_squared_a/n_spins;
+      analytical_values[6] = (analytical_values[1]-analytical_values[0]*analytical_values[0])*beta*beta;    //Heat Capacity
+      analytical_values[7] = (analytical_values[5])*beta;                                                   //Magnetic susceptibility
 
-void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta, double* energies){
+
+    }
+
+
+void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta, double* energies, double& variance){
 
 
   //SPØR OM DET HER KAN SENDES INN SÅ DET IKKE MÅ LAGES HVER ITERASJON!!!!!
