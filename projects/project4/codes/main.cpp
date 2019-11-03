@@ -68,7 +68,7 @@ int main(int nargs, char* args[]){
 
 
 
-  if (number_of_temperatures == 1){
+  if (number_of_temperatures == 1 && n > 2){
     double *energy, *magnetization, *time, *acceptance, *energies;
     double T = atof(args[6]);
     outfilename2 = string(args[7]);
@@ -110,13 +110,15 @@ int main(int nargs, char* args[]){
   }
 
   if (n == 2){
+    cout << "hei" << endl;
     double *time, *acceptance;
     double T = atof(args[6]);
     double** expectation_values;
     double* analytical_values;
     double** relative_error;
     int n_times;
-    string outfilename2 = string(args[7]);
+
+    outfilename2 = string(args[7]);
 
 
     n_times = MC_samples/n_spins;
@@ -144,6 +146,7 @@ int main(int nargs, char* args[]){
 
 
     Monte_Carlo_Metropolis_2x2(MC_samples, n, spin_matrix, J,  E_initial, M_initial, boltzmann_distribution, time, acceptance, beta, expectation_values);
+
 
     analytical_values_2x2Lattice(analytical_values, T);
 
