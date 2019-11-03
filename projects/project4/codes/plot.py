@@ -4,7 +4,7 @@ import sys
 import os
 plt.rc("text", usetex = True)
 
-part = str(input("Which part of the project to run: [b,c,d] \n"))
+part = str(input("Which part of the project to run: [b,c,d,e] \n"))
 
 if part == "b":
     path = "results/2x2/"
@@ -310,4 +310,47 @@ if part == "d":
     #plt.hist(energies, 400 + 1, density = True)
     #plt.show()
     plt.plot(MC_cycles[N:], energies[N:])
+    plt.show()
+
+if part == "e":
+    L = int(input("Lattice size L = "))
+    my_ranks = [i for i in range(8)]
+    T = []
+    E = []
+    M = []
+    chi = []
+    Cv = []
+
+
+    for my_rank in my_ranks:
+        infilename = "observables_my_rank_" + str(my_rank) + "_L_" + str(L) + ".txt"
+        with open(infilename, "r") as infile:
+            lines = infile.readlines()
+            for line in lines:
+                values = line.split()
+                T.append(float(values[0]))
+                E.append(float(values[1]))
+                M.append(float(values[2]))
+                chi.append(float(values[3]))
+                Cv.append(float(values[4]))
+
+
+    plt.plot(T, E, label = str(L) + " x " + str(L))
+    plt.xlabel(r"$k_BT$" )
+    plt.ylabel(r"$\langle E \rangle/J$")
+    plt.show()
+
+    plt.plot(T, M, label = str(L) + " x " + str(L))
+    plt.xlabel(r"$k_BT$" )
+    plt.ylabel(r"$\langle M \rangle$")
+    plt.show()
+
+    plt.plot(T, chi, label = str(L) + " x " + str(L))
+    plt.xlabel(r"$k_BT$" )
+    plt.ylabel(r"$\chi$")
+    plt.show()
+
+    plt.plot(T, Cv, label = str(L) + " x " + str(L))
+    plt.xlabel(r"$k_BT$" )
+    plt.ylabel(r"$ C_V$")
     plt.show()
