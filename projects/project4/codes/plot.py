@@ -240,6 +240,7 @@ if part == "c":
     time = []
 
     with open(path + infilename_ordered, "r") as infile:
+        infile.readline()
         lines = infile.readlines()
         for line in lines:
             values = line.split()
@@ -249,6 +250,7 @@ if part == "c":
             acceptance_ordered.append(float(values[3]))
 
     with open(path + infilename_random, "r") as infile:
+        infile.readline()
         lines = infile.readlines()
         for line in lines:
             values = line.split()
@@ -258,7 +260,7 @@ if part == "c":
 
 
     plt.plot(time[:], E_ordered[:], label = "ground state initiation")
-    #plt.plot(time[:], E_random[:], label = "random initiation")
+    plt.plot(time[:], E_random[:], label = "random initiation")
     plt.xlabel(r"$t$ [cycles/spins]", size = 14)
     plt.ylabel(r"$\langle E \rangle $/spins", size = 14)
     plt.xticks(size = 14)
@@ -267,7 +269,7 @@ if part == "c":
     plt.figure()
 
     plt.plot(time[:], M_ordered[:], label = "ground state initiation")
-    #plt.plot(time[:], M_random[:], label = "random initiation")
+    plt.plot(time[:], M_random[:], label = "random initiation")
     plt.xlabel("$t$ [cycles/spins]", size = 14)
     plt.ylabel(r"$\langle |M| \rangle $/spins", size = 14)
     plt.xticks(size = 14)
@@ -275,7 +277,7 @@ if part == "c":
     plt.legend(fontsize = 12)
     plt.figure()
 
-    #plt.plot(time[:], acceptance_random[:], label = "Accepted states (random initiation)")
+    plt.plot(time[:], acceptance_random[:], label = "Accepted states (random initiation)")
     plt.plot(time[:], acceptance_ordered[:], label = "Accepted states (ground state initiation)")
     plt.xlabel("$t$ [cycles/spins]", size = 14)
     plt.ylabel("Accepted spins", size = 14)
@@ -285,15 +287,16 @@ if part == "c":
     plt.show()
 
 if part == "d":
+    N = int(4e6)
     energies = []
     temperature = float(input("Temperature = "))
-    initial_spin_state = str(input("ordered or random: [o/r]"))
+    initial_spin_state = str(input("ordered or random: [o/r] \n"))
     if initial_spin_state == "o":
         initial_spin_state = "ordered"
     if initial_spin_state == "r":
         initial_spin_state = "random"
 
-    infilename =  "boltzmann_distribution_T_" + str(temperature) + "_" + initial_spin_state + ".txt"
+    infilename =  "boltzmann_distribution_MC_" + str(int(4e7)) + "_T_" +  str(temperature) + "_" + initial_spin_state + "_.txt"
     path = "results/partC/"
     with open(path + infilename, "r") as infile:
         lines = infile.readlines()
@@ -301,5 +304,10 @@ if part == "d":
             values = line.split()
             energies.append(float(values[0]))
 
-    plt.hist(energies, 800 + 1, density = True)
+    MC = len(energies)
+    MC_cycles = np.linspace(0,MC,MC)
+
+    #plt.hist(energies, 400 + 1, density = True)
+    #plt.show()
+    plt.plot(MC_cycles[N:], energies[N:])
     plt.show()

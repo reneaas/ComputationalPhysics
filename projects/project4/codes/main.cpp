@@ -14,12 +14,8 @@ ofstream ofile;               //Global variable for writing results to file.
 
 //Declaration of functions.
 void initialize(int, int **, double&, double&, string);
-<<<<<<< HEAD
-void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*, double*, double*, double, double*);
-=======
-void Monte_Carlo_Metropolis_time(int, int, int **, int, double&, double&, double*, double*, double*,
+void Monte_Carlo_Metropolis_time(int, int, int, int **, int, double&, double&, double*, double*, double*,
                                   double*, double*, double, double*, double&, mt19937_64, uniform_int_distribution<int>, uniform_real_distribution<double>);
->>>>>>> dca40c700f39821c5b4e148893ea1f5b1e37328a
 void analytical_values_2x2Lattice(double*, double);
 void Monte_Carlo_Metropolis_2x2(int, int, int **, int, double&, double&, double*, double*, double*, double, double**);
 
@@ -63,7 +59,7 @@ int main(int nargs, char* args[]){
   for (int i = 0; i < n; i++){
     spin_matrix[i] = new int[n];
   }
-
+  int N = 4000000;
   E_initial = 0;
   M_initial = 0;
   n_spins = n*n;
@@ -76,7 +72,7 @@ int main(int nargs, char* args[]){
     double *energy, *magnetization, *time, *acceptance, *energies;
     double T = atof(args[6]);
     outfilename2 = string(args[7]);
-    int n_times = MC_samples/n_spins;
+    int n_times = (MC_samples-N)/n_spins;
 
 
     energy = new double[n_times];
@@ -84,7 +80,7 @@ int main(int nargs, char* args[]){
     time = new double[n_times];
     acceptance = new double[n_times];
     energies = new double[MC_samples];
-    double variance = 0;
+    variance = 0;
 
     //Compute Boltzmann factors.
     beta = 1/(T);                //k_B = 1
@@ -93,12 +89,8 @@ int main(int nargs, char* args[]){
     }
 
 
-<<<<<<< HEAD
-    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution, energy, magnetization, time, acceptance, beta, energies);
-=======
-    Monte_Carlo_Metropolis_time(MC_samples, n, spin_matrix, J, E_initial, M_initial, boltzmann_distribution,
+    Monte_Carlo_Metropolis_time(MC_samples, n, N, spin_matrix, J, E_initial, M_initial, boltzmann_distribution,
                                 energy, magnetization, time, acceptance, beta, energies, variance, gen, RandomIntegerGenerator, RandomNumberGenerator);
->>>>>>> dca40c700f39821c5b4e148893ea1f5b1e37328a
 
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
@@ -261,27 +253,21 @@ void analytical_values_2x2Lattice(double* analytical_values, double T){
     }
 
 
-<<<<<<< HEAD
-void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* energy, double* magnetization, double* time, double* acceptance, double beta, double* energies){
-
-=======
-void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution,
+void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution,
                                   double* energy, double* magnetization, double* time, double* acceptance, double beta,
                                   double* energies, double& variance, mt19937_64 gen, uniform_int_distribution<int> RandomIntegerGenerator, uniform_real_distribution<double> RandomNumberGenerator){
->>>>>>> dca40c700f39821c5b4e148893ea1f5b1e37328a
 
 
   int x_flip, y_flip, dE, dM, n_spins, i, accept;
   double E_sum, M_sum, Mabs_sum, Mabs_sum_squared, E_squared, M_squared;
 
   n_spins = n*n;
-
   E_sum = 0.0;
   M_sum = 0.0;
   Mabs_sum = 0.;
   Mabs_sum_squared = 0.;
-  E_squared = E*E;
-  M_squared = M*M;
+  E_squared = 0.;
+  M_squared = 0.;
   accept = 0;
 
 
@@ -317,7 +303,7 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
     energies[k-1] = E;
 
 
-    if (k > 4000){
+    if (k > N-1){
       E_sum += (double) E;
       M_sum += (double) M;
       Mabs_sum += (double) abs(M);
@@ -327,21 +313,21 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
       Mabs_sum_squared += (double) abs(M)*abs(M);
     }
 
-    /*
-    if (k % n_spins == 0 && k > 4000){
-      i = k / n_spins - 1 ;
-      energy[i] = E_sum/ ((double) k * n_spins - 4000);
+
+    if (k > N-1 && k % n_spins == 0){
+      i = (k - N)/ n_spins;
+      energy[i] = E_sum/ ((double) (k-N) * n_spins);
       //energy[i] = E/n_spins;
-      magnetization[i] = Mabs_sum / ((double) k * n_spins - 4000);
+      magnetization[i] = Mabs_sum / ((double) (k-N) * n_spins);
       //magnetization[i] = M/n_spins;
       time[i] = i+1;
       acceptance[i] = accept;
     }
-    */
+
 
   }
-  E_sum /= (MC);
-  E_squared /= (double) (MC);
+  E_sum /= (MC-N);
+  E_squared /= (double) (MC-N);
   M_squared /= (double) (MC*n_spins);
   Mabs_sum /= (double) (MC*n_spins);
   Mabs_sum_squared /= (double) (MC*n_spins);
@@ -351,6 +337,8 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int **spin_matrix, int J, double
 
 void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* time, double* acceptance, double beta,double** expectation_values){
 
+
+  //SPØR OM DET HER KAN SENDES INN SÅ DET IKKE MÅ LAGES HVER ITERASJON!!!!!
   random_device rd;
   mt19937_64 gen(rd());
   uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]

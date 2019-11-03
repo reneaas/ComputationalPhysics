@@ -4,7 +4,7 @@ import os
 
 print("compiling")
 os.system("c++ -O3 -Wall -c main.cpp")
-os.system("c++ -O3 -Wall -o main.exe main.cpp")
+os.system("c++ -O3 -Wall -o main.exe main.o")
 
 part = str(input("Which part of the project would you run? [b, c, d] \n" ))
 
@@ -54,7 +54,7 @@ if part == "c":
         initialize = "random"
 
     outfilename = "MC_" + str(MC_samples) + "_n_" + dimension + "_T_" + str(temperature) + "_" + initialize + "_.txt"
-    outfilename2 = "boltzmann_distribution_T_" + str(temperature) + "_" + initialize + ".txt"
+    outfilename2 = "boltzmann_distribution_MC_" + str(MC_samples) + "_T_" + str(temperature) + "_" + initialize + "_.txt"
 
     command_line_args = number_of_temperatures + " " + outfilename + " " + dimension \
                     + " " + str(MC_samples) + " " + initialize + " " + str(temperature) + " " + outfilename2
