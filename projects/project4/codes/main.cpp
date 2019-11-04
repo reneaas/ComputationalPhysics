@@ -92,6 +92,7 @@ int main(int nargs, char* args[]){
     Monte_Carlo_Metropolis_time(MC_samples, n, N, spin_matrix, J, E_initial, M_initial, boltzmann_distribution,
                                 energy, magnetization, time, acceptance, beta, energies, variance, gen, RandomIntegerGenerator, RandomNumberGenerator);
 
+    cout << "Energies piece of shit = " << energy[n_times - 1] << endl;
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
       ofile << time[i] << " " << setprecision(8) << energy[i] << " " << setprecision(8) << " " << magnetization[i] << " " << acceptance[i] << endl;
