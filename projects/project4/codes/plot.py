@@ -313,44 +313,79 @@ if part == "d":
     plt.show()
 
 if part == "e":
-    L = int(input("Lattice size L = "))
-    my_ranks = [i for i in range(8)]
-    T = []
-    E = []
-    M = []
-    chi = []
-    Cv = []
+    #L = int(input("Lattice size L = "))
+    p = 8
+    path = "results/partE/"
+    my_ranks = [i for i in range(p)]
+    Lattice_sizes = [40, 60, 80, 100]
+
+    fig1 = plt.figure(); figurename_energy = "energies.pdf"
+    fig2 = plt.figure(); figurename_magnetization = "magnetization.pdf"
+    fig3 = plt.figure(); figurename_chi = "chi.pdf"
+    fig4 = plt.figure(); figurename_heat_capacity = "heat_capacity.pdf"
+    ax1 = fig1.add_subplot(111);
+    ax2 = fig2.add_subplot(111);
+    ax3 = fig3.add_subplot(111);
+    ax4 = fig4.add_subplot(111);
+
+    for L in Lattice_sizes:
+        T = []
+        E = []
+        M = []
+        chi = []
+        Cv = []
+        for my_rank in my_ranks:
+            infilename = "observables_my_rank_" + str(my_rank) + "_L_" + str(L) + ".txt"
+            file_path = path + infilename
+            with open(file_path, "r") as infile:
+                lines = infile.readlines()
+                for line in lines:
+                    values = line.split()
+                    T.append(float(values[0]))
+                    E.append(float(values[1]))
+                    M.append(float(values[2]))
+                    chi.append(float(values[3]))
+                    Cv.append(float(values[4]))
+
+        ax1.plot(T, E, label = str(L) + " x " + str(L))
+        ax1.set_xlabel(r"$k_BT$" , size = 14)
+        ax1.set_ylabel(r"$\langle E \rangle/J$", size = 14)
+        plt.xticks(size = 12)
+        plt.yticks(size = 12)
+        ax1.legend(fontsize = 12)
 
 
-    for my_rank in my_ranks:
-        infilename = "observables_my_rank_" + str(my_rank) + "_L_" + str(L) + ".txt"
-        with open(infilename, "r") as infile:
-            lines = infile.readlines()
-            for line in lines:
-                values = line.split()
-                T.append(float(values[0]))
-                E.append(float(values[1]))
-                M.append(float(values[2]))
-                chi.append(float(values[3]))
-                Cv.append(float(values[4]))
+
+        ax2.plot(T, M, label = str(L) + " x " + str(L))
+        ax2.set_xlabel(r"$k_BT$" , size = 14)
+        ax2.set_ylabel(r"$\langle M \rangle$", size = 14)
+        plt.xticks(size = 12)
+        plt.yticks(size = 12)
+        ax2.legend(fontsize = 12)
 
 
-    plt.plot(T, E, label = str(L) + " x " + str(L))
-    plt.xlabel(r"$k_BT$" )
-    plt.ylabel(r"$\langle E \rangle/J$")
-    plt.show()
+        ax3.plot(T, chi, label = str(L) + " x " + str(L))
+        ax3.set_xlabel(r"$k_BT$" , size = 14)
+        ax3.set_ylabel(r"$\chi$", size = 14)
+        plt.xticks(size = 12)
+        plt.yticks(size = 12)
+        ax3.legend(fontsize = 12)
 
-    plt.plot(T, M, label = str(L) + " x " + str(L))
-    plt.xlabel(r"$k_BT$" )
-    plt.ylabel(r"$\langle M \rangle$")
-    plt.show()
 
-    plt.plot(T, chi, label = str(L) + " x " + str(L))
-    plt.xlabel(r"$k_BT$" )
-    plt.ylabel(r"$\chi$")
-    plt.show()
+        ax4.plot(T, Cv, label = str(L) + " x " + str(L))
+        ax4.set_xlabel(r"$k_BT$" , size = 14)
+        ax4.set_ylabel(r"$ C_V$", size = 14)
+        plt.xticks(size = 12)
+        plt.yticks(size = 12)
+        ax4.legend(fontsize = 12)
 
-    plt.plot(T, Cv, label = str(L) + " x " + str(L))
-    plt.xlabel(r"$k_BT$" )
-    plt.ylabel(r"$ C_V$")
-    plt.show()
+    fig1.savefig(figurename_energy)
+    fig2.savefig(figurename_magnetization)
+    fig3.savefig(figurename_chi)
+    fig4.savefig(figurename_heat_capacity)
+
+    figurenames = figurename_energy + " " + figurename_magnetization + " " + figurename_chi + " " + figurename_heat_capacity
+    figurepath = "results/partE/plots"
+    if not os.path.exists(path):
+        os.makedirs(path)
+    os.system("mv" + " " + figurenames + " " + figurepath)

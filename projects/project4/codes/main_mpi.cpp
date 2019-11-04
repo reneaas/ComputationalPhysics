@@ -34,14 +34,14 @@ int main(int nargs, char* args[]){
   double local_T0, local_T1, T_start, T_final;
   int number_of_temperatures, N;
   double temp;
-  double E_local, M_local, Cv_local, chi_local, variance_local;
+  double E_local, M_local, Cv_local, chi_local, variance_local, time_start, time_end, timeused;
 
 
   //Read from command line
-  L = 20;                                   //Dimension of spin matrix
-  MC_samples = 80000000;            //Number of Monte Carlo samples
-  N = 40000000;
-  number_of_temperatures = 8000;
+  L = atoi(args[1]);                                    //Dimension of spin matrix
+  MC_samples = atoi(args[2]);                           //Number of Monte Carlo samples
+  N = atoi(args[3]);                                    //Burn-in period.
+  number_of_temperatures = 80;
   //initialize matrix
   spin_matrix = new int*[L];
   for (int i = 0; i < L; i++){
@@ -61,7 +61,7 @@ int main(int nargs, char* args[]){
 
   ofstream local_ofile;
   local_n = number_of_temperatures/numprocs;
-  T_start = 2.0;
+  T_start = 2.1;
   T_final = 2.4;
   E_local = 0.; M_local = 0.; Cv_local = 0.; chi_local = 0.;
   h = (T_final - T_start)/((double) number_of_temperatures);
@@ -69,7 +69,7 @@ int main(int nargs, char* args[]){
   local_T1 = local_T0 + (double) local_n*h;
   local_h = (local_T1 - local_T0)/((double) local_n);
   local_outfilename = "observables_my_rank_" + to_string(my_rank) + "_L_" + to_string(L) + ".txt";
-  cout << "h local = " << local_h << endl;
+  //cout << "h local = " << local_h << endl;
   local_spin_matrix = spin_matrix;
 
   random_device rd;
@@ -77,11 +77,14 @@ int main(int nargs, char* args[]){
   uniform_int_distribution<int> RandomIntegerGenerator(0,L-1);        //Sets up the uniform distribution for x in [0,n-1]
   uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
 
+  time_start = MPI_Wtime();
 
   local_ofile.open(local_outfilename);
   for (int i = 0; i < local_n; i++){
+    if (my_rank == 0){
+      cout << "iteration = " << i << " of " << number_of_temperatures/numprocs << endl;
+    }
     temp = local_T0 + (double) i*local_h;
-    cout << "temp = " << temp << endl;
     //Compute Boltzmann factors.
     beta = 1/(temp);                //k_B = 1
     for (int j = -8; j < 9; j += 4){
@@ -94,8 +97,7 @@ int main(int nargs, char* args[]){
     Monte_Carlo_Metropolis_time(MC_samples, L, N, local_spin_matrix, J, E_initial, E_local, M_initial, M_local, chi_local, Cv_local, boltzmann_factors, beta, variance_local, gen, RandomIntegerGenerator, RandomNumberGenerator);
     //MPI_Barrier (MPI_COMM_WORLD);
 
-    cout << "my_rank = " << my_rank << " " << "E = " << E_local << endl;
-    //MPI_Allreduce(&E_local, E_exp, 1, MPI_DOUBLE, MPI_Op, MPI_COMM_WORLD);
+    //cout << "my_rank = " << my_rank << " " << "E = " << E_local << endl;
 
     local_ofile << temp << " " << E_local << " " << M_local << " " << chi_local << " " << Cv_local << endl;
     E_local = 0.;
@@ -106,6 +108,12 @@ int main(int nargs, char* args[]){
   }
 
   local_ofile.close();
+
+  time_end = MPI_Wtime();
+  timeused = time_end - time_start;
+  if (my_rank == 0){
+    cout << "Time used = " << timeused << " seconds" <<  endl;
+  }
 
   MPI_Finalize();
 
@@ -217,10 +225,10 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
 
     M_sum /= (double) (MC-N);
     M_squared /= (double) (MC-N);
-    chi = (M_squared - M_sum*M_sum)*beta/((double) n_spins);
 
     Mabs_sum /= (double) (MC-N);
     Mabs_sum_squared /= (double) (MC-N);
+    chi = (Mabs_sum_squared - Mabs_sum*Mabs_sum)*beta/((double) n_spins);
 
 
     E_exp = E_sum/((double) n_spins);

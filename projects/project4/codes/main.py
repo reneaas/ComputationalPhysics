@@ -2,11 +2,22 @@ import numpy as np
 import os
 
 
-print("compiling")
-os.system("c++ -O3 -Wall -c main.cpp")
-os.system("c++ -O3 -Wall -o main.exe main.o")
 
-part = str(input("Which part of the project would you run? [b, c, d] \n" ))
+part = str(input("Which part of the project would you run? [b, c, d, e] \n" ))
+
+if part != "e":
+    print("compiling")
+    os.system("c++ -O3 -Wall -c main.cpp")
+    os.system("c++ -O3 -Wall -o main.exe main.o")
+else:
+    os.system("mpicxx -O2 -c main_mpi.cpp")
+    os.system("mpicxx -O2 -o main_mpi.exe main_mpi.o")
+    """
+    With -Ofast compiler flag and L = 20: timeused = 514.396 seconds.
+    With -O2 compiler flag and L = 20: timeused = 642.505 seconds.
+    with -O3 compuler flag and L = 20: timeused = 542.215 seconds.
+
+    """
 
 if part == "b":
     spin_matrix = str(input("Would you like an ordered or random initial spin matrix? [o/r] \n" ))
@@ -67,3 +78,25 @@ if part == "c":
         os.makedirs(path)
     os.system("mv" + " " + outfilename + " " + outfilename2 + " " + path)
     print("Finito!!!!")
+
+
+
+if part == "e":
+    time = 1000;                                                                               #Burn-in period as measured in MC_cycles/spins.
+    p = 8                                                                                       #Number of processes.
+    my_ranks = [i for i in range(p)]                                                            #Ranks corresponding to number of processes.
+    Lattice_sizes = [40, 60, 80, 100]
+    #L = int(input("Lattice size L = "))                                                        #Lattice length L.
+    for L in Lattice_sizes:
+        print("Executing for L = " + str(L))
+        MC_samples = int(1000*time*L)                                                               #Total number of Monte Carlo cycles
+        N = int(time*L)                                                                             #Burn-in period.
+        arguments = str(L) + " " + str(MC_samples) + " " + str(N)
+        os.system("mpirun -np" + " " + str(p) + " " + "./main_mpi.exe" + " " + arguments)
+
+        path = "results/partE/"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        for my_rank in my_ranks:
+            filename = "observables_my_rank_" + str(my_rank) + "_L_" + str(L) + ".txt"
+            os.system("mv" + " " + filename + " " + path)
