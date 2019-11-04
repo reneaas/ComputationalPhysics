@@ -65,7 +65,7 @@ int main(int nargs, char* args[]){
   E_local = 0.; M_local = 0.; Cv_local = 0.; chi_local = 0.;
   h = (T_final - T_start)/((double) number_of_temperatures);
   local_T0 = T_start + my_rank*local_n*h;
-  //local_T1 = T_start + local_n*h;
+  local_T1 = local_T0 + local_n*h;
   local_h = (local_T1 - local_T0)/((double) local_n);
   local_outfilename = "observables_my_rank_" + to_string(my_rank) + ".txt";
 
