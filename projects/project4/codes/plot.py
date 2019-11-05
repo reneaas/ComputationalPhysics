@@ -229,8 +229,8 @@ if part == "b":
 if part == "c":
     T = float(input("Give temperature: "))
     path = "results/partC/"
-    infilename_ordered = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_ordered_.txt"
-    infilename_random = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_random_.txt"
+    infilename_ordered = "MC_" + str(int(4e6)) + "_n_20_T_" + str(T) + "_ordered_.txt"
+    infilename_random = "MC_" + str(int(4e6)) + "_n_20_T_" + str(T) + "_random_.txt"
     E_ordered = []
     M_ordered = []
     acceptance_ordered = []
@@ -287,7 +287,7 @@ if part == "c":
     plt.show()
 
 if part == "d":
-    N = int(4e6)
+    N = int(4e7)
     energies = []
     temperature = float(input("Temperature = "))
     initial_spin_state = str(input("ordered or random: [o/r] \n"))
@@ -309,7 +309,7 @@ if part == "d":
 
     #plt.hist(energies, 400 + 1, density = True)
     #plt.show()
-    plt.plot(MC_cycles[N:], energies[N:])
+    plt.plot(MC_cycles[:], energies[:])
     plt.show()
 
 if part == "e":
