@@ -19,15 +19,15 @@ inline int periodic(int coordinate, int dimensions, int step) {
 
 
 void initialize(int , int **, double& , double& , string);
-void Monte_Carlo_Metropolis_time(int, int, int, int**, int, double&, double&, double&, double&, double&, double& , double* , double , double& , mt19937_64 , uniform_int_distribution<int> , uniform_real_distribution<double> );
+void Monte_Carlo_Metropolis_time(long long int, int, int, int**, int, double&, double&, double&, double&, double&, double& , double* , double , double& , mt19937_64 , uniform_int_distribution<int> , uniform_real_distribution<double> );
 
 int main(int nargs, char* args[]){
   string outfilename, local_outfilename;
   double boltzmann_factors[17];
-  int L, MC_samples, J;
+  int L, J;
+  long long int MC_samples;
   int **spin_matrix, my_rank, numprocs, **local_spin_matrix;
   double E_initial, M_initial;                      //Stores initial energy and magnetization of system.
-  int n_spins;                                      //Total number of spins.
   double beta;
   int local_n;                                      //Number of local temperature steps.
   double h, local_h;                                         //step size of temperature.
@@ -38,10 +38,12 @@ int main(int nargs, char* args[]){
 
 
   //Read from command line
-  L = atoi(args[1]);                                    //Dimension of spin matrix
-  MC_samples = atoi(args[2]);                           //Number of Monte Carlo samples
-  N = atoi(args[3]);                                    //Burn-in period.
-  number_of_temperatures = 80;
+  //long long int MC_time = 1000;
+  L = atol(args[1]);                                    //Dimension of spin matrix
+  MC_samples = atol(args[2]);                           //Number of Monte Carlo samples
+  //MC_samples = MC_time*10000*L*L;
+  N = atol(args[3]);                                    //Burn-in period.
+  number_of_temperatures = 24;
   //initialize matrix
   spin_matrix = new int*[L];
   for (int i = 0; i < L; i++){
@@ -50,7 +52,6 @@ int main(int nargs, char* args[]){
 
   E_initial = 0;
   M_initial = 0;
-  n_spins = L*L;
   J = 1;                                                      //Coupling constant
   initialize(L, spin_matrix, E_initial, M_initial, "ordered");
 
@@ -61,8 +62,8 @@ int main(int nargs, char* args[]){
 
   ofstream local_ofile;
   local_n = number_of_temperatures/numprocs;
-  T_start = 2.1;
-  T_final = 2.4;
+  T_start = 2.2;
+  T_final = 2.3;
   E_local = 0.; M_local = 0.; Cv_local = 0.; chi_local = 0.;
   h = (T_final - T_start)/((double) number_of_temperatures);
   local_T0 = T_start + (double) my_rank*local_n*h;
@@ -95,7 +96,7 @@ int main(int nargs, char* args[]){
     M_local = M_initial;
 
     Monte_Carlo_Metropolis_time(MC_samples, L, N, local_spin_matrix, J, E_initial, E_local, M_initial, M_local, chi_local, Cv_local, boltzmann_factors, beta, variance_local, gen, RandomIntegerGenerator, RandomNumberGenerator);
-    //MPI_Barrier (MPI_COMM_WORLD);
+    MPI_Barrier (MPI_COMM_WORLD);
 
     //cout << "my_rank = " << my_rank << " " << "E = " << E_local << endl;
 
@@ -162,10 +163,10 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M, string 
     }
   }
 
-void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J, double& E, double& E_exp, double& M, double& M_exp, double& chi, double& Cv, double* boltzmann_factors, double beta, double& variance, mt19937_64 gen, uniform_int_distribution<int> RandomIntegerGenerator, uniform_real_distribution<double> RandomNumberGenerator){
+void Monte_Carlo_Metropolis_time(long long int MC, int n, int N, int **spin_matrix, int J, double& E, double& E_exp, double& M, double& M_exp, double& chi, double& Cv, double* boltzmann_factors, double beta, double& variance, mt19937_64 gen, uniform_int_distribution<int> RandomIntegerGenerator, uniform_real_distribution<double> RandomNumberGenerator){
 
 
-    int x_flip, y_flip, dE, dM, n_spins, i;
+    int x_flip, y_flip, dE, dM, n_spins;
     double E_sum, M_sum, Mabs_sum, Mabs_sum_squared, E_squared, M_squared;
 
     n_spins = n*n;
@@ -178,7 +179,9 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
 
 
     //Running over Monte Carlo samples
-    for (int k = 1; k <= MC; k++){
+    for (long long int k = 1; k <= MC; k++){
+
+
 
 
       x_flip = RandomIntegerGenerator(gen);
@@ -233,6 +236,5 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
 
     E_exp = E_sum/((double) n_spins);
     M_exp = Mabs_sum/((double) n_spins);
-    //E = E_sum; M = Mabs_sum;
 
 }
