@@ -59,7 +59,7 @@ int main(int nargs, char* args[]){
   for (int i = 0; i < n; i++){
     spin_matrix[i] = new int[n];
   }
-  int N = 4000000;
+  int N = 1e7;
   E_initial = 0;
   M_initial = 0;
   n_spins = n*n;
@@ -92,7 +92,6 @@ int main(int nargs, char* args[]){
     Monte_Carlo_Metropolis_time(MC_samples, n, N, spin_matrix, J, E_initial, M_initial, boltzmann_distribution,
                                 energy, magnetization, time, acceptance, beta, energies, variance, gen, RandomIntegerGenerator, RandomNumberGenerator);
 
-    cout << "Energies piece of shit = " << energy[n_times - 1] << endl;
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
       ofile << time[i] << " " << setprecision(8) << energy[i] << " " << setprecision(8) << " " << magnetization[i] << " " << acceptance[i] << endl;
@@ -111,7 +110,6 @@ int main(int nargs, char* args[]){
   }
 
   if (n == 2){
-    cout << "hei" << endl;
     double *time, *acceptance;
     double T = atof(args[6]);
     double** expectation_values;
@@ -160,7 +158,6 @@ int main(int nargs, char* args[]){
       relative_error[4][i] = abs((analytical_values[5]-expectation_values[5][i])/analytical_values[5]);   //Stores relative error in M_squared
       relative_error[5][i] = abs((analytical_values[6]-expectation_values[6][i])/analytical_values[6]);   //Stores relative error in Heat Capacity
       relative_error[6][i] = abs((analytical_values[7]-expectation_values[7][i])/analytical_values[7]);   //Stores relative error in Magnetic susceptibility
-      cout << time[i] << endl;
     }
 
     ofile.open(outfilename);
@@ -416,12 +413,12 @@ void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double&
 
     if (k % n_spins == 0){
       i = k / n_spins - 1;
-      energy[i] = E_sum/ (k * n_spins);
-      magnetization[i] = M_sum / ( k * n_spins);
-      Mabs[i] = Mabs_sum/ ( k * n_spins);
-      Mabs_squared[i] = Mabs_sum_squared/ ( k * n_spins);
-      E_squared[i] = E_sum_squared/ ( k * n_spins);
-      M_squared[i] = M_sum_squared/ ( k * n_spins);
+      energy[i] = E_sum/ (k);
+      magnetization[i] = M_sum / ( k );
+      Mabs[i] = Mabs_sum/ ( k);
+      Mabs_squared[i] = Mabs_sum_squared/ ( k);
+      E_squared[i] = E_sum_squared/ ( k);
+      M_squared[i] = M_sum_squared/ ( k);
       time[i] = i + 1;
       acceptance[i] = accept;
     }
@@ -437,7 +434,8 @@ void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double&
   expectation_values[5] = M_squared;
   for (int i = 0; i < n_times; i++){
     expectation_values[6][i] = (expectation_values[1][i]-expectation_values[0][i]*expectation_values[0][i])*beta*beta;             //Stores the computed expectation value for heat capacity
-    expectation_values[7][i] = (expectation_values[5][i]-(expectation_values[4][i]*expectation_values[4][i]))*beta;
+    expectation_values[7][i] = (expectation_values[3][i]-(expectation_values[2][i]*expectation_values[2][i]))*beta;
   }     //Stores the computed expectation value for susceptibility
-
+  cout << expectation_values[6][n_times-1]/4 << endl;
+  cout << expectation_values[7][n_times-1]/4 << endl;
 }

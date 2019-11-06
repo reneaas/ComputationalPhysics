@@ -183,7 +183,6 @@ void Monte_Carlo_Metropolis_time(long long int MC, int n, int N, int **spin_matr
 
 
 
-
       x_flip = RandomIntegerGenerator(gen);
       y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
 
