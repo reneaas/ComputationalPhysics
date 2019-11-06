@@ -61,7 +61,7 @@ int main(int nargs, char* args[]){
 
   ofstream local_ofile;
   local_n = number_of_temperatures/numprocs;
-  T_start = 2.1;
+  T_start = 2.2;
   T_final = 2.4;
   E_local = 0.; M_local = 0.; Cv_local = 0.; chi_local = 0.;
   h = (T_final - T_start)/((double) number_of_temperatures);
@@ -179,7 +179,6 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
 
     //Running over Monte Carlo samples
     for (int k = 1; k <= MC; k++){
-
 
       x_flip = RandomIntegerGenerator(gen);
       y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
