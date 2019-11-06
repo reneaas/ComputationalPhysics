@@ -348,36 +348,36 @@ if part == "e":
                     chi.append(float(values[3]))
                     Cv.append(float(values[4]))
 
-        ax1.plot(T, E, label = str(L) + " x " + str(L))
+        ax1.scatter(T, E, label = str(L) + " x " + str(L))
         ax1.set_xlabel(r"$k_BT$" , size = 14)
         ax1.set_ylabel(r"$\langle E \rangle/J$", size = 14)
-        plt.xticks(size = 12)
-        plt.yticks(size = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
         ax1.legend(fontsize = 12)
 
 
 
-        ax2.plot(T, M, label = str(L) + " x " + str(L))
+        ax2.scatter(T, M, label = str(L) + " x " + str(L))
         ax2.set_xlabel(r"$k_BT$" , size = 14)
         ax2.set_ylabel(r"$\langle M \rangle$", size = 14)
-        plt.xticks(size = 12)
-        plt.yticks(size = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
         ax2.legend(fontsize = 12)
 
 
-        ax3.plot(T, chi, label = str(L) + " x " + str(L))
+        ax3.scatter(T, chi, label = str(L) + " x " + str(L))
         ax3.set_xlabel(r"$k_BT$" , size = 14)
         ax3.set_ylabel(r"$\chi$", size = 14)
-        plt.xticks(size = 12)
-        plt.yticks(size = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
         ax3.legend(fontsize = 12)
 
 
-        ax4.plot(T, Cv, label = str(L) + " x " + str(L))
+        ax4.scatter(T, Cv, label = str(L) + " x " + str(L))
         ax4.set_xlabel(r"$k_BT$" , size = 14)
         ax4.set_ylabel(r"$ C_V$", size = 14)
-        plt.xticks(size = 12)
-        plt.yticks(size = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
         ax4.legend(fontsize = 12)
 
     fig1.savefig(figurename_energy)

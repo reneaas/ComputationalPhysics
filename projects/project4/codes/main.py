@@ -82,7 +82,7 @@ if part == "c":
 
 
 if part == "e":
-    time = 1000;                                                                                           #Burn-in period as measured in MC_cycles/spins.
+    time = 100;                                                                                           #Burn-in period as measured in MC_cycles/spins.
     p = 8                                                                                                   #Number of processes.
     my_ranks = [i for i in range(p)]                                                                        #Ranks corresponding to number of processes.
     Lattice_sizes = [40, 60, 80, 100]
@@ -90,7 +90,7 @@ if part == "e":
     for L in Lattice_sizes:
         n_spins = L*L
         print("Executing for L = " + str(L))
-        MC_samples = int(1000*time*n_spins)                                                                 #Total number of Monte Carlo cycles
+        MC_samples = int(10000*time*n_spins)                                                                 #Total number of Monte Carlo cycles
         print("Monte carlo samples = ", MC_samples)
         N = int(time*n_spins)                                                                               #Burn-in period.
         arguments = str(L) + " " + str(MC_samples) + " " + str(N)
