@@ -289,6 +289,7 @@ if part == "c":
 if part == "d":
     N = int(4e7)
     energies = []
+    L = 20
     temperature = float(input("Temperature = "))
     initial_spin_state = str(input("ordered or random: [o/r] \n"))
     if initial_spin_state == "o":
@@ -309,7 +310,7 @@ if part == "d":
 
     #plt.hist(energies, 400 + 1, density = True)
     #plt.show()
-    plt.plot(MC_cycles[:], energies[:])
+    plt.plot(MC_cycles[:1600000]/L**2, np.array(energies[:1600000])/L**2)
     plt.show()
 
 if part == "e":

@@ -86,11 +86,13 @@ if part == "e":
     p = 2                                                                                       #Number of processes.
     my_ranks = [i for i in range(p)]                                                            #Ranks corresponding to number of processes.
     Lattice_sizes = [40, 60, 80, 100]
-    #L = int(input("Lattice size L = "))                                                        #Lattice length L.
+    #L = int(input("Lattice size L = "))                                                                    #Lattice length L.
     for L in Lattice_sizes:
+        n_spins = L*L
         print("Executing for L = " + str(L))
-        MC_samples = int(10000*time*L**2)                                                               #Total number of Monte Carlo cycles
-        N = int(time*L**2)                                                                             #Burn-in period.
+        MC_samples = int(1000*time*n_spins)                                                                 #Total number of Monte Carlo cycles
+        print("Monte carlo samples = ", MC_samples)
+        N = int(time*n_spins)                                                                               #Burn-in period.
         arguments = str(L) + " " + str(MC_samples) + " " + str(N)
         os.system("mpirun -np" + " " + str(p) + " " + "./main_mpi.exe" + " " + arguments)
 
