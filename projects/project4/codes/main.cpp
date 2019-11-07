@@ -59,7 +59,8 @@ int main(int nargs, char* args[]){
   for (int i = 0; i < n; i++){
     spin_matrix[i] = new int[n];
   }
-  int N = 1e7;
+  //int N = 1e7;
+  int N = 1e6;
   E_initial = 0;
   M_initial = 0;
   n_spins = n*n;
@@ -79,7 +80,7 @@ int main(int nargs, char* args[]){
     magnetization = new double[n_times];
     time = new double[n_times];
     acceptance = new double[n_times];
-    energies = new double[MC_samples];
+    energies = new double[MC_samples - N+1];
     variance = 0;
 
     //Compute Boltzmann factors.
@@ -99,7 +100,7 @@ int main(int nargs, char* args[]){
     ofile.close();
 
     ofile.open(outfilename2);
-    for (int k = 0; k < MC_samples; k++){
+    for (int k = 0; k < MC_samples - N; k++){
       ofile << energies[k] << endl;
     }
     ofile.close();
@@ -259,9 +260,10 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
                                   double* energies, double& variance, mt19937_64 gen, uniform_int_distribution<int> RandomIntegerGenerator, uniform_real_distribution<double> RandomNumberGenerator){
 
 
-  int x_flip, y_flip, dE, dM, n_spins, i, accept;
+  int x_flip, y_flip, dE, dM, n_spins, i, accept, l;
   double E_sum, M_sum, Mabs_sum, Mabs_sum_squared, E_squared, M_squared;
 
+  l = 0;
   n_spins = n*n;
   E_sum = 0.0;
   M_sum = 0.0;
@@ -301,10 +303,13 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
 
     E += dE;
     M += dM;
-    energies[k-1] = E;
+
 
 
     if (k > N-1){
+      energies[l] = E;
+      l += 1;
+
       E_sum += (double) E;
       M_sum += (double) M;
       Mabs_sum += (double) abs(M);
