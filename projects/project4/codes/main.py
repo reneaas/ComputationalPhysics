@@ -104,9 +104,9 @@ if part == "e_old":
             os.system("mv" + " " + filename + " " + path)
 
 if part == "e":
-    time = 100;                                                                                                 #Burn-in period as measured in MC_cycles/spins.
+    time = 1000;                                                                                                 #Burn-in period as measured in MC_cycles/spins.
     p = 8                                                                                                       #Number of processes.
-    total_time = 10000*time;
+    total_time = 2*time;
     path = "results/partE/total_time_" + str(total_time) + "burn_in_time_" + str(time) + "/"
     if not os.path.exists(path):
         os.makedirs(path)
