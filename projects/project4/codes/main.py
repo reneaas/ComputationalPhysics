@@ -83,7 +83,7 @@ if part == "c":
 
 if part == "e":
     time = 100000;                                                                              #Burn-in period as measured in MC_cycles/spins.
-    p = 8                                                                                       #Number of processes.
+    p = 2                                                                                       #Number of processes.
     my_ranks = [i for i in range(p)]                                                            #Ranks corresponding to number of processes.
     Lattice_sizes = [40, 60, 80, 100]
     #L = int(input("Lattice size L = "))                                                        #Lattice length L.
