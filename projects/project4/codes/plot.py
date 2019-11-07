@@ -108,12 +108,15 @@ if part == "b":
     E_a = -32*np.sinh(8*beta)/Z_a
     E_squared_a = 256*np.cosh(8*beta)/Z_a;
     Mabs_a =  8*(np.exp(8*beta) + 2)/Z_a;
-    Mabs_squared_a = (32*np.exp(8*beta) + 4)/Z_a;
+    Mabs_squared_a = (32*np.exp(8*beta) + 32)/Z_a;
     chi = (Mabs_squared_a - Mabs_a**2)/1
     Cv = (E_squared_a - E_a**2)/1
     Cv = (256*np.cosh(8) - 32**2*(np.sinh(8))**2/Z_a)/Z_a
 
-    print(chi,Cv)
+    print("E", E_a/4)
+    print("M", Mabs_a/4)
+    print("chi", chi/4)
+    print("Cv", Cv/4)
 
     E_ordered = np.array(E_o)
     E_random = np.array(E_r)
@@ -133,7 +136,7 @@ if part == "b":
     Cv_ordered /= 4
     Cv_random /= 4
 
-
+    """
     plt.plot(time[:], E_o[:], label = " ordered")
     plt.plot(time[:], E_r[:], label = " random")
     plt.axhline(y = E_a/4, ls = ":", color = "k", label = "analytical")
@@ -260,21 +263,23 @@ if part == "b":
     plt.legend()
     plt.savefig('results/2x2/Chi_error.pdf')
     plt.close()
+    """
 
-    values = [10, 100, 500, 999]
+    values = [100-1, 1000-1, 10000-1, 100000-1, 999999]
     table_values_o = {"t":[], "E":[], "M":[], "heat_cap":[], "chi":[]}
     table_values_r = {"t":[], "E":[], "M":[], "heat_cap":[], "chi":[]}
     for i in values:
-        table_values_o["t"].append(time[i])
+        table_values_o["t"].append(np.log10(time[i]))
         table_values_o["E"].append(E_ordered[i])
         table_values_o["M"].append(Mabs_ordered[i])
         table_values_o["heat_cap"].append(Cv_ordered[i])
         table_values_o["chi"].append(chi_ordered[i])
-        table_values_r["t"].append(time[i])
+        table_values_r["t"].append(np.log10(time[i]))
         table_values_r["E"].append(E_random[i])
         table_values_r["M"].append(Mabs_random[i])
         table_values_r["heat_cap"].append(Cv_random[i])
         table_values_r["chi"].append(chi_random[i])
+
 
     dataset1 = pd.DataFrame(table_values_o)
     dataset1.to_latex("table_2x2_o.tex", index = False, escape = False, encoding = "utf-8")
@@ -287,8 +292,8 @@ if part == "b":
 if part == "c":
     T = float(input("Give temperature: "))
     path = "results/partC/"
-    infilename_ordered = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_ordered_.txt"
-    infilename_random = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_random_.txt"
+    infilename_ordered = "MC_" + str(int(4e8)) + "_n_20_T_" + str(T) + "_ordered_.txt"
+    infilename_random = "MC_" + str(int(4e8)) + "_n_20_T_" + str(T) + "_random_.txt"
     E_ordered = []
     M_ordered = []
     acceptance_ordered = []
@@ -299,7 +304,7 @@ if part == "c":
 
     with open(path + infilename_ordered, "r") as infile:
         infile.readline()
-        lines = infile.readlines()
+        lines = infile.readlinn_spins = n*n;es()
         for line in lines:
             values = line.split()
             time.append(float(values[0]))
@@ -316,28 +321,28 @@ if part == "c":
             M_random.append(float(values[2]))
             acceptance_random.append(float(values[3]))
 
-
-    plt.plot(time[:], E_ordered[:], label = "ground state initiation")
-    plt.plot(time[:], E_random[:], label = "random initiation")
-    plt.xlabel(r"$t$ [cycles/spins]", size = 14)
-    plt.ylabel(r"$\langle E \rangle $/spins", size = 14)
+    time = [i/1000 for i in time]
+    plt.plot(time[:500000], E_ordered[:500000], label = "ground state initiation")
+    plt.plot(time[:500000], E_random[:500000], label = "random initiation")
+    plt.xlabel("$t$ [$10^3 \\times$ cycles/$L^2$]", size = 14)
+    plt.ylabel(r"$\langle E \rangle / L^2$", size = 14)
     plt.xticks(size = 14)
     plt.yticks(size = 14)
     plt.legend(fontsize = 12)
     plt.figure()
 
-    plt.plot(time[:], M_ordered[:], label = "ground state initiation")
-    plt.plot(time[:], M_random[:], label = "random initiation")
-    plt.xlabel("$t$ [cycles/spins]", size = 14)
-    plt.ylabel(r"$\langle |M| \rangle $/spins", size = 14)
+    plt.plot(time[:500000], M_ordered[:500000], label = "ground state initiation")
+    plt.plot(time[:500000], M_random[:500000], label = "random initiation")
+    plt.xlabel("$t$ [$10^3 \\times$ cycles/$L^2$]", size = 14)
+    plt.ylabel(r"$\langle |M| \rangle / L^2$", size = 14)
     plt.xticks(size = 14)
     plt.yticks(size = 14)
     plt.legend(fontsize = 12)
     plt.figure()
 
-    plt.plot(time[:], acceptance_random[:], label = "Accepted states (random initiation)")
-    plt.plot(time[:], acceptance_ordered[:], label = "Accepted states (ground state initiation)")
-    plt.xlabel("$t$ [cycles/spins]", size = 14)
+    plt.plot(time[:40000], acceptance_random[:40000], label = "Accepted states (random initiation)")
+    plt.plot(time[:40000], acceptance_ordered[:40000], label = "Accepted states (ground state initiation)")
+    plt.xlabel("$t$ [$10^3 \\times$ cycles/$L^2$]", size = 14)
     plt.ylabel("Accepted spins", size = 14)
     plt.xticks(size = 14)
     plt.yticks(size = 14)
@@ -345,7 +350,7 @@ if part == "c":
     plt.show()
 
 if part == "d":
-    N = int(4e7)
+    #N = int(12e7)
     energies = []
     L = 20
     temperature = float(input("Temperature = "))
@@ -363,13 +368,18 @@ if part == "d":
             values = line.split()
             energies.append(float(values[0]))
 
+    print(len(energies))
     MC = len(energies)
     MC_cycles = np.linspace(0,MC,MC)
 
-    #plt.hist(energies, 400 + 1, density = True)
-    #plt.show()
-    plt.plot(MC_cycles[10000:64000000]/L**2, np.array(energies[10000:64000000])/L**2)
+    plt.hist(energies, density = True)
+    plt.xlabel("$E/J$",size = 16)
+    plt.ylabel("$P(E)$",size = 16)
+    plt.xticks(size = 16)
+    plt.yticks(size = 16)
     plt.show()
+    #plt.plot(MC_cycles[:]/L**2, np.array(energies[:])/L**2)
+    #plt.show()
 
 if part == "e":
     #L = int(input("Lattice size L = "))
@@ -406,7 +416,7 @@ if part == "e":
                     chi.append(float(values[3]))
                     Cv.append(float(values[4]))
 
-        ax1.scatter(T, E, label = str(L) + " x " + str(L))
+        ax1.plot(T, E, label = str(L) + " x " + str(L))
         ax1.set_xlabel(r"$k_BT$" , size = 14)
         ax1.set_ylabel(r"$\langle E \rangle/J$", size = 14)
         plt.xticks(size = 14)
@@ -415,7 +425,7 @@ if part == "e":
 
 
 
-        ax2.scatter(T, M, label = str(L) + " x " + str(L))
+        ax2.plot(T, M, label = str(L) + " x " + str(L))
         ax2.set_xlabel(r"$k_BT$" , size = 14)
         ax2.set_ylabel(r"$\langle M \rangle$", size = 14)
         plt.xticks(size = 14)
@@ -423,7 +433,7 @@ if part == "e":
         ax2.legend(fontsize = 12)
 
 
-        ax3.scatter(T, chi, label = str(L) + " x " + str(L))
+        ax3.plot(T, chi, label = str(L) + " x " + str(L))
         ax3.set_xlabel(r"$k_BT$" , size = 14)
         ax3.set_ylabel(r"$\chi$", size = 14)
         plt.xticks(size = 14)
@@ -431,7 +441,7 @@ if part == "e":
         ax3.legend(fontsize = 12)
 
 
-        ax4.scatter(T, Cv, label = str(L) + " x " + str(L))
+        ax4.plot(T, Cv, label = str(L) + " x " + str(L))
         ax4.set_xlabel(r"$k_BT$" , size = 14)
         ax4.set_ylabel(r"$ C_V$", size = 14)
         plt.xticks(size = 14)

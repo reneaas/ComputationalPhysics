@@ -43,7 +43,7 @@ int main(int nargs, char* args[]){
   MC_samples = atol(args[2]);                           //Number of Monte Carlo samples
   //MC_samples = MC_time*10000*L*L;
   N = atol(args[3]);                                    //Burn-in period.
-  number_of_temperatures = 16;
+  number_of_temperatures = 40;
   //initialize matrix
   spin_matrix = new int*[L];
   for (int i = 0; i < L; i++){
