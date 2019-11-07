@@ -37,7 +37,7 @@ int main(int nargs, char* args[]){
 
   //Read from command line
   L = atoi(args[1]);                                    //Dimension of spin matrix
-  MC = atoi(args[2]);                           //Number of Monte Carlo samples
+  MC = atol(args[2]);                           //Number of Monte Carlo samples
   N = atoi(args[3]);                                    //Burn-in period.
   outfilename = "observables_L_" + to_string(L) + ".txt";
 
@@ -57,17 +57,19 @@ int main(int nargs, char* args[]){
   initialize(L, spin_matrix, E_initial, M_initial, "ordered");
 
 
-  T_init = 2.0;
-  T_final = 2.4;
-  number_of_temperatures = 40;
-  h = (T_final - T_init)/number_of_temperatures;
-  MC_local = MC/numprocs;
-
 
   // MPI initializations
   MPI_Init (&nargs, &args);
   MPI_Comm_size (MPI_COMM_WORLD, &numprocs);
   MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
+
+  T_init = 2.0;
+  T_final = 2.4;
+  number_of_temperatures = 40;
+  h = (T_final - T_init)/number_of_temperatures;
+  MC_local = (int) MC/numprocs;
+  cout << "local MC = " << MC_local << endl;
+  N /= numprocs;
 
   random_device rd;
   mt19937_64 gen(rd() + my_rank);
@@ -78,10 +80,8 @@ int main(int nargs, char* args[]){
   if (my_rank == 0) ofile.open(outfilename);
 
   for (int i = 0; i < number_of_temperatures; i++){
-    if (my_rank == 0){
-      cout << "iteration = " << i << " of " << number_of_temperatures/numprocs << endl;
-    }
     temp = T_init + (double) i*h;
+    if (my_rank == 0) cout << "T = " << temp << endl;
     //Compute Boltzmann factors.
     beta = 1/(temp);                //k_B = 1
     for (int j = -8; j < 9; j += 4){
@@ -101,17 +101,14 @@ int main(int nargs, char* args[]){
     MPI_Reduce(&Msum_local, &M_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&Esq_local, &Esq_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&Msq_local, &Msq_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    E_sum /= MC; M_sum /= MC; Esq_sum /= MC; Msq_sum /= MC;
 
-    if (my_rank == 0){
-      E_sum /= MC; M_sum /= MC; Esq_sum /= MC; Msq_sum /= MC;
+    chi = (Msq_sum - M_sum*M_sum)*beta / n_spins ;
+    Cv = (Esq_sum - E_sum*E_sum)*beta*beta / n_spins;
 
-      chi = (Msq_sum - M_sum*M_sum)*beta / n_spins ;
-      Cv = (Esq_sum - E_sum*E_sum)*beta*beta / n_spins;
+    E_sum /= n_spins; M_sum /= n_spins; Esq_sum /= n_spins; Msq_sum /= n_spins;
 
-      E_sum /= n_spins; M_sum /= n_spins; Esq_sum /= n_spins; Msq_sum /= n_spins;
-
-      ofile << temp << " " << E_sum << " " << M_sum << " " << chi << " " << Cv << endl;
-    }
+    ofile << temp << " " << E_sum << " " << M_sum << " " << chi << " " << Cv << endl;
   }
 
   if (my_rank == 0) ofile.close();
@@ -172,10 +169,9 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M, string 
 void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J, double& E, double& E_exp, double& M, double& M_exp, double& Esq_exp, double& Msq_exp, double* boltzmann_factors, double beta, mt19937_64 gen, uniform_int_distribution<int> RandomIntegerGenerator, uniform_real_distribution<double> RandomNumberGenerator){
 
 
-    int x_flip, y_flip, dE, dM, n_spins;
+    int x_flip, y_flip, dE, dM;
     double E_sum, M_sum, Mabs_sum, Mabs_sum_squared, E_squared, M_squared;
 
-    n_spins = n*n;
     E_sum = 0.0;
     M_sum = 0.0;
     Mabs_sum = 0.;
@@ -186,7 +182,6 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
 
     //Running over Monte Carlo samples
     for (int k = 1; k <= MC; k++){
-
       x_flip = RandomIntegerGenerator(gen);
       y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
 
