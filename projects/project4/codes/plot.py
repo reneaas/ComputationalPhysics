@@ -136,17 +136,27 @@ if part == "b":
     Cv_ordered /= 4
     Cv_random /= 4
 
-    """
-    plt.plot(time[:], E_o[:], label = " ordered")
-    plt.plot(time[:], E_r[:], label = " random")
+    plt.plot(time[:], E_ordered[:], label = " ordered")
+    plt.plot(time[:], E_random[:], label = " random")
     plt.axhline(y = E_a/4, ls = ":", color = "k", label = "analytical")
     plt.xlabel(r"$t$ [cycles/$L^2$]", size = 16)
     plt.ylabel(r"$\langle E\rangle / L^2 $", size = 16)
     plt.xticks(size = 16)
     plt.yticks(size = 16)
     plt.legend(fontsize = 16)
-    plt.savefig('results/2x2/E.pdf')
-    plt.close()
+    plt.show()
+
+    plt.plot(time[:], Mabs_ordered[:], label = " ordered")
+    plt.plot(time[:], Mabs_random[:], label = " random")
+    plt.axhline(y = Mabs_a/4, ls = ":", color = "k", label = "analytical")
+    plt.xlabel(r"$t$ [cycles/$L^2$]", size = 16)
+    plt.ylabel(r"$\langle |M|\rangle / L^2$", size = 16)
+    plt.xticks(size = 16)
+    plt.yticks(size = 16)
+    plt.legend(fontsize = 16)
+    plt.show()
+
+    """
 
     plt.plot(time[:], M_o[:], label = " ordered")
     plt.plot(time[:], M_r[:], label = " random")
@@ -170,17 +180,6 @@ if part == "b":
     plt.ylabel(r"$\langle M^2\rangle$/spins")
     plt.legend()
     plt.savefig('results/2x2/M_sq.pdf')
-    plt.close()
-
-    plt.plot(time[:], Mabs_o[:], label = " ordered")
-    plt.plot(time[:], Mabs_r[:], label = " random")
-    plt.axhline(y = Mabs_a/4, ls = ":", color = "k", label = "analytical")
-    plt.xlabel(r"$t$ [cycles/$L^2$]", size = 16)
-    plt.ylabel(r"$\langle |M|\rangle / L^2$", size = 16)
-    plt.xticks(size = 16)
-    plt.yticks(size = 16)
-    plt.legend(fontsize = 16)
-    plt.savefig('results/2x2/Mabs.pdf')
     plt.close()
 
     plt.plot(time[:], Mabs_squared_o[:], label = " ordered")
@@ -263,7 +262,7 @@ if part == "b":
     plt.legend()
     plt.savefig('results/2x2/Chi_error.pdf')
     plt.close()
-    """
+
 
     values = [100-1, 1000-1, 10000-1, 100000-1, 999999]
     table_values_o = {"t":[], "E":[], "M":[], "heat_cap":[], "chi":[]}
@@ -286,7 +285,7 @@ if part == "b":
 
     dataset2 = pd.DataFrame(table_values_r)
     dataset2.to_latex("table_2x2_r.tex", index = False, escape = False, encoding = "utf-8")
-
+"""
 
 
 if part == "c":
