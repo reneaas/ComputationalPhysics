@@ -10,8 +10,8 @@ if part != "e":
     os.system("c++ -O3 -Wall -c main.cpp")
     os.system("c++ -O3 -Wall -o main.exe main.o")
 else:
-    os.system("mpicxx -Ofast -c main_mpi.cpp")
-    os.system("mpicxx -Ofast -o main_mpi.exe main_mpi.o")
+    os.system("mpicxx -Ofast -Wall -c main_mpi_MC.cpp")
+    os.system("mpicxx -Ofast -Wall -o main_mpi_MC.exe main_mpi_MC.o")
     """
     With -Ofast compiler flag and L = 20: timeused = 514.396 seconds.
     With -O2 compiler flag and L = 20: timeused = 642.505 seconds.
@@ -81,10 +81,10 @@ if part == "c":
 
 
 
-if part == "e":
-    time = 100000;                                                                              #Burn-in period as measured in MC_cycles/spins.
-    p = 2                                                                                       #Number of processes.
-    my_ranks = [i for i in range(p)]                                                            #Ranks corresponding to number of processes.
+if part == "e_old":
+    time = 100;                                                                                                 #Burn-in period as measured in MC_cycles/spins.
+    p = 8                                                                                                       #Number of processes.
+    my_ranks = [i for i in range(p)]                                                                            #Ranks corresponding to number of processes.
     Lattice_sizes = [40, 60, 80, 100]
     #L = int(input("Lattice size L = "))                                                                        #Lattice length L.
     for L in Lattice_sizes:
@@ -102,3 +102,23 @@ if part == "e":
         for my_rank in my_ranks:
             filename = "observables_my_rank_" + str(my_rank) + "_L_" + str(L) + ".txt"
             os.system("mv" + " " + filename + " " + path)
+
+if part == "e":
+    time = 100;                                                                                                 #Burn-in period as measured in MC_cycles/spins.
+    p = 8                                                                                                       #Number of processes.
+    total_time = 10000*time;
+    path = "results/partE/total_time_" + str(total_time) + "burn_in_time_" + str(time) + "/"
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    Lattice_sizes = [40, 60, 80, 100]
+    for L in Lattice_sizes:
+        n_spins = L*L
+        print("Executing for L = " + str(L))
+        MC_samples = int(total_time*n_spins)                                                                    #Total number of Monte Carlo cycles
+        print("Monte carlo samples = ", MC_samples)
+        N = int(time*n_spins)                                                                                   #Burn-in period.
+        arguments = str(L) + " " + str(MC_samples) + " " + str(N)
+        os.system("mpirun -np" + " " + str(p) + " " + "./main_mpi_MC.exe" + " " + arguments)
+        filename = "observables_L_" + str(L) + ".txt"
+        os.system("mv" + " " + filename + " " + path)
