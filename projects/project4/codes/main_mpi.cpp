@@ -178,6 +178,7 @@ void Monte_Carlo_Metropolis_time(long long int MC, int n, int N, int **spin_matr
     M_squared = 0.;
 
 
+
     //Running over Monte Carlo samples
     for (long long int k = 1; k <= MC; k++){
 

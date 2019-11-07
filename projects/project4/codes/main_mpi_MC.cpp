@@ -25,7 +25,7 @@ int main(int nargs, char* args[]){
   string outfilename;
   double boltzmann_factors[17];
   int L, J;
-  int MC, MC_local, n_spins;
+  int MC, MC_local, n_spins, N_local;
   int **spin_matrix, my_rank, numprocs, **local_spin_matrix;
   double E_initial, M_initial;                      //Stores initial energy and magnetization of system.
   double beta, chi, Cv;
@@ -47,13 +47,7 @@ int main(int nargs, char* args[]){
     spin_matrix[i] = new int[L];
   }
   E_initial = 0;
-  M_initial = 0;
-  E_sum = 0;
-  M_sum = 0;
-  Esq_sum = 0;
-  Msq_sum = 0;
-  n_spins = L*L;
-  J = 1;                                                      //Coupling constant
+  M_initial = 0;                                                 //Coupling constant
   initialize(L, spin_matrix, E_initial, M_initial, "ordered");
 
 
@@ -62,14 +56,23 @@ int main(int nargs, char* args[]){
   MPI_Init (&nargs, &args);
   MPI_Comm_size (MPI_COMM_WORLD, &numprocs);
   MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
-
+  E_sum = 0;
+  M_sum = 0;
+  Esq_sum = 0;
+  Msq_sum = 0;
+  n_spins = L*L;
+  J = 1;
   T_init = 2.0;
   T_final = 2.4;
   number_of_temperatures = 40;
   h = (T_final - T_init)/number_of_temperatures;
   MC_local = (int) MC/numprocs;
-  cout << "local MC = " << MC_local << endl;
-  N /= numprocs;
+  N_local = N/numprocs;
+
+  if (my_rank == 0){
+    cout << "local MC = " << MC_local << endl;
+    cout << "Burn in period = " << N << endl;
+  }
 
   random_device rd;
   mt19937_64 gen(rd() + my_rank);
@@ -91,17 +94,18 @@ int main(int nargs, char* args[]){
     local_spin_matrix = spin_matrix;
     E_local = E_initial;
     M_local = M_initial;
-    Esum_local = 0.; E_sum = 0; Esq_local = 0; Esq_sum = 0;
-    Msum_local = 0.; M_sum = 0; Msq_local = 0; Msq_sum = 0;
 
 
-    Monte_Carlo_Metropolis_time(MC_local, L, N, local_spin_matrix, J, E_local, Esum_local, M_local, Msum_local, Esq_local, Msq_local, boltzmann_factors, beta, gen, RandomIntegerGenerator, RandomNumberGenerator);
+    Monte_Carlo_Metropolis_time(MC_local, L, N_local, local_spin_matrix, J, E_initial, Esum_local, M_initial, Msum_local, Esq_local, Msq_local, boltzmann_factors, beta, gen, RandomIntegerGenerator, RandomNumberGenerator);
 
     MPI_Reduce(&Esum_local, &E_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&Msum_local, &M_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&Esq_local, &Esq_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&Msq_local, &Msq_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    E_sum /= MC; M_sum /= MC; Esq_sum /= MC; Msq_sum /= MC;
+    MPI_Barrier(MPI_COMM_WORLD);
+
+
+    E_sum /= (double) (MC-N); M_sum /= (double) (MC-N); Esq_sum /= (double) (MC-N); Msq_sum /= (double) (MC-N);
 
     chi = (Msq_sum - M_sum*M_sum)*beta / n_spins ;
     Cv = (Esq_sum - E_sum*E_sum)*beta*beta / n_spins;
@@ -109,6 +113,10 @@ int main(int nargs, char* args[]){
     E_sum /= n_spins; M_sum /= n_spins; Esq_sum /= n_spins; Msq_sum /= n_spins;
 
     ofile << temp << " " << E_sum << " " << M_sum << " " << chi << " " << Cv << endl;
+
+    Esum_local = 0.; E_sum = 0; Esq_local = 0; Esq_sum = 0;
+    Msum_local = 0.; M_sum = 0; Msq_local = 0; Msq_sum = 0;
+
   }
 
   if (my_rank == 0) ofile.close();
