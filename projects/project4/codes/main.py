@@ -10,8 +10,8 @@ if part != "e":
     os.system("c++ -O3 -Wall -c main.cpp")
     os.system("c++ -O3 -Wall -o main.exe main.o")
 else:
-    os.system("mpicxx -O2 -c main_mpi.cpp")
-    os.system("mpicxx -O2 -o main_mpi.exe main_mpi.o")
+    os.system("mpicxx -Ofast -c main_mpi.cpp")
+    os.system("mpicxx -Ofast -o main_mpi.exe main_mpi.o")
     """
     With -Ofast compiler flag and L = 20: timeused = 514.396 seconds.
     With -O2 compiler flag and L = 20: timeused = 642.505 seconds.
@@ -86,11 +86,13 @@ if part == "e":
     p = 2                                                                                       #Number of processes.
     my_ranks = [i for i in range(p)]                                                            #Ranks corresponding to number of processes.
     Lattice_sizes = [40, 60, 80, 100]
-    #L = int(input("Lattice size L = "))                                                        #Lattice length L.
+    #L = int(input("Lattice size L = "))                                                                    #Lattice length L.
     for L in Lattice_sizes:
+        n_spins = L*L
         print("Executing for L = " + str(L))
-        MC_samples = int(10*time*L)                                                               #Total number of Monte Carlo cycles
-        N = int(time*L)                                                                             #Burn-in period.
+        MC_samples = int(10000*time*n_spins)                                                                 #Total number of Monte Carlo cycles
+        print("Monte carlo samples = ", MC_samples)
+        N = int(time*n_spins)                                                                               #Burn-in period.
         arguments = str(L) + " " + str(MC_samples) + " " + str(N)
         os.system("mpirun -np" + " " + str(p) + " " + "./main_mpi.exe" + " " + arguments)
 

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import pandas as pd
 import os
 plt.rc("text", usetex = True)
 
@@ -102,13 +103,45 @@ if part == "b":
             C_v_error_r.append(float(values[6]))
             Chi_error_r.append(float(values[7]))
 
+    beta = 1
+    Z_a  = 4 * (3 + np.cosh(8*beta))
+    E_a = -32*np.sinh(8*beta)/Z_a
+    E_squared_a = 256*np.cosh(8*beta)/Z_a;
+    Mabs_a =  8*(np.exp(8*beta) + 2)/Z_a;
+    Mabs_squared_a = (32*np.exp(8*beta) + 4)/Z_a;
+    chi = (Mabs_squared_a - Mabs_a**2)/1
+    Cv = (E_squared_a - E_a**2)/1
+    Cv = (256*np.cosh(8) - 32**2*(np.sinh(8))**2/Z_a)/Z_a
+
+    print(chi,Cv)
+
+    E_ordered = np.array(E_o)
+    E_random = np.array(E_r)
+    Mabs_ordered = np.array(Mabs_o)
+    Mabs_random = np.array(Mabs_r)
+    chi_ordered = np.array(Chi_o)
+    chi_random = np.array(Chi_r)
+    Cv_ordered = np.array(C_v_o)
+    Cv_random = np.array(C_v_r)
+
+    E_ordered /= 4
+    E_random /= 4
+    Mabs_ordered /= 4
+    Mabs_random /= 4
+    chi_ordered /= 4
+    chi_random /= 4
+    Cv_ordered /= 4
+    Cv_random /= 4
 
 
     plt.plot(time[:], E_o[:], label = " ordered")
     plt.plot(time[:], E_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\langle E\rangle$/spins")
-    plt.legend()
+    plt.axhline(y = E_a/4, ls = ":", color = "k", label = "analytical")
+    plt.xlabel(r"$t$ [cycles/$L^2$]", size = 16)
+    plt.ylabel(r"$\langle E\rangle / L^2 $", size = 16)
+    plt.xticks(size = 16)
+    plt.yticks(size = 16)
+    plt.legend(fontsize = 16)
     plt.savefig('results/2x2/E.pdf')
     plt.close()
 
@@ -137,10 +170,13 @@ if part == "b":
     plt.close()
 
     plt.plot(time[:], Mabs_o[:], label = " ordered")
-    plt.plot(time[:], Mabs_r[:], label = " ordered")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\langle |M|\rangle$/spins")
-    plt.legend()
+    plt.plot(time[:], Mabs_r[:], label = " random")
+    plt.axhline(y = Mabs_a/4, ls = ":", color = "k", label = "analytical")
+    plt.xlabel(r"$t$ [cycles/$L^2$]", size = 16)
+    plt.ylabel(r"$\langle |M|\rangle / L^2$", size = 16)
+    plt.xticks(size = 16)
+    plt.yticks(size = 16)
+    plt.legend(fontsize = 16)
     plt.savefig('results/2x2/Mabs.pdf')
     plt.close()
 
@@ -225,12 +261,34 @@ if part == "b":
     plt.savefig('results/2x2/Chi_error.pdf')
     plt.close()
 
+    values = [10, 100, 500, 999]
+    table_values_o = {"t":[], "E":[], "M":[], "heat_cap":[], "chi":[]}
+    table_values_r = {"t":[], "E":[], "M":[], "heat_cap":[], "chi":[]}
+    for i in values:
+        table_values_o["t"].append(time[i])
+        table_values_o["E"].append(E_ordered[i])
+        table_values_o["M"].append(Mabs_ordered[i])
+        table_values_o["heat_cap"].append(Cv_ordered[i])
+        table_values_o["chi"].append(chi_ordered[i])
+        table_values_r["t"].append(time[i])
+        table_values_r["E"].append(E_random[i])
+        table_values_r["M"].append(Mabs_random[i])
+        table_values_r["heat_cap"].append(Cv_random[i])
+        table_values_r["chi"].append(chi_random[i])
+
+    dataset1 = pd.DataFrame(table_values_o)
+    dataset1.to_latex("table_2x2_o.tex", index = False, escape = False, encoding = "utf-8")
+
+    dataset2 = pd.DataFrame(table_values_r)
+    dataset2.to_latex("table_2x2_r.tex", index = False, escape = False, encoding = "utf-8")
+
+
 
 if part == "c":
     T = float(input("Give temperature: "))
     path = "results/partC/"
-    infilename_ordered = "MC_" + str(int(4e6)) + "_n_20_T_" + str(T) + "_ordered_.txt"
-    infilename_random = "MC_" + str(int(4e6)) + "_n_20_T_" + str(T) + "_random_.txt"
+    infilename_ordered = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_ordered_.txt"
+    infilename_random = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_random_.txt"
     E_ordered = []
     M_ordered = []
     acceptance_ordered = []
@@ -287,8 +345,9 @@ if part == "c":
     plt.show()
 
 if part == "d":
-    N = int(4e6)
+    N = int(4e7)
     energies = []
+    L = 20
     temperature = float(input("Temperature = "))
     initial_spin_state = str(input("ordered or random: [o/r] \n"))
     if initial_spin_state == "o":
@@ -309,7 +368,7 @@ if part == "d":
 
     #plt.hist(energies, 400 + 1, density = True)
     #plt.show()
-    plt.plot(MC_cycles[N:], energies[N:])
+    plt.plot(MC_cycles[10000:64000000]/L**2, np.array(energies[10000:64000000])/L**2)
     plt.show()
 
 if part == "e":
@@ -347,36 +406,36 @@ if part == "e":
                     chi.append(float(values[3]))
                     Cv.append(float(values[4]))
 
-        ax1.plot(T, E, label = str(L) + " x " + str(L))
+        ax1.scatter(T, E, label = str(L) + " x " + str(L))
         ax1.set_xlabel(r"$k_BT$" , size = 14)
         ax1.set_ylabel(r"$\langle E \rangle/J$", size = 14)
-        plt.xticks(size = 12)
-        plt.yticks(size = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
         ax1.legend(fontsize = 12)
 
 
 
-        ax2.plot(T, M, label = str(L) + " x " + str(L))
+        ax2.scatter(T, M, label = str(L) + " x " + str(L))
         ax2.set_xlabel(r"$k_BT$" , size = 14)
         ax2.set_ylabel(r"$\langle M \rangle$", size = 14)
-        plt.xticks(size = 12)
-        plt.yticks(size = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
         ax2.legend(fontsize = 12)
 
 
-        ax3.plot(T, chi, label = str(L) + " x " + str(L))
+        ax3.scatter(T, chi, label = str(L) + " x " + str(L))
         ax3.set_xlabel(r"$k_BT$" , size = 14)
         ax3.set_ylabel(r"$\chi$", size = 14)
-        plt.xticks(size = 12)
-        plt.yticks(size = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
         ax3.legend(fontsize = 12)
 
 
-        ax4.plot(T, Cv, label = str(L) + " x " + str(L))
+        ax4.scatter(T, Cv, label = str(L) + " x " + str(L))
         ax4.set_xlabel(r"$k_BT$" , size = 14)
         ax4.set_ylabel(r"$ C_V$", size = 14)
-        plt.xticks(size = 12)
-        plt.yticks(size = 12)
+        plt.xticks(size = 14)
+        plt.yticks(size = 14)
         ax4.legend(fontsize = 12)
 
     fig1.savefig(figurename_energy)
