@@ -10,8 +10,8 @@ if part != "e":
     os.system("c++ -O3 -Wall -c main.cpp")
     os.system("c++ -O3 -Wall -o main.exe main.o")
 else:
-    os.system("mpicxx -Ofast -Wall -c main_mpi_MC.cpp")
-    os.system("mpicxx -Ofast -Wall -o main_mpi_MC.exe main_mpi_MC.o")
+    os.system("mpicxx -Ofast -c main_mpi_MC.cpp")
+    os.system("mpicxx -Ofast -o main_mpi_MC.exe main_mpi_MC.o")
     """
     With -Ofast compiler flag and L = 20: timeused = 514.396 seconds.
     With -O2 compiler flag and L = 20: timeused = 642.505 seconds.
@@ -104,9 +104,9 @@ if part == "e_old":
             os.system("mv" + " " + filename + " " + path)
 
 if part == "e":
-    time = 1000;                                                                                                 #Burn-in period as measured in MC_cycles/spins.
-    p = 8                                                                                                       #Number of processes.
-    total_time = 2*time;
+    time = 100;                                                                                                     #Burn-in period as measured in MC_cycles/spins.
+    p = 8                                                                                                           #Number of processes.
+    total_time = 10000;
     path = "results/partE/total_time_" + str(total_time) + "burn_in_time_" + str(time) + "/"
     if not os.path.exists(path):
         os.makedirs(path)
