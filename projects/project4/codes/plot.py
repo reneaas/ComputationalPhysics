@@ -5,7 +5,7 @@ import pandas as pd
 import os
 plt.rc("text", usetex = True)
 
-part = str(input("Which part of the project to run: [b,c,d,e] \n"))
+part = str(input("Which part of the project to run: [b,c,d,e,flags] \n"))
 
 if part == "b":
     path = "results/2x2/"
@@ -535,3 +535,35 @@ if part == "e":
     if not os.path.exists(path):
         os.makedirs(path)
     os.system("mv" + " " + figurenames + " " + figurepath)
+
+if part == "flags":
+    path = "results/partE/compilerflag/"
+    MC_samples = [100, 1000, 10000, 100000, 1000000, 10000000, 100000000]
+    flags = ["No_Flag", "No_Flagp_1", "O2", "O3", "Ofast"]
+
+    for flag in flags:
+        time = []
+        for MC in MC_samples:
+            infilename = "MC_" + str(MC) + "_Flag_" + flag + ".txt"
+            file_path = path + infilename
+            with open(file_path, "r") as infile:
+                lines = infile.readlines()
+                for line in lines:
+                    values = line.split()
+                    time.append(float(values[0]))
+
+        if flag == "O2" or flag == "O3" or flag == "Ofast":
+            flag = "-"+ flag
+        if flag == "No_Flag":
+            flag = "No flag"
+        if flag == "No_Flagp_1":
+            flag = "No flag (unparallelized)"
+
+        plt.scatter(np.log10(MC_samples), np.log10(time), label = flag, marker = "x")
+        plt.xlabel("$\log_{10}(N)$", size = 16)
+        plt.xticks(size = 16)
+        plt.yticks(size = 16)
+        plt.ylabel("$\log_{10}(t)$", size = 16)
+        plt.legend(fontsize = 14)
+
+    plt.show()

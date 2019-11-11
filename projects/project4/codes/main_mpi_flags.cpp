@@ -39,7 +39,7 @@ int main(int nargs, char* args[]){
   L = atoi(args[1]);                                    //Dimension of spin matrix
   MC = atol(args[2]);                           //Number of Monte Carlo samples
   N = atoi(args[3]);                                    //Burn-in period.
-  outfilename = "observables_L_" + to_string(L) + ".txt";
+  outfilename = string(args[4]);
 
   //initialize matrix
   spin_matrix = new int*[L];
@@ -80,7 +80,7 @@ int main(int nargs, char* args[]){
   uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
 
   time_start = MPI_Wtime();
-  if (my_rank == 0) ofile.open(outfilename);
+//if (my_rank == 0) ofile.open(outfilename);
 
   for (int i = 0; i < number_of_temperatures; i++){
     temp = T_init + (double) i*h;
@@ -111,17 +111,21 @@ int main(int nargs, char* args[]){
 
     E_sum /= n_spins; M_sum /= n_spins; Esq_sum /= n_spins; Msq_sum /= n_spins;
 
-    ofile << temp << " " << E_sum << " " << M_sum << " " << chi << " " << Cv << endl;
-
     Esum_local = 0.; E_sum = 0; Esq_local = 0; Esq_sum = 0;
     Msum_local = 0.; M_sum = 0; Msq_local = 0; Msq_sum = 0;
 
   }
 
-  if (my_rank == 0) ofile.close();
 
   time_end = MPI_Wtime();
   timeused = time_end - time_start;
+  if (my_rank == 0) ofile.open(outfilename);
+
+  ofile << timeused << " " << MC << endl;
+
+  if (my_rank == 0) ofile.close();
+
+
   if (my_rank == 0){
     cout << "Time used = " << timeused << " seconds" <<  endl;
   }
