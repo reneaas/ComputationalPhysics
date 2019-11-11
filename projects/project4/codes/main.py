@@ -59,8 +59,6 @@ if part == "b":
         os.makedirs(path)
     os.system("mv" + " " + outfilename + " " + outfilename2 + " " + path)
 
-
-
 if part == "c":
     number_of_temperatures = "1"
     dimension = "20";
@@ -88,8 +86,6 @@ if part == "c":
         os.makedirs(path)
     os.system("mv" + " " + outfilename + " " + outfilename2 + " " + path)
     print("Finito!!!!")
-
-
 
 if part == "e_old":
     time = 100;                                                                                                 #Burn-in period as measured in MC_cycles/spins.
@@ -132,8 +128,6 @@ if part == "e":
         os.system("mpirun -np" + " " + str(p) + " " + " --oversubscribe ./main_mpi_MC.exe" + " " + arguments)
         filename = "observables_L_" + str(L) + ".txt"
         os.system("mv" + " " + filename + " " + path)
-
-
 
 if part == "flags":
                                                                                               #Burn-in period as measured in MC_cycles/spins.
