@@ -19,8 +19,6 @@ else:
     print("compiling")
     os.system("c++ -O3 -Wall -c main.cpp")
     os.system("c++ -O3 -Wall -o main.exe main.o")
-
-
     """
     With -Ofast compiler flag and L = 20: timeused = 514.396 seconds.
     With -O2 compiler flag and L = 20: timeused = 642.505 seconds.
