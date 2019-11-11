@@ -615,7 +615,7 @@ if part == "e":
         ax4.legend(fontsize = 12)
 
         #Interpolate dataset and create smoother plots:
-        Cs = UnivariateSpline(T,Cv, s=2)
+        Cs = UnivariateSpline(T,Cv, s=3)
         Ts = np.linspace(2.0,2.399,100)
         Cv_spline = Cs(Ts)
         ax5.plot(Ts, Cv_spline, label = str(L) + " x " + str(L))
@@ -646,8 +646,8 @@ if part == "e":
     X = np.array(X)
     Y = popt[1]*X + popt[0]
     ax6.plot(X,Y,"-k")
-    equation = r"$T_C(L) = 1.32077399/L + \underbrace{2.2649641}_{=T_C(\infty)}$"
-    ax6.text(0.005,2.30, equation, {"color":"k", "fontsize": 15})
+    equation = r"$T_C(L) = 1.15244002/L + \underbrace{2.2656493}_{=T_C(\infty)}$"
+    ax6.text(0.0080,2.270, equation, {"color":"k", "fontsize": 18})
     ax6.legend(fontsize = 12)
 
 
