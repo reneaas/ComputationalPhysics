@@ -19,14 +19,13 @@ inline int periodic(int coordinate, int dimensions, int step) {
 
 
 void initialize(int , int **, double& , double& , string);
-void Monte_Carlo_Metropolis_time( int, int, int, int**, int, double&, double&, double&, double&, double&, double& , double* , double , mt19937_64 , uniform_int_distribution<int> , uniform_real_distribution<double> );
+void Monte_Carlo_Metropolis_time(int, int, int, int**, int, double&, double&, double&, double&, double&, double& , double* , double , mt19937_64 , uniform_int_distribution<int> , uniform_real_distribution<double> );
 
 int main(int nargs, char* args[]){
   string outfilename;
   double boltzmann_factors[17];
   int L, J;
-  int MC, MC_local;
-  int  n_spins, N_local;
+  int MC, MC_local, n_spins, N_local;
   int **spin_matrix, my_rank, numprocs, **local_spin_matrix;
   double E_initial, M_initial;                      //Stores initial energy and magnetization of system.
   double beta, chi, Cv;
@@ -40,7 +39,7 @@ int main(int nargs, char* args[]){
   L = atoi(args[1]);                                    //Dimension of spin matrix
   MC = atol(args[2]);                           //Number of Monte Carlo samples
   N = atoi(args[3]);                                    //Burn-in period.
-  outfilename = "observables_L_" + to_string(L) + ".txt";
+  outfilename = string(args[4]);
 
   //initialize matrix
   spin_matrix = new int*[L];
@@ -49,7 +48,7 @@ int main(int nargs, char* args[]){
   }
   E_initial = 0;
   M_initial = 0;                                                 //Coupling constant
-  initialize(L, spin_matrix, E_initial, M_initial, "random");
+  initialize(L, spin_matrix, E_initial, M_initial, "ordered");
 
 
 
@@ -65,9 +64,9 @@ int main(int nargs, char* args[]){
   J = 1;
   T_init = 2.0;
   T_final = 2.4;
-  number_of_temperatures = 400;
+  number_of_temperatures = 40;
   h = (T_final - T_init)/number_of_temperatures;
-  MC_local = MC/numprocs;
+  MC_local = (int) MC/numprocs;
   N_local = N/numprocs;
 
   if (my_rank == 0){
@@ -81,7 +80,7 @@ int main(int nargs, char* args[]){
   uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
 
   time_start = MPI_Wtime();
-  if (my_rank == 0) ofile.open(outfilename);
+//if (my_rank == 0) ofile.open(outfilename);
 
   for (int i = 0; i < number_of_temperatures; i++){
     temp = T_init + (double) i*h;
@@ -112,17 +111,21 @@ int main(int nargs, char* args[]){
 
     E_sum /= n_spins; M_sum /= n_spins; Esq_sum /= n_spins; Msq_sum /= n_spins;
 
-    ofile << temp << " " << E_sum << " " << M_sum << " " << chi << " " << Cv << endl;
-
     Esum_local = 0.; E_sum = 0; Esq_local = 0; Esq_sum = 0;
     Msum_local = 0.; M_sum = 0; Msq_local = 0; Msq_sum = 0;
 
   }
 
-  if (my_rank == 0) ofile.close();
 
   time_end = MPI_Wtime();
   timeused = time_end - time_start;
+  if (my_rank == 0) ofile.open(outfilename);
+
+  ofile << timeused << " " << MC << endl;
+
+  if (my_rank == 0) ofile.close();
+
+
   if (my_rank == 0){
     cout << "Time used = " << timeused << " seconds" <<  endl;
   }
@@ -174,7 +177,7 @@ void initialize(int dimensions, int **spin_matrix, double& E, double& M, string 
     }
   }
 
-void Monte_Carlo_Metropolis_time( int MC, int n, int N, int **spin_matrix, int J, double& E, double& E_exp, double& M, double& M_exp, double& Esq_exp, double& Msq_exp, double* boltzmann_factors, double beta, mt19937_64 gen, uniform_int_distribution<int> RandomIntegerGenerator, uniform_real_distribution<double> RandomNumberGenerator){
+void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J, double& E, double& E_exp, double& M, double& M_exp, double& Esq_exp, double& Msq_exp, double* boltzmann_factors, double beta, mt19937_64 gen, uniform_int_distribution<int> RandomIntegerGenerator, uniform_real_distribution<double> RandomNumberGenerator){
 
 
     int x_flip, y_flip, dE, dM;
@@ -189,7 +192,7 @@ void Monte_Carlo_Metropolis_time( int MC, int n, int N, int **spin_matrix, int J
 
 
     //Running over Monte Carlo samples
-    for ( int k = 1; k <= MC; k++){
+    for (int k = 1; k <= MC; k++){
       x_flip = RandomIntegerGenerator(gen);
       y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
 

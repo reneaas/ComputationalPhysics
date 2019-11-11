@@ -7,7 +7,7 @@ from scipy.interpolate import UnivariateSpline
 from scipy.optimize import curve_fit
 plt.rc("text", usetex = True)
 
-part = str(input("Which part of the project to run: [b,c,d,e] \n"))
+part = str(input("Which part of the project to run: [b,c,d,e,flags] \n"))
 
 if part == "b":
     path = "results/2x2/"
@@ -138,18 +138,28 @@ if part == "b":
     Cv_ordered /= 4
     Cv_random /= 4
 
-
-    plt.plot(time[:], E_o[:], label = " ordered")
-    plt.plot(time[:], E_r[:], label = " random")
+    plt.plot(time[:], E_ordered[:], label = " ordered")
+    plt.plot(time[:], E_random[:], label = " random")
     plt.axhline(y = E_a/4, ls = ":", color = "k", label = "analytical")
     plt.xlabel(r"$t$ [cycles/$L^2$]", size = 16)
     plt.ylabel(r"$\langle E\rangle / L^2 $", size = 16)
     plt.xticks(size = 16)
     plt.yticks(size = 16)
     plt.legend(fontsize = 16)
-    #plt.savefig('results/2x2/E.pdf')
     plt.show()
+
+    plt.plot(time[:], Mabs_ordered[:], label = " ordered")
+    plt.plot(time[:], Mabs_random[:], label = " random")
+    plt.axhline(y = Mabs_a/4, ls = ":", color = "k", label = "analytical")
+    plt.xlabel(r"$t$ [cycles/$L^2$]", size = 16)
+    plt.ylabel(r"$\langle |M|\rangle / L^2$", size = 16)
+    plt.xticks(size = 16)
+    plt.yticks(size = 16)
+    plt.legend(fontsize = 16)
+    plt.show()
+
     """
+
     plt.plot(time[:], M_o[:], label = " ordered")
     plt.plot(time[:], M_r[:], label = " random")
     plt.xlabel(r"$t$ [cycles/spins]")
@@ -173,21 +183,7 @@ if part == "b":
     plt.legend()
     plt.savefig('results/2x2/M_sq.pdf')
     plt.close()
-    """
 
-
-    plt.plot(time[:], Mabs_o[:], label = " ordered")
-    plt.plot(time[:], Mabs_r[:], label = " random")
-    plt.axhline(y = Mabs_a/4, ls = ":", color = "k", label = "analytical")
-    plt.xlabel(r"$t$ [cycles/$L^2$]", size = 16)
-    plt.ylabel(r"$\langle |M|\rangle / L^2$", size = 16)
-    plt.xticks(size = 16)
-    plt.yticks(size = 16)
-    plt.legend(fontsize = 16)
-    #plt.savefig('results/2x2/Mabs.pdf')
-    plt.show()
-
-    """
     plt.plot(time[:], Mabs_squared_o[:], label = " ordered")
     plt.plot(time[:], Mabs_squared_r[:], label = " random")
     plt.xlabel(r"$t$ [cycles/spins]")
@@ -268,7 +264,7 @@ if part == "b":
     plt.legend()
     plt.savefig('results/2x2/Chi_error.pdf')
     plt.close()
-    """
+
 
     values = [100-1, 1000-1, 10000-1, 100000-1, 999999]
     table_values_o = {"t":[], "E":[], "M":[], "heat_cap":[], "chi":[]}
@@ -291,7 +287,7 @@ if part == "b":
 
     dataset2 = pd.DataFrame(table_values_r)
     dataset2.to_latex("table_2x2_r.tex", index = False, escape = False, encoding = "utf-8")
-
+"""
 
 
 if part == "c":
@@ -546,6 +542,38 @@ if part == "e_old":
     if not os.path.exists(path):
         os.makedirs(path)
     os.system("mv" + " " + figurenames + " " + figurepath)
+
+if part == "flags":
+    path = "results/partE/compilerflag/"
+    MC_samples = [100, 1000, 10000, 100000, 1000000, 10000000, 100000000]
+    flags = ["No_Flag", "No_Flagp_1", "O2", "O3", "Ofast"]
+
+    for flag in flags:
+        time = []
+        for MC in MC_samples:
+            infilename = "MC_" + str(MC) + "_Flag_" + flag + ".txt"
+            file_path = path + infilename
+            with open(file_path, "r") as infile:
+                lines = infile.readlines()
+                for line in lines:
+                    values = line.split()
+                    time.append(float(values[0]))
+
+        if flag == "O2" or flag == "O3" or flag == "Ofast":
+            flag = "-"+ flag
+        if flag == "No_Flag":
+            flag = "No flag"
+        if flag == "No_Flagp_1":
+            flag = "No flag (unparallelized)"
+
+        plt.scatter(np.log10(MC_samples), np.log10(time), label = flag, marker = "x")
+        plt.xlabel("$\log_{10}(N)$", size = 16)
+        plt.xticks(size = 16)
+        plt.yticks(size = 16)
+        plt.ylabel("$\log_{10}(t)$", size = 16)
+        plt.legend(fontsize = 14)
+
+    plt.show()
 
 if part == "e":
     #L = int(input("Lattice size L = "))
