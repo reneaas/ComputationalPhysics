@@ -466,7 +466,7 @@ if part == "e":
                 Cv.append(float(values[4]))
                 VarE.append(float(values[4])*float(values[0])**2*L*L)
 
-        ax1.scatter(T, E, label = str(L) + " x " + str(L), marker = ".")
+        ax1.scatter(T[2:], E[2:], label = str(L) + " x " + str(L), marker = ".")
         ax1.set_xlabel(r"$T$" , size = 14)
         ax1.set_ylabel(r"$\langle E \rangle/L^2$", size = 14)
         ax1.tick_params(labelsize = 15)
@@ -474,21 +474,21 @@ if part == "e":
 
 
 
-        ax2.scatter(T, M, label = str(L) + " x " + str(L), marker = ".")
+        ax2.scatter(T[2:], M[2:], label = str(L) + " x " + str(L), marker = ".")
         ax2.set_xlabel(r"$T$" , size = 14)
         ax2.set_ylabel(r"$\langle |M| \rangle/L^2$", size = 14)
         ax2.tick_params(labelsize = 15)
         ax2.legend(fontsize = 12)
 
 
-        ax3.scatter(T, chi, label = str(L) + " x " + str(L), marker = ".")
+        ax3.scatter(T[2:], chi[2:], label = str(L) + " x " + str(L), marker = ".")
         ax3.set_xlabel(r"$T$" , size = 14)
         ax3.set_ylabel(r"$\chi/L^2$", size = 14)
         ax3.tick_params(labelsize = 15)
         ax3.legend(fontsize = 12)
 
 
-        ax4.scatter(T, Cv, label = str(L) + " x " + str(L), marker = ".")
+        ax4.scatter(T[2:], Cv[2:], label = str(L) + " x " + str(L), marker = ".")
         ax4.set_xlabel(r"$T$" , size = 14)
         ax4.set_ylabel(r"$ C_V/L^2$", size = 14)
         ax4.tick_params(labelsize = 15)
@@ -496,8 +496,8 @@ if part == "e":
 
 
         #Interpolate dataset and create smoother plots:
-        Cs = UnivariateSpline(T,Cv, s=3)
-        Ts = np.linspace(2.0,2.399,100)
+        Cs = UnivariateSpline(T[2:],Cv[2:], s=3)
+        Ts = np.linspace(2.003,2.399,100)
         Cv_spline = Cs(Ts)
         ax5.plot(Ts, Cv_spline, label = str(L) + " x " + str(L))
         ax5.set_xlabel(r"$T$" , size = 14)
