@@ -293,8 +293,8 @@ if part == "b":
 if part == "c":
     T = float(input("Give temperature: "))
     path = "results/partC/"
-    infilename_ordered = "MC_" + str(int(2e8)) + "_n_20_T_" + str(T) + "_ordered_.txt"
-    infilename_random = "MC_" + str(int(2e8)) + "_n_20_T_" + str(T) + "_random_.txt"
+    infilename_ordered = "MC_" + str(int(4e5)) + "_n_20_T_" + str(T) + "_ordered_.txt"
+    infilename_random = "MC_" + str(int(4e5)) + "_n_20_T_" + str(T) + "_random_.txt"
     E_ordered = []
     M_ordered = []
     acceptance_ordered = []
@@ -341,6 +341,7 @@ if part == "c":
     plt.legend(fontsize = 12)
     plt.figure()
 
+
     plt.plot(time[:40000], acceptance_random[:40000], label = "Accepted states (random initiation)")
     plt.plot(time[:40000], acceptance_ordered[:40000], label = "Accepted states (ground state initiation)")
     plt.xlabel("$t$ [$10^3 \\times$ cycles/$L^2$]", size = 14)
@@ -349,6 +350,8 @@ if part == "c":
     plt.yticks(size = 14)
     plt.legend(fontsize = 12)
     plt.show()
+
+
 
 
 if part == "d":
@@ -469,29 +472,29 @@ if part == "e":
                 VarE.append(float(values[4])*float(values[0])**2*L*L)
 
         ax1.scatter(T, E, label = str(L) + " x " + str(L), marker = ".")
-        ax1.set_xlabel(r"$T$" , size = 14)
-        ax1.set_ylabel(r"$\langle E \rangle/L^2$", size = 14)
+        ax1.set_xlabel(r"$k_BT$" , size = 14)
+        ax1.set_ylabel(r"$\langle E \rangle/L^2J$", size = 14)
         ax1.tick_params(labelsize = 15)
         ax1.legend(fontsize = 12)
 
 
 
         ax2.scatter(T, M, label = str(L) + " x " + str(L), marker = ".")
-        ax2.set_xlabel(r"$T$" , size = 14)
+        ax2.set_xlabel(r"$k_BT$" , size = 14)
         ax2.set_ylabel(r"$\langle |M| \rangle/L^2$", size = 14)
         ax2.tick_params(labelsize = 15)
         ax2.legend(fontsize = 12)
 
 
         ax3.scatter(T, chi, label = str(L) + " x " + str(L), marker = ".")
-        ax3.set_xlabel(r"$T$" , size = 14)
+        ax3.set_xlabel(r"$k_BT$" , size = 14)
         ax3.set_ylabel(r"$\chi/L^2$", size = 14)
         ax3.tick_params(labelsize = 15)
         ax3.legend(fontsize = 12)
 
 
         ax4.scatter(T, Cv, label = str(L) + " x " + str(L), marker = ".")
-        ax4.set_xlabel(r"$T$" , size = 14)
+        ax4.set_xlabel(r"$k_BT$" , size = 14)
         ax4.set_ylabel(r"$ C_V/L^2$", size = 14)
         ax4.tick_params(labelsize = 15)
         ax4.legend(fontsize = 12)
@@ -502,7 +505,7 @@ if part == "e":
         Ts = np.linspace(2.0,2.399,100)
         Cv_spline = Cs(Ts)
         ax5.plot(Ts, Cv_spline, label = str(L) + " x " + str(L))
-        ax5.set_xlabel(r"$T$" , size = 14)
+        ax5.set_xlabel(r"$k_BT$" , size = 14)
         ax5.set_ylabel(r"$ C_V/L^2$", size = 14)
         ax5.tick_params(labelsize = 15)
         ax5.legend(fontsize = 12)
@@ -514,7 +517,7 @@ if part == "e":
         #Plot the standard deviation of E.
         STD_E = [np.sqrt(i) for i in VarE]
         ax7.plot(T,STD_E, label = str(L) + " x " + str(L))
-        ax7.set_xlabel(r"$T$" , size = 14)
+        ax7.set_xlabel(r"$k_BT$" , size = 14)
         ax7.set_ylabel(r"$\sigma_E$", size = 14)
         ax7.tick_params(labelsize = 15)
         ax7.legend(fontsize = 12)
@@ -527,7 +530,7 @@ if part == "e":
     ax6.tick_params(labelsize = 15)
     #ax6.legend(fontsize = 12)
 
-    linear_func = lambda x, a, b: a + b*x             #Form of the function to fit.
+    linear_func = lambda x,a,b: a + b*x             #Form of the function to fit.
     popt, pcov = curve_fit(linear_func, inverse_L, T_C)
     print("(a,b) = ", popt)
     X = np.array(inverse_L)

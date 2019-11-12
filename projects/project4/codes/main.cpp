@@ -60,7 +60,7 @@ int main(int nargs, char* args[]){
     spin_matrix[i] = new int[n];
   }
   //int N = 1e7;
-  int N = 1e6;
+  int N = 1e7;
   E_initial = 0;
   M_initial = 0;
   n_spins = n*n;
