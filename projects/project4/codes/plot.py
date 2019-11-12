@@ -293,8 +293,8 @@ if part == "b":
 if part == "c":
     T = float(input("Give temperature: "))
     path = "results/partC/"
-    infilename_ordered = "MC_" + str(int(2e8)) + "_n_20_T_" + str(T) + "_ordered_.txt"
-    infilename_random = "MC_" + str(int(2e8)) + "_n_20_T_" + str(T) + "_random_.txt"
+    infilename_ordered = "MC_" + str(int(4e5)) + "_n_20_T_" + str(T) + "_ordered_.txt"
+    infilename_random = "MC_" + str(int(4e5)) + "_n_20_T_" + str(T) + "_random_.txt"
     E_ordered = []
     M_ordered = []
     acceptance_ordered = []
@@ -341,6 +341,7 @@ if part == "c":
     plt.legend(fontsize = 12)
     plt.figure()
 
+
     plt.plot(time[:40000], acceptance_random[:40000], label = "Accepted states (random initiation)")
     plt.plot(time[:40000], acceptance_ordered[:40000], label = "Accepted states (ground state initiation)")
     plt.xlabel("$t$ [$10^3 \\times$ cycles/$L^2$]", size = 14)
@@ -349,6 +350,9 @@ if part == "c":
     plt.yticks(size = 14)
     plt.legend(fontsize = 12)
     plt.show()
+
+
+
 
 if part == "d":
     #N = int(12e7)
