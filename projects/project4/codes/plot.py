@@ -350,6 +350,7 @@ if part == "c":
     plt.legend(fontsize = 12)
     plt.show()
 
+
 if part == "d":
     #N = int(12e7)
     energies = []
@@ -419,6 +420,7 @@ if part == "flags":
         plt.legend(fontsize = 14)
 
     plt.show()
+
 
 if part == "e":
     #L = int(input("Lattice size L = "))
