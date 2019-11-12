@@ -46,10 +46,23 @@ c
 
 
 b. 2x2-lattice
+
+Having chosen part "b", you'll be prompted with the question
+
 ```console
-python3 main.py benchmark_legendre
+Would you like an ordered or random initial spin matrix? [o/r]
 ```
-* This compiles the main program and runs the legendre method.
+
+Here you'll write "o" for an ordered initial spin matrix (ground state) or "r" for a randomized initial spin matrix.
+
+Next you'll be promted with the question
+```console
+Specify number of Monte Carlo samples:
+```
+
+Here you
+
+
 
 3. Benchmarking the Laguerre method
 ```console

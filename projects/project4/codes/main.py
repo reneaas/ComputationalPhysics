@@ -3,7 +3,7 @@ import os
 
 
 
-part = str(input("Which part of the project would you like to run? [b, c, d, e, flags] \n" ))
+part = str(input("Which part of the project would you like to run? [b, c, d, e] \n" ))
 
 
 if part == "e":
