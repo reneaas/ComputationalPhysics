@@ -78,7 +78,7 @@ if part == "c":
 
 if part == "e":
     time = 1000;                                                                                                 #Burn-in period as measured in MC_cycles/spins.
-    p = 1                                                                                                  #Number of processes.
+    p = 2                                                                                                  #Number of processes.
     total_time = 2*time;
     path = "results/partE/total_time_" + str(total_time) + "burn_in_time_" + str(time) + "/"
     if not os.path.exists(path):

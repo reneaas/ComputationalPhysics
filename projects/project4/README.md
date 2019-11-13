@@ -19,7 +19,9 @@ The results were computed on three different computes.:
 ## Codes (Documentation)
 To run the codes of the project, we advise to clone the repository pertaining to this project and run the codes in the following way:
 
-The primary code of the numerical project is [main.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project3/codes/main.py). It automates pretty much everything. A call to this can be done in the following way with respect to which problem one wants to solve:
+## Producing new results
+
+The primary code of the numerical project is [main.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/main.py). It automates pretty much everything. A call to this can be done in the following way with respect to which problem one wants to solve:
 
 The first thing you'll run if you wish to produce new data is
 
@@ -69,4 +71,42 @@ Here you write either "1" or "2.4" according to which temperature you wish to ru
 
 ### Part e
 
-Running part "e" will compile and run the parallelized Ising model. 
+Running part "e" will compile and run the parallelized Ising model. You can change the number of prosesses you would like to run in parallel by entering the [main.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/main.py) program and under part "e" changing the value of "p".
+
+## Plotting the results
+All plotting of results is done by running the program [plot.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/plot.py)
+
+```console
+python3 plot.py
+```
+You'll be promted with the question
+```console
+Which part of the project to run: [b,c,d,e,flags]
+```
+
+Where the letters correspond to:
+##### b: 2x2-lattice
+
+Plots expectation values for energy and magnetization, both with ordered and random initial spin matrices.
+
+##### c : Estimation of equilibration
+
+Choosing "c" you'll be prompted with the question
+```console
+Give temperature 1 or 2.4:
+```
+
+Type in the temperature you wish to plot results for.
+
+
+
+Plots
+
+##### d : The probability distribution P(E)
+
+##### e : Phase transitions
+
+
+##### flags : Compiler flags
+
+Time comparison using different compiler flags

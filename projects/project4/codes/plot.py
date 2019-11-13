@@ -291,7 +291,7 @@ if part == "b":
 
 
 if part == "c":
-    T = float(input("Give temperature: "))
+    T = float(input("Give temperature 1 or 2.4: "))
     path = "results/partC/"
     infilename_ordered = "MC_" + str(int(4e5)) + "_n_20_T_" + str(T) + "_ordered_.txt"
     infilename_random = "MC_" + str(int(4e5)) + "_n_20_T_" + str(T) + "_random_.txt"
@@ -350,8 +350,6 @@ if part == "c":
     plt.yticks(size = 14)
     plt.legend(fontsize = 12)
     plt.show()
-
-
 
 
 if part == "d":
