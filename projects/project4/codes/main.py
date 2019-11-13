@@ -3,7 +3,7 @@ import os
 
 
 
-part = str(input("Which part of the project would you like to run? [b, c, d, e] \n" ))
+part = str(input("Which part of the project would you like to run? [b, c, e] \n" ))
 
 
 if part == "e":
@@ -53,7 +53,7 @@ if part == "c":
     dimension = "20";
     MC_samples = int(input("Specify number of Monte Carlo samples: "))
     initialize_spin_matrix = str(input("Ordered or randomized inital spin matrix? [o/r] \n"))
-    temperature = float(input("Temperature? "))
+    temperature = float(input("Run for temperature 1 or 2.4? "))
 
     if initialize_spin_matrix == "o":
         initialize = "ordered"
@@ -75,28 +75,6 @@ if part == "c":
         os.makedirs(path)
     os.system("mv" + " " + outfilename + " " + outfilename2 + " " + path)
     print("Finito!!!!")
-
-if part == "e_old":
-    time = 100;                                                                                                 #Burn-in period as measured in MC_cycles/spins.
-    p = 2                                                                                                       #Number of processes.
-    my_ranks = [i for i in range(p)]                                                                            #Ranks corresponding to number of processes.
-    Lattice_sizes = [40, 60, 80, 100]
-    #L = int(input("Lattice size L = "))                                                                        #Lattice length L.
-    for L in Lattice_sizes:
-        n_spins = L*L
-        print("Executing for L = " + str(L))
-        MC_samples = int(10000*time*n_spins)                                                                    #Total number of Monte Carlo cycles
-        print("Monte carlo samples = ", MC_samples)
-        N = int(time*n_spins)                                                                                   #Burn-in period.
-        arguments = str(L) + " " + str(MC_samples) + " " + str(N)
-        os.system("mpirun -np" + " " + str(p) + " " + "./main_mpi.exe" + " " + arguments)
-
-        path = "results/partE/"
-        if not os.path.exists(path):
-            os.makedirs(path)
-        for my_rank in my_ranks:
-            filename = "observables_my_rank_" + str(my_rank) + "_L_" + str(L) + ".txt"
-            os.system("mv" + " " + filename + " " + path)
 
 if part == "e":
     time = 1000;                                                                                                 #Burn-in period as measured in MC_cycles/spins.

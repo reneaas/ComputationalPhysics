@@ -29,13 +29,12 @@ python3 main.py
 
 * Once this particular problem is run, you'll be prompted with:
 ```console
-Which part of the project would you like to run? [b, c, d, e]
+Which part of the project would you like to run? [b, c, e]
 ```
 
 Where the letters correspond to:
 - b : 2x2-lattice
-- c : Estimation of equilibration
-- d : The probability distribution P(E)
+- c : Estimation of equilibration & The probability distribution P(E)
 - e : Phase transitions
 
 Type in the letter corresponding to the part you wish to produce new data for. E.g if you want to produce new data for Estimation of equilibration, you'll type in
@@ -43,11 +42,9 @@ Type in the letter corresponding to the part you wish to produce new data for. E
 ```console
 c
 ```
+### General for b and c
 
-
-b. 2x2-lattice
-
-Having chosen part "b", you'll be prompted with the question
+Having chosen part "b", "c" or "d" you'll be promted with the question
 
 ```console
 Would you like an ordered or random initial spin matrix? [o/r]
@@ -60,52 +57,16 @@ Next you'll be promted with the question
 Specify number of Monte Carlo samples:
 ```
 
-Here you
+Here you type in the number of Monte Carlo samples you wish to run the code for. We suggest number > 10^6.
 
+### Part c
 
-
-3. Benchmarking the Laguerre method
+You'll now be promted with the question
 ```console
-python3 main.py benchmark_laguerre
+Run for temperature 1 or 2.4?
 ```
-* Once this particular problem is run, you'll be prompted with:
-```console
-Produce new data? Type yes or no:
-```
-  - Type yes to compile and produce new results and new plots. Type no to not compile and to produce results and plots with data already saved.
+Here you write either "1" or "2.4" according to which temperature you wish to run the code for.
 
-4. Comparing the Legendre and the Laguerre methods
-```console
-python3 main.py compare_gauss
-```
+### Part e
 
-* Running this produces plots that compares the relative error and CPU times of the gaussian quadrature methods.
-
-5. Benchmarking the Monte Carlo methods and Ground State energy
-```console
-python3 main.py multiple_MC
-```
-
-* By running this command you will compile the Brute force, the Brute force with MPI, the Importance sampling and the Importance sampling with MPI versions of the Monte Carlo method. You'll then be prompted with:
-```console
-Produce new data? Type yes or no:
-```
-
-  - Type yes to compile and produce new sets of data. Type no to use already existing datasets for sample sets N = [100,...,10000] with a stepsize dN = 100.
-  - If you type yes, you'll be prompted with
-    ```console
-    How many sets of data do you want?:
-    ```
-    - Here you choose how many times you want to run and produce datasets
-  - If you type no, you print results for m = 10 000 datasets (which is the current data stored in the repository).
-
-6. Estimating infinity (Lambda)
-```console
-python3 main.py find_lambda
-```
-
-* Once this particular problem is run, you'll be prompted with:
-```console
-Produce new data? Type yes or no:
-```
- * If you choose yes you'll compile the program and run the Laguerre method for several lambdas to estimate which value of lambda gives the lowest relative error for integration points N = 25 (If you wish, you can change N in the main.py program under "find_lambda"). If you choose no, you'll get the lambda which gives the lowest relative error for results already produced for N = 25.
+Running part "e" will compile and run the parallelized Ising model. 
