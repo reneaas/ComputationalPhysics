@@ -3,7 +3,7 @@ import os
 
 
 
-part = str(input("Which part of the project would you run? [b, c, d, e, flags] \n" ))
+part = str(input("Which part of the project would you run? [b, c, d, e] \n" ))
 Flag = "No_Flag"
 
 

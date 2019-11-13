@@ -7,7 +7,7 @@ from scipy.interpolate import UnivariateSpline
 from scipy.optimize import curve_fit
 plt.rc("text", usetex = True)
 
-part = str(input("Which part of the project to run: [b,c,d,e,flags] \n"))
+part = str(input("Which part of the project to run: [b,c,d,e] \n"))
 
 if part == "b":
     path = "results/2x2/"
@@ -291,10 +291,10 @@ if part == "b":
 
 
 if part == "c":
-    T = float(input("Give temperature: "))
+    T = float(input("Give temperature: [1.0 or 2.4]"))
     path = "results/partC/"
-    infilename_ordered = "MC_" + str(int(4e5)) + "_n_20_T_" + str(T) + "_ordered_.txt"
-    infilename_random = "MC_" + str(int(4e5)) + "_n_20_T_" + str(T) + "_random_.txt"
+    infilename_ordered = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_ordered_.txt"
+    infilename_random = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_random_.txt"
     E_ordered = []
     M_ordered = []
     acceptance_ordered = []
@@ -345,7 +345,7 @@ if part == "c":
     plt.plot(time[:40000], acceptance_random[:40000], label = "Accepted states (random initiation)")
     plt.plot(time[:40000], acceptance_ordered[:40000], label = "Accepted states (ground state initiation)")
     plt.xlabel("$t$ [$10^3 \\times$ cycles/$L^2$]", size = 14)
-    plt.ylabel("Accepted spins", size = 14)
+    plt.ylabel("Accepted spin-flips", size = 14)
     plt.xticks(size = 14)
     plt.yticks(size = 14)
     plt.legend(fontsize = 12)
