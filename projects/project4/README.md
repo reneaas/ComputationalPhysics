@@ -2,7 +2,7 @@
 
 ## The report
 The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project3/report/Project3_report.pdf).
-The results were computed on three different computes.:
+The results were computed on three different computers:
 1. Computer 1:
   - CPU: Intel i7-8565U (8)
   - RAM: 16 GB
@@ -46,7 +46,7 @@ c
 ```
 ### General for b and c
 
-Having chosen part "b", "c" or "d" you'll be promted with the question
+Having chosen part "b" or "c" you'll be promted with the question
 
 ```console
 Would you like an ordered or random initial spin matrix? [o/r]
@@ -59,7 +59,7 @@ Next you'll be promted with the question
 Specify number of Monte Carlo samples:
 ```
 
-Here you type in the number of Monte Carlo samples you wish to run the code for. We suggest number > 10^6.
+Here you type in the number of Monte Carlo samples you wish to run the code for. We suggest a number > 10^6.
 
 ### Part c
 
