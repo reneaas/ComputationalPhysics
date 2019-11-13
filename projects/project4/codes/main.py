@@ -3,12 +3,8 @@ import os
 
 
 
-<<<<<<< HEAD
 part = str(input("Which part of the project would you run? [b, c, d, e] \n" ))
 Flag = "No_Flag"
-=======
-part = str(input("Which part of the project would you like to run? [b, c, e] \n" ))
->>>>>>> ff19e58e3dbe1ec2a1761e27715913aec7aa90c4
 
 
 if part == "e":
