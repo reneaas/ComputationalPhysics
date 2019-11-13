@@ -115,11 +115,6 @@ if part == "b":
     Cv = (E_squared_a - E_a**2)/1
     Cv = (256*np.cosh(8) - 32**2*(np.sinh(8))**2/Z_a)/Z_a
 
-    print("E", E_a/4)
-    print("M", Mabs_a/4)
-    print("chi", chi/4)
-    print("Cv", Cv/4)
-
     E_ordered = np.array(E_o)
     E_random = np.array(E_r)
     Mabs_ordered = np.array(Mabs_o)
@@ -157,137 +152,6 @@ if part == "b":
     plt.yticks(size = 16)
     plt.legend(fontsize = 16)
     plt.show()
-
-    """
-
-    plt.plot(time[:], M_o[:], label = " ordered")
-    plt.plot(time[:], M_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\langle M\rangle$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/M.pdf')
-    plt.close()
-
-    plt.plot(time[:], E_squared_o[:], label = " ordered")
-    plt.plot(time[:], E_squared_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\langle E^2\rangle$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/E_sq.pdf')
-    plt.close()
-
-    plt.plot(time[:], M_squared_o[:], label = " ordered")
-    plt.plot(time[:], M_squared_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\langle M^2\rangle$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/M_sq.pdf')
-    plt.close()
-
-    plt.plot(time[:], Mabs_squared_o[:], label = " ordered")
-    plt.plot(time[:], Mabs_squared_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\langle |M|^2\rangle$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/Mabs_sq.pdf')
-    plt.close()
-
-    plt.plot(time[:],C_v_o[:], label = " ordered")
-    plt.plot(time[:],C_v_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$C_v$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/Cv.pdf')
-    plt.close()
-
-    plt.plot(time[:],Chi_o[:], label = " ordered")
-    plt.plot(time[:],Chi_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\chi$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/Chi.pdf')
-    plt.close()
-
-
-    plt.plot(time[:],E_error_o[:], label = " ordered")
-    plt.plot(time[:],E_error_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\epsilon_{\langle E\rangle}$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/E_error.pdf')
-    plt.close()
-
-    plt.plot(time[:],E_squared_error_o[:], label = " ordered")
-    plt.plot(time[:],E_squared_error_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\epsilon_{\langle E^2\rangle}$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/E_sq_error.pdf')
-    plt.close()
-
-    plt.plot(time[:],M_squared_error_o[:], label = " ordered")
-    plt.plot(time[:],M_squared_error_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\epsilon_{\langle M^2\rangle}$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/M_sq_error.pdf')
-    plt.close()
-
-    plt.plot(time[:],Mabs_error_o[:], label = " ordered")
-    plt.plot(time[:],Mabs_error_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\epsilon_{\langle |M|\rangle}$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/Mabs_error.pdf')
-    plt.close()
-
-    plt.plot(time[:],Mabs_squared_error_o[:], label = " ordered")
-    plt.plot(time[:],Mabs_squared_error_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\epsilon_{\langle |M|^2\rangle}$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/Mabs_sq_error.pdf')
-    plt.close()
-
-    plt.plot(time[:],C_v_error_o[:], label = " ordered")
-    plt.plot(time[:],C_v_error_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\epsilon_{C_v}$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/Cv_error.pdf')
-    plt.close()
-
-    plt.plot(time[:],Chi_error_o[:], label = " ordered")
-    plt.plot(time[:],Chi_error_r[:], label = " random")
-    plt.xlabel(r"$t$ [cycles/spins]")
-    plt.ylabel(r"$\epsilon_{\chi}$/spins")
-    plt.legend()
-    plt.savefig('results/2x2/Chi_error.pdf')
-    plt.close()
-
-
-    values = [100-1, 1000-1, 10000-1, 100000-1, 999999]
-    table_values_o = {"t":[], "E":[], "M":[], "heat_cap":[], "chi":[]}
-    table_values_r = {"t":[], "E":[], "M":[], "heat_cap":[], "chi":[]}
-    for i in values:
-        table_values_o["t"].append(np.log10(time[i]))
-        table_values_o["E"].append(E_ordered[i])
-        table_values_o["M"].append(Mabs_ordered[i])
-        table_values_o["heat_cap"].append(Cv_ordered[i])
-        table_values_o["chi"].append(chi_ordered[i])
-        table_values_r["t"].append(np.log10(time[i]))
-        table_values_r["E"].append(E_random[i])
-        table_values_r["M"].append(Mabs_random[i])
-        table_values_r["heat_cap"].append(Cv_random[i])
-        table_values_r["chi"].append(chi_random[i])
-
-
-    dataset1 = pd.DataFrame(table_values_o)
-    dataset1.to_latex("table_2x2_o.tex", index = False, escape = False, encoding = "utf-8")
-
-    dataset2 = pd.DataFrame(table_values_r)
-    dataset2.to_latex("table_2x2_r.tex", index = False, escape = False, encoding = "utf-8")
-"""
 
 
 if part == "c":
@@ -356,7 +220,7 @@ if part == "d":
     #N = int(12e7)
     energies = []
     L = 20
-    temperature = float(input("Temperature = "))
+    temperature = float(input("Give temperature 1 or 2.4"))
     initial_spin_state = str(input("ordered or random: [o/r] \n"))
     if initial_spin_state == "o":
         initial_spin_state = "ordered"
@@ -371,7 +235,6 @@ if part == "d":
             values = line.split()
             energies.append(float(values[0]))
 
-    print(len(energies))
     MC = len(energies)
     MC_cycles = np.linspace(0,MC,MC)
 
@@ -530,7 +393,6 @@ if part == "e":
 
     linear_func = lambda x,a,b: a + b*x             #Form of the function to fit.
     popt, pcov = curve_fit(linear_func, inverse_L, T_C)
-    print("(a,b) = ", popt)
     X = np.array(inverse_L)
     L = np.linspace(35,130, 1001)
     X = [1/i for i in L]

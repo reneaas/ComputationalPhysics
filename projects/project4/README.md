@@ -63,7 +63,7 @@ Here you type in the number of Monte Carlo samples you wish to run the code for.
 
 ### Part c
 
-You'll now be promted with the question
+You'll now be prompted with the question
 ```console
 Run for temperature 1 or 2.4?
 ```
@@ -97,16 +97,32 @@ Give temperature 1 or 2.4:
 ```
 
 Type in the temperature you wish to plot results for.
+This now plots the expectation values for energy and magnetization, both with ordered and random initial spin matrices. It also plots accepted spin flips for ordered and random initial spin matrix.
 
-
-
-Plots
 
 ##### d : The probability distribution P(E)
+Choosing "d" you'll be prompted with the question
+```console
+Give temperature 1 or 2.4:
+```
+
+Write either 1 or 2.4.
+Next you'll be prompted with the question
+```console
+ordered or random: [o/r]
+```
+
+Write either "o" or "r".
+
+This now plots the probability distribution of energies, P(E), and the energy of the system as a function of Monte Carlo samples.
+
 
 ##### e : Phase transitions
+
+This produces plots of the expectation values of energy, magnetization, heat capacity and magnetic susceptibility for multiple lattice sizes and temperatures. It also plots interpolation of the heat capacity for multiple lattice sizes and uses the maximum values to estimate the critical temperature, which is also plotted.
+
 
 
 ##### flags : Compiler flags
 
-Time comparison using different compiler flags
+Plots a time comparison using different compiler flags.
