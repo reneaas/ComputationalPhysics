@@ -155,11 +155,7 @@ if part == "b":
 
 
 if part == "c":
-<<<<<<< HEAD
     T = float(input("Give temperature: [1.0 or 2.4]"))
-=======
-    T = float(input("Give temperature 1 or 2.4: "))
->>>>>>> ff19e58e3dbe1ec2a1761e27715913aec7aa90c4
     path = "results/partC/"
     infilename_ordered = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_ordered_.txt"
     infilename_random = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_random_.txt"
