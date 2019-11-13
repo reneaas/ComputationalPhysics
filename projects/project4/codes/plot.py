@@ -214,10 +214,7 @@ if part == "c":
     plt.legend(fontsize = 12)
     plt.show()
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 078e16113457669250102c8cf08f680d573350a4
 if part == "d":
     #N = int(12e7)
     energies = []
@@ -394,11 +391,6 @@ if part == "e":
 
     linear_func = lambda x,a,b: a + b*x             #Form of the function to fit.
     popt, pcov = curve_fit(linear_func, inverse_L, T_C)
-<<<<<<< HEAD
-    print(np.sqrt(np.diag(pcov)))
-    print("(a,b) = ", popt)
-=======
->>>>>>> 078e16113457669250102c8cf08f680d573350a4
     X = np.array(inverse_L)
     L = np.linspace(35,130, 1001)
     X = [1/i for i in L]
