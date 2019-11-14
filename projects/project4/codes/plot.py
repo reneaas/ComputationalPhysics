@@ -156,8 +156,7 @@ if part == "b":
 
 if part == "c":
     T = float(input("Give temperature: [1.0 or 2.4] \n"))
-    MC_samples = str(input("Give number of Monte Carlo samples: \n"))
-
+    MC_samples = str(input("Number of Monte Carlo samples: \n"))
     path = "results/partC/"
     infilename_ordered = "MC_" + MC_samples + "_n_20_T_" + str(T) + "_ordered_.txt"
     infilename_random = "MC_" + MC_samples + "_n_20_T_" + str(T) + "_random_.txt"
@@ -221,7 +220,7 @@ if part == "d":
     #N = int(12e7)
     energies = []
     L = 20
-    temperature = float(input("Give temperature: [1.0 or 2.4]"))
+    temperature = float(input("Give temperature: [1.0 or 2.4] \n"))
     initial_spin_state = str(input("ordered or random: [o/r] \n"))
     if initial_spin_state == "o":
         initial_spin_state = "ordered"
