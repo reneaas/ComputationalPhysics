@@ -3,7 +3,8 @@ import os
 
 
 
-part = str(input("Which part of the project would you like to run? [b, c, e] \n" ))
+part = str(input("Which part of the project would you run? [b, c, e] \n" ))
+
 
 
 if part == "e":
@@ -53,7 +54,7 @@ if part == "c":
     dimension = "20";
     MC_samples = int(input("Specify number of Monte Carlo samples: "))
     initialize_spin_matrix = str(input("Ordered or randomized inital spin matrix? [o/r] \n"))
-    temperature = float(input("Run for temperature 1 or 2.4? "))
+    temperature = float(input("Give temperature: [1.0 or 2.4]"))
 
     if initialize_spin_matrix == "o":
         initialize = "ordered"
@@ -77,7 +78,7 @@ if part == "c":
     print("Finito!!!!")
 
 if part == "e":
-    time = 1000;                                                                                                 #Burn-in period as measured in MC_cycles/spins.
+    time = 1000;                                                                                            #Burn-in period as measured in MC_cycles/spins.
     p = 2                                                                                                  #Number of processes.
     total_time = 2*time;
     path = "results/partE/total_time_" + str(total_time) + "burn_in_time_" + str(time) + "/"

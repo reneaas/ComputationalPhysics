@@ -33,21 +33,20 @@ int main(int nargs, char* args[]){
   int n, MC_samples, J, number_of_temperatures;
   int **spin_matrix;
   double E_initial, M_initial;                    //Stores initial energy and magnetization of system.
-  int n_spins;                                     //Total number of spins.
-  double beta;
-  double variance;
+  int n_spins;                                    //Total number of spins.
+  double beta;                                    //beta = 1/(k_b T)
+  double variance;                                //Stores the variance
 
 
 
   //Read from command line
-  number_of_temperatures = atoi(args[1]);
-  outfilename = string(args[2]);         //Name of the file to write the results to
-  n = atoi(args[3]);                    //Dimension of spin matrix
-  MC_samples = atoi(args[4]);            //Number of Monte Carlo samples
-  initializing = string(args[5]);
+  number_of_temperatures = atoi(args[1]); //Specifies the number of temperatures the program runs
+  outfilename = string(args[2]);          //Name of the file to write the results to
+  n = atoi(args[3]);                      //Dimension of spin matrix
+  MC_samples = atoi(args[4]);             //Number of Monte Carlo samples
+  initializing = string(args[5]);         //String which determines the initial spin matrix
 
   random_device rd;
-  cout << "random number yo = " << rd() << endl;
   mt19937_64 gen(rd());
   uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
   uniform_real_distribution<double> RandomNumberGenerator(0,1);       //Sets up the uniform distribution for x in [0,1]
@@ -59,29 +58,29 @@ int main(int nargs, char* args[]){
   for (int i = 0; i < n; i++){
     spin_matrix[i] = new int[n];
   }
-  //int N = 1e7;
-  int N = 1e7;
+
+  int N = 1e6;                                                         //Burn in period
   E_initial = 0;
   M_initial = 0;
-  n_spins = n*n;
-  J = 1;                                     //Coupling constant
-  initialize(n, spin_matrix, E_initial, M_initial, initializing);
-
+  n_spins = n*n;                                                       //Total number of spins
+  J = 1;                                                               //Coupling constant
+  initialize(n, spin_matrix, E_initial, M_initial, initializing);     //initialize spin matrix
 
 
   if (number_of_temperatures == 1 && n > 2){
     double *energy, *magnetization, *time, *acceptance, *energies;
-    double T = atof(args[6]);
+    double T = atof(args[6]);                                       //Temperature
     outfilename2 = string(args[7]);
-    int n_times = (MC_samples-N)/n_spins;
+    int n_times = (MC_samples-N)/n_spins;                           //Number of lattice sweeps
 
 
+    //Initialize pointers
     energy = new double[n_times];
     magnetization = new double[n_times];
     time = new double[n_times];
     acceptance = new double[n_times];
     energies = new double[MC_samples - N+1];
-    variance = 0;
+    variance = 0;                                                 //Hardcoding the variance to zero
 
     //Compute Boltzmann factors.
     beta = 1/(T);                //k_B = 1
@@ -89,10 +88,11 @@ int main(int nargs, char* args[]){
       boltzmann_distribution[i + 8] = exp(-beta*i);
     }
 
-
+    //Running the Monte Carlo Markov Chain with Metropolis algorithm
     Monte_Carlo_Metropolis_time(MC_samples, n, N, spin_matrix, J, E_initial, M_initial, boltzmann_distribution,
                                 energy, magnetization, time, acceptance, beta, energies, variance, gen, RandomIntegerGenerator, RandomNumberGenerator);
 
+    //Writing the produced data to files
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
       ofile << time[i] << " " << setprecision(8) << energy[i] << " " << setprecision(8) << " " << magnetization[i] << " " << acceptance[i] << endl;
@@ -105,6 +105,7 @@ int main(int nargs, char* args[]){
     }
     ofile.close();
 
+
     cout << "Standard deviation for T = " << T << ": " << sqrt(variance) <<endl;
 
 
@@ -112,7 +113,7 @@ int main(int nargs, char* args[]){
 
   if (n == 2){
     double *time, *acceptance;
-    double T = atof(args[6]);
+    double T = atof(args[6]);                                       //Temperature
     double** expectation_values;
     double* analytical_values;
     double** relative_error;
@@ -121,7 +122,7 @@ int main(int nargs, char* args[]){
     outfilename2 = string(args[7]);
 
 
-    n_times = MC_samples/n_spins;
+    n_times = MC_samples/n_spins;                                   //Number of lattice sweeps
     analytical_values = new double[8];
     expectation_values = new double*[8];
     relative_error = new double*[7];
@@ -129,6 +130,7 @@ int main(int nargs, char* args[]){
     time = new double[n_times];
     acceptance = new double[n_times];
 
+    //Initializing pointers
     for (int i = 0; i < 8; i++){
       expectation_values[i] = new double[n_times];
     }
@@ -144,12 +146,14 @@ int main(int nargs, char* args[]){
       boltzmann_distribution[i + 8] = exp(-beta*i);
     }
 
-
+    //Running the Monte Carlo Markov Chain with Metropolis algorithm
     Monte_Carlo_Metropolis_2x2(MC_samples, n, spin_matrix, J,  E_initial, M_initial, boltzmann_distribution, time, acceptance, beta, expectation_values);
 
-
+    //Computing the analytical values for a 2 by 2 lattice
     analytical_values_2x2Lattice(analytical_values, T);
 
+
+    //Computing relative error
     for (int i = 0; i < n_times; i++){
 
       relative_error[0][i] = abs((analytical_values[0]-expectation_values[0][i])/analytical_values[0]);   //Stores relative error in E
@@ -161,6 +165,7 @@ int main(int nargs, char* args[]){
       relative_error[6][i] = abs((analytical_values[7]-expectation_values[7][i])/analytical_values[7]);   //Stores relative error in Magnetic susceptibility
     }
 
+    //Writing the produced data to file
     ofile.open(outfilename);
     for (int i = 0; i < n_times; i++){
       ofile << setprecision(9) << time[i] << " " << setprecision(9) << expectation_values[0][i] << " " << setprecision(9) << expectation_values[1][i] << " " << setprecision(9) << expectation_values[2][i]
@@ -281,7 +286,7 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
     x_flip = RandomIntegerGenerator(gen);
     y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
 
-
+    //Computing the energy difference
     dE = (int) 2*J*spin_matrix[x_flip][y_flip] * (spin_matrix[periodic(x_flip,n,1)][y_flip] + spin_matrix[periodic(x_flip, n,-1)][y_flip]
                                                   + spin_matrix[x_flip][periodic(y_flip, n,1)] + spin_matrix[x_flip][periodic(y_flip, n,-1)]);
 
@@ -305,7 +310,7 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
     M += dM;
 
 
-
+    //Summing up the quantities after the steady state is reached
     if (k > N-1){
       energies[l] = E;
       l += 1;
@@ -319,7 +324,7 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
       Mabs_sum_squared += (double) abs(M)*abs(M);
     }
 
-
+    //Calculating the energy, magnetization and accepted spin-flips per lattice sweep
     if (k > N-1 && k % n_spins == 0){
       i = (k - N)/ n_spins;
       energy[i] = E_sum/ ((double) (k-N) * n_spins);
@@ -344,7 +349,6 @@ void Monte_Carlo_Metropolis_time(int MC, int n, int N, int **spin_matrix, int J,
 void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double& E, double& M, double* boltzmann_distribution, double* time, double* acceptance, double beta,double** expectation_values){
 
 
-  //SPØR OM DET HER KAN SENDES INN SÅ DET IKKE MÅ LAGES HVER ITERASJON!!!!!
   random_device rd;
   mt19937_64 gen(rd());
   uniform_int_distribution<int> RandomIntegerGenerator(0,n-1);        //Sets up the uniform distribution for x in [0,n-1]
@@ -354,8 +358,8 @@ void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double&
   double E_sum, M_sum, Mabs_sum, Mabs_sum_squared, E_sum_squared, M_sum_squared;
   double* Mabs, *Mabs_squared, *E_squared, *M_squared, *energy, *magnetization;
 
-  n_spins = n*n;
-  n_times = MC/n_spins;
+  n_spins = n*n;                                    //Total number of spins
+  n_times = MC/n_spins;                             //Number of lattice sweeps
 
   E_sum = 0.0;
   M_sum = 0.0;
@@ -381,7 +385,7 @@ void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double&
       x_flip = RandomIntegerGenerator(gen);
       y_flip = RandomIntegerGenerator(gen);      //Randomized indices to matrix element that will be flipped
 
-
+      //Calculating the energy difference
       dE =  2*J*spin_matrix[x_flip][y_flip] * (spin_matrix[periodic(x_flip,n,1)][y_flip]
             + spin_matrix[periodic(x_flip, n,-1)][y_flip]
             + spin_matrix[x_flip][periodic(y_flip, n,1)]
@@ -416,14 +420,15 @@ void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double&
     M_sum_squared += (double) M*M;
     Mabs_sum_squared += (double) abs(M)*abs(M);
 
+    //Summing the quantities after a lattice sweep
     if (k % n_spins == 0){
       i = k / n_spins - 1;
       energy[i] = E_sum/ (k);
-      magnetization[i] = M_sum / ( k );
+      magnetization[i] = M_sum / (k);
       Mabs[i] = Mabs_sum/ ( k);
-      Mabs_squared[i] = Mabs_sum_squared/ ( k);
-      E_squared[i] = E_sum_squared/ ( k);
-      M_squared[i] = M_sum_squared/ ( k);
+      Mabs_squared[i] = Mabs_sum_squared/ (k);
+      E_squared[i] = E_sum_squared/ (k);
+      M_squared[i] = M_sum_squared/ (k);
       time[i] = i + 1;
       acceptance[i] = accept;
     }
@@ -431,6 +436,7 @@ void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double&
 
 
   }
+  //Filling the pointer with the expectation values
   expectation_values[0] = energy;
   expectation_values[1] = E_squared;
   expectation_values[2] = Mabs;
@@ -441,6 +447,4 @@ void Monte_Carlo_Metropolis_2x2(int MC, int n, int **spin_matrix, int J, double&
     expectation_values[6][i] = (expectation_values[1][i]-expectation_values[0][i]*expectation_values[0][i])*beta*beta;             //Stores the computed expectation value for heat capacity
     expectation_values[7][i] = (expectation_values[3][i]-(expectation_values[2][i]*expectation_values[2][i]))*beta;
   }     //Stores the computed expectation value for susceptibility
-  cout << expectation_values[6][n_times-1]/4 << endl;
-  cout << expectation_values[7][n_times-1]/4 << endl;
 }
