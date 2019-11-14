@@ -17,7 +17,16 @@ The results were computed on three different computers:
 
 
 ## Codes (Documentation)
-To run the codes of the project, we advise to clone the repository pertaining to this project and run the codes in the following way:
+To run the codes of the project, we advise to clone the repository pertaining to this project.
+
+The general structure of the codes are:
+1. [main.cpp](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/main.cpp) contains the algorithms, generates data.
+2. [main_mpi_MC.cpp](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/main_mpi_MC.cpp) contains the parallelized version of main.cpp.
+3. [main.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/main.py) runs main.cpp, write the produced data to files and categorize them into folders.
+4. [plot.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/plot.py) read the files produced by main.py and generates plots from the data.
+
+
+The codes are run in the following way:
 
 ## Producing new results
 
@@ -29,13 +38,13 @@ The first thing you'll run if you wish to produce new data is
 python3 main.py
 ```
 
-* Once this particular problem is run, you'll be prompted with:
+Once this particular problem is run, you'll be prompted with:
 ```console
 Which part of the project would you like to run? [b, c, e]
 ```
 
 Where the letters correspond to:
-- b : 2x2-lattice
+- b : The 2x2 lattice case, comparison with analytical values.
 - c : Estimation of equilibration & The probability distribution P(E)
 - e : Phase transitions
 
@@ -59,33 +68,33 @@ Next you'll be promted with the question
 Specify number of Monte Carlo samples:
 ```
 
-Here you type in the number of Monte Carlo samples you wish to run the code for. We suggest a number > 10^6.
+Here you type in the number of Monte Carlo samples you wish to run the code for. We suggest a number > 10^6, since the burn in period to reach equilibrium is by default t = 10^6. This period can be manually changed in main.cpp. In the report the burn in period is divided with total number of spins.
 
 ### Part c
 
 You'll now be prompted with the question
 ```console
-Run for temperature 1 or 2.4?
+Give temperature: [1.0 or 2.4]?
 ```
-Here you write either "1" or "2.4" according to which temperature you wish to run the code for.
+Here you write either "1.0" or "2.4" according to which temperature you wish to run the code for.
 
 ### Part e
 
 Running part "e" will compile and run the parallelized Ising model. You can change the number of prosesses you would like to run in parallel by entering the [main.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/main.py) program and under part "e" changing the value of "p".
 
-## Plotting the results
-All plotting of results is done by running the program [plot.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/plot.py)
+## Graphic display of the results
+All plotting of the produced data is done by running the program [plot.py](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/codes/plot.py)
 
 ```console
 python3 plot.py
 ```
 You'll be promted with the question
 ```console
-Which part of the project to run: [b,c,d,e,flags]
+Which part of the project to run: [b, c, d, e, flags]
 ```
 
 Where the letters correspond to:
-##### b: 2x2-lattice
+##### b: The 2x2 lattice case
 
 Plots expectation values for energy and magnetization, both with ordered and random initial spin matrices.
 
@@ -93,7 +102,7 @@ Plots expectation values for energy and magnetization, both with ordered and ran
 
 Choosing "c" you'll be prompted with the question
 ```console
-Give temperature 1 or 2.4:
+Give temperature: [1.0 or 2.4]
 ```
 
 Type in the temperature you wish to plot results for.
@@ -103,10 +112,10 @@ This now plots the expectation values for energy and magnetization, both with or
 ##### d : The probability distribution P(E)
 Choosing "d" you'll be prompted with the question
 ```console
-Give temperature 1 or 2.4:
+Give temperature: [1.0 or 2.4]
 ```
 
-Write either 1 or 2.4.
+Write either 1.0 or 2.4.
 Next you'll be prompted with the question
 ```console
 ordered or random: [o/r]

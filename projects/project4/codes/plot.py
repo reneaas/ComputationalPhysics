@@ -7,7 +7,7 @@ from scipy.interpolate import UnivariateSpline
 from scipy.optimize import curve_fit
 plt.rc("text", usetex = True)
 
-part = str(input("Which part of the project to run: [b,c,d,e] \n"))
+part = str(input("Which part of the project to run: [b, c, d, e, flags] \n"))
 
 if part == "b":
     path = "results/2x2/"
@@ -220,7 +220,7 @@ if part == "d":
     #N = int(12e7)
     energies = []
     L = 20
-    temperature = float(input("Give temperature 1 or 2.4"))
+    temperature = float(input("Give temperature: [1.0 or 2.4]"))
     initial_spin_state = str(input("ordered or random: [o/r] \n"))
     if initial_spin_state == "o":
         initial_spin_state = "ordered"
