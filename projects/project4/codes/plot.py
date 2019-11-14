@@ -206,7 +206,6 @@ if part == "c":
     plt.legend(fontsize = 12)
     plt.figure()
 
-
     plt.plot(time[:40000], acceptance_random[:40000], label = "Accepted states (random initiation)")
     plt.plot(time[:40000], acceptance_ordered[:40000], label = "Accepted states (ground state initiation)")
     plt.xlabel("$t$ [$10^3 \\times$ cycles/$L^2$]", size = 14)
@@ -286,7 +285,6 @@ if part == "flags":
 
     plt.show()
 
-
 if part == "e":
     #L = int(input("Lattice size L = "))
     p = 8
@@ -334,7 +332,7 @@ if part == "e":
                 VarE.append(float(values[4])*float(values[0])**2*L*L)
 
         ax1.scatter(T, E, label = str(L) + " x " + str(L), marker = ".")
-        ax1.set_xlabel(r"$k_BT$" , size = 14)
+        ax1.set_xlabel(r"$T$" , size = 14)
         ax1.set_ylabel(r"$\langle E \rangle/L^2J$", size = 14)
         ax1.tick_params(labelsize = 15)
         ax1.legend(fontsize = 12)
@@ -342,21 +340,21 @@ if part == "e":
 
 
         ax2.scatter(T, M, label = str(L) + " x " + str(L), marker = ".")
-        ax2.set_xlabel(r"$k_BT$" , size = 14)
+        ax2.set_xlabel(r"$T$" , size = 14)
         ax2.set_ylabel(r"$\langle |M| \rangle/L^2$", size = 14)
         ax2.tick_params(labelsize = 15)
         ax2.legend(fontsize = 12)
 
 
         ax3.scatter(T, chi, label = str(L) + " x " + str(L), marker = ".")
-        ax3.set_xlabel(r"$k_BT$" , size = 14)
+        ax3.set_xlabel(r"$T$" , size = 14)
         ax3.set_ylabel(r"$\chi/L^2$", size = 14)
         ax3.tick_params(labelsize = 15)
         ax3.legend(fontsize = 12)
 
 
         ax4.scatter(T, Cv, label = str(L) + " x " + str(L), marker = ".")
-        ax4.set_xlabel(r"$k_BT$" , size = 14)
+        ax4.set_xlabel(r"$T$" , size = 14)
         ax4.set_ylabel(r"$ C_V/L^2$", size = 14)
         ax4.tick_params(labelsize = 15)
         ax4.legend(fontsize = 12)
@@ -367,7 +365,7 @@ if part == "e":
         Ts = np.linspace(2.0,2.399,100)
         Cv_spline = Cs(Ts)
         ax5.plot(Ts, Cv_spline, label = str(L) + " x " + str(L))
-        ax5.set_xlabel(r"$k_BT$" , size = 14)
+        ax5.set_xlabel(r"$T$" , size = 14)
         ax5.set_ylabel(r"$ C_V/L^2$", size = 14)
         ax5.tick_params(labelsize = 15)
         ax5.legend(fontsize = 12)
@@ -379,7 +377,7 @@ if part == "e":
         #Plot the standard deviation of E.
         STD_E = [np.sqrt(i) for i in VarE]
         ax7.plot(T,STD_E, label = str(L) + " x " + str(L))
-        ax7.set_xlabel(r"$k_BT$" , size = 14)
+        ax7.set_xlabel(r"$T$" , size = 14)
         ax7.set_ylabel(r"$\sigma_E$", size = 14)
         ax7.tick_params(labelsize = 15)
         ax7.legend(fontsize = 12)
@@ -400,9 +398,10 @@ if part == "e":
     X = np.array(X)
     Y = popt[1]*X + popt[0]
     ax6.plot(X,Y,"-k")
-    equation = r"$T_C(L) = 1.15244002/L + \underbrace{2.2656493}_{=T_C(\infty)}$"
+    equation = r"$T_C(L) = 1.152/L + \underbrace{2.266}_{=T_C(\infty)}$"
     ax6.text(0.0080,2.270, equation, {"color":"k", "fontsize": 18})
     ax6.legend(fontsize = 12)
+    plt.show()
 
 
 
