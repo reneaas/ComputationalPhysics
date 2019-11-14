@@ -155,15 +155,12 @@ if part == "b":
 
 
 if part == "c":
-    T = float(input("Give temperature: [1.0 or 2.4]"))
+    T = float(input("Give temperature: [1.0 or 2.4] \n"))
+    MC_samples = str(input("Give number of Monte Carlo samples: \n"))
+
     path = "results/partC/"
-<<<<<<< HEAD
-    infilename_ordered = "MC_" + str(int(2e8)) + "_n_20_T_" + str(T) + "_ordered_.txt"
-    infilename_random = "MC_" + str(int(2e8)) + "_n_20_T_" + str(T) + "_random_.txt"
-=======
-    infilename_ordered = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_ordered_.txt"
-    infilename_random = "MC_" + str(int(4e7)) + "_n_20_T_" + str(T) + "_random_.txt"
->>>>>>> 230aa9e7565fdbbe6e5501220b1f3e8107262659
+    infilename_ordered = "MC_" + MC_samples + "_n_20_T_" + str(T) + "_ordered_.txt"
+    infilename_random = "MC_" + MC_samples + "_n_20_T_" + str(T) + "_random_.txt"
     E_ordered = []
     M_ordered = []
     acceptance_ordered = []
