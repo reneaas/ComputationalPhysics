@@ -103,10 +103,17 @@ Plots expectation values for energy and magnetization, both with ordered and ran
 Choosing "c" you'll be prompted with the questions
 ```console
 Give temperature: [1.0 or 2.4]
+<<<<<<< HEAD
 Number of Monte Carlo samples:
 ```
 
 Type in the temperature you wish to plot results for, and the number of Monte Carlo samples used to produce the data you wish to plot.
+=======
+Give number of Monte Carlo samples:
+```
+
+Type in the temperature you wish to plot results for, and the number of Monte Carlo samples you used to produce the data.
+>>>>>>> dbaaf352ad67b42d6ee36bc839846a6d96924f6f
 This now plots the expectation values for energy and magnetization, both with ordered and random initial spin matrices. It also plots accepted spin flips for ordered and random initial spin matrix.
 
 
