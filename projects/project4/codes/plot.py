@@ -157,7 +157,6 @@ if part == "b":
 if part == "c":
     T = float(input("Give temperature: [1.0 or 2.4] \n"))
     MC_samples = str(input("Number of Monte Carlo samples: \n"))
-
     path = "results/partC/"
     infilename_ordered = "MC_" + MC_samples + "_n_20_T_" + str(T) + "_ordered_.txt"
     infilename_random = "MC_" + MC_samples + "_n_20_T_" + str(T) + "_random_.txt"
