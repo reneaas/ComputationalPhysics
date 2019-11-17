@@ -1,7 +1,7 @@
 # Project 4: The Ising model
 
 ## The report
-The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project3/report/Project3_report.pdf).
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/report/Project_4.pdf).
 The results were computed on three different computers:
 1. Computer 1:
   - CPU: Intel i7-8565U (8)
