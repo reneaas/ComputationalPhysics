@@ -222,12 +222,13 @@ if part == "d":
     L = 20
     temperature = float(input("Give temperature: [1.0 or 2.4] \n"))
     initial_spin_state = str(input("ordered or random: [o/r] \n"))
+    MC_samples = str(input("Number of Monte Carlo samples: \n"))
     if initial_spin_state == "o":
         initial_spin_state = "ordered"
     if initial_spin_state == "r":
         initial_spin_state = "random"
 
-    infilename =  "boltzmann_distribution_MC_" + str(int(4e7)) + "_T_" +  str(temperature) + "_" + initial_spin_state + "_.txt"
+    infilename =  "boltzmann_distribution_MC_" + MC_samples + "_T_" +  str(temperature) + "_" + initial_spin_state + "_.txt"
     path = "results/partC/"
     with open(path + infilename, "r") as infile:
         lines = infile.readlines()
