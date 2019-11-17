@@ -5,8 +5,10 @@ Kaspara Skovli Gåsvær, Maria Linea Horgen and René Ask. This
 contains all our work in the course [FYS3150 - Computational Physics](https://www.uio.no/studier/emner/matnat/fys/FYS3150/)
 at UiO.
 
+This course deals with techniques to solve a wide variety of mathematical problems - that arise in physics - numerically.
+
 ## Projects
-All coursework is found under [projects](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/).
+All our coursework is found under [projects](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/).
 
 ### Project 1: 1D-Possions equation
 In [project 1](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project1), the 1-dimensional Poisson equation is solved. The differential equation first recast into a linear tridiagonal matrix equation where the particular matrix we deal with
@@ -31,9 +33,8 @@ The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/project
 The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project3/codes)
 
 ### Project 4: Monte Carlo Methods, the Metropolis algorithm and the 2D Ising model
-In [project 4](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4), we study the 2-dimensional Ising model (square lattice)
-by using the Metropolis algorithm to sample spin states and compute expectation values and related quantities.
-Furthermore, since the Ising model in 2D displays a phase transition, one overarching aim of the project to confirm the existence of the phase transition
-that arises in the thermodynamic limit (an infinite 2D lattice). The codes and report are still a work in progress...
+In [project 4](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4), we study the 2-dimensional Ising model (square lattice). The overarching goal is to confirm the second order phase transition predicted by Lars Onsager in 1944 in [this article](https://journals.aps.org/pr/abstract/10.1103/PhysRev.65.117).
 
-The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4/codes).
+We implement a Monte Carlo simulation of the system using the Metropolis algorithm as a sampling rule. We perform several tests to check that the codes work properly before we proceed to optimize the codes through parallelization with MPI and proper chosen compiler flags. We then move on to perform the bigger simulations which are used to confirm the predicted phase transition.
+
+The [report](missing_link). The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4/codes).
