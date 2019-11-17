@@ -100,12 +100,13 @@ Plots expectation values for energy and magnetization, both with ordered and ran
 
 ##### c : Estimation of equilibration
 
-Choosing "c" you'll be prompted with the question
+Choosing "c" you'll be prompted with the questions
 ```console
 Give temperature: [1.0 or 2.4]
+Give number of Monte Carlo samples:
 ```
 
-Type in the temperature you wish to plot results for.
+Type in the temperature you wish to plot results for, and the number of Monte Carlo samples you used to produce the data.
 This now plots the expectation values for energy and magnetization, both with ordered and random initial spin matrices. It also plots accepted spin flips for ordered and random initial spin matrix.
 
 
