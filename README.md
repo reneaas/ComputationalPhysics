@@ -33,7 +33,7 @@ The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/project
 The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project3/codes)
 
 ### Project 4: Monte Carlo Methods, the Metropolis algorithm and the 2D Ising model
-In [project 4](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4), we study the 2-dimensional Ising model (square lattice). The overarching goal is to confirm the second order phase transition predicted by Lars Onsager in 1944 in [this article](https://journals.aps.org/pr/abstract/10.1103/PhysRev.65.117).
+In [project 4](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4/report/project_4.pdf), we study the 2-dimensional Ising model (square lattice). The overarching goal is to confirm the second order phase transition predicted by Lars Onsager in 1944 in [this article](https://journals.aps.org/pr/abstract/10.1103/PhysRev.65.117).
 
 We implement a Monte Carlo simulation of the system using the Metropolis algorithm as a sampling rule. We perform several tests to check that the codes work properly before we proceed to optimize the codes through parallelization with MPI and proper chosen compiler flags. We then move on to perform the bigger simulations which are used to confirm the predicted phase transition.
 
