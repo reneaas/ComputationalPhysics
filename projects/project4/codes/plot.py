@@ -239,19 +239,21 @@ if part == "d":
     MC = len(energies)
     MC_cycles = np.linspace(0,MC,MC)
 
-    plt.hist(energies, density = True)
+    plt.hist(energies, 41, density = True)
     plt.xlabel("$E/J$",size = 16)
     plt.ylabel("$P(E)$",size = 16)
     plt.xticks(size = 16)
     plt.yticks(size = 16)
     plt.show()
 
+    """
     plt.plot(MC_cycles[:200000]/L**2, np.array(energies[:200000]))
     plt.ylabel("$E/J$",size = 16)
     plt.xlabel("$t$ [cycles/$L^2$]",size = 16)
     plt.xticks(size = 16)
     plt.yticks(size = 16)
     plt.show()
+    """
 
 
 if part == "flags":

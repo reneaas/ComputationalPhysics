@@ -54,7 +54,7 @@ if part == "c":
     dimension = "20";
     MC_samples = int(input("Specify number of Monte Carlo samples: "))
     initialize_spin_matrix = str(input("Ordered or randomized inital spin matrix? [o/r] \n"))
-    temperature = float(input("Give temperature: [1.0 or 2.4]"))
+    temperature = float(input("Give temperature: [1.0 or 2.4] \n"))
 
     if initialize_spin_matrix == "o":
         initialize = "ordered"
