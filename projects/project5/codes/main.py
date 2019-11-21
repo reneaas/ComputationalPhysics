@@ -9,7 +9,7 @@ print("Compilation finished, executing program...")
 
 
 d = 1
-dx = 0.1
+dx = 0.01
 method = "implicit"
 outfilename = "test.txt"
 

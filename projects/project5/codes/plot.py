@@ -22,10 +22,12 @@ def exact(x, t, N = 100):
     sum *= 2/np.pi
     return sum + x
 
-xx = np.linspace(0,1,1001)
-t = 0.005
+dx = 0.01
 
-plt.plot(x,u, label = "ikke eksakt")
-#plt.plot(xx, exact(xx, t))
+xx = np.linspace(dx,1-dx,1001)
+t = 0.001
+
+plt.plot(x,u, label = "approximation")
+plt.plot(xx, exact(xx, t), "--", label = "exact")
 plt.legend()
 plt.show()
