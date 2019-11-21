@@ -85,7 +85,6 @@ int main(int nargs, char* args[]){
       c = new double[gridpoints];
       y = new double[gridpoints];
 
-
       for (int m = 0; m < timesteps - 1; m++){
         for (int i = 0; i < gridpoints; i++){
           a[i] = -1.0;
@@ -94,9 +93,11 @@ int main(int nargs, char* args[]){
           //cout << y[i] << endl;
           y[i] = v[m][i];
           cout << y[i] << endl;
-
-
         }
+
+
+        *y = *v[m];
+
         Forward_substitution(a, b, c, y, gridpoints);
         Back_substitution(v[m+1], b, c, y, gridpoints);
       }
