@@ -15,17 +15,19 @@ with open(infilename, "r") as infile:
         u.append(float(values[1]))
 
 
-def exact(x, t, N = 100):
+def exact(x, t, N = 1000):
     sum = 0
     for i in range(1,N+1):
         sum += ((-1)**i)/i * np.sin(i*np.pi*x)*np.exp(-(i*np.pi)**2 * t)
     sum *= 2/np.pi
     return sum + x
 
-xx = np.linspace(0,1,1001)
-t = 0.005
+dx = 0.01
 
-plt.plot(x,u, label = "ikke eksakt")
-#plt.plot(xx, exact(xx, t))
+xx = np.linspace(dx,1-dx,1001)
+t = 0.001
+
+plt.plot(x,u, label = "approximation")
+plt.plot(xx, exact(xx, t), "--", label = "exact")
 plt.legend()
 plt.show()

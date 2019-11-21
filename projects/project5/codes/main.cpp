@@ -29,8 +29,8 @@ int main(int nargs, char* args[]){
 
     start_x = 0.;
     end_x = 1.;
-    r = 0.5;
-    total_time = 1.;
+    r = 0.01;
+    total_time = 0.1;
     dt = r*dx*dx;
     gridpoints = int((end_x - start_x)/dx - 2);
     timesteps = int(total_time/dt - 1);
@@ -54,7 +54,6 @@ int main(int nargs, char* args[]){
     //Initial condition
     for (int i = 0; i < gridpoints; i++) v[0][i] = -x[i];
 
-    for (int i = 0; i < gridpoints; i++) cout << v[0][i] << endl;
 
     if (method == "explicit"){
       Explicit_scheme(v, x, r, gridpoints, timesteps);
@@ -86,15 +85,74 @@ int main(int nargs, char* args[]){
       c = new double[gridpoints];
       y = new double[gridpoints];
 
-      for (int m = 0; m < 2; m++){
-        for (int j = 0; j < gridpoints; j++){
-          a[j] = -1;
-          b[j] = 1 + 2*r;
-          c[j] = -1;
-          y[j] = v[m][j];
+
+      for (int m = 0; m < timesteps - 1; m++){
+        for (int i = 0; i < gridpoints; i++){
+          a[i] = -r;
+          b[i] = 1.0 + 2*r;
+          c[i] = -r;
+          y[i] = v[m][i];
         }
+
         Forward_substitution(a, b, c, y, gridpoints);
         Back_substitution(v[m+1], b, c, y, gridpoints);
+      }
+
+      for (int m = 0; m < timesteps; m++){
+        for (int j = 0; j < gridpoints; j++){
+          v[m][j] += x[j];
+        }
+      }
+
+
+      cout << "t[10] = " << t[10] << endl;
+
+      ofile.open(outfilename);
+      for (int i = 0; i < gridpoints; i++){
+        ofile << x[i] << " " << v[10][i] << endl;
+      }
+
+      ofile.close();
+
+    }
+
+
+    if (method == "CN"){
+      double *a, *b, *c;
+      double alpha, beta, gamma;
+
+      double *y;
+
+      a = new double[gridpoints];
+      b = new double[gridpoints];
+      c = new double[gridpoints];
+      y = new double[gridpoints];
+
+      alpha = r; beta = 1 - 2*r; gamma = r;
+
+
+      for (int m = 0; m < timesteps - 1; m++){
+        for (int i = 0; i < gridpoints; i++){
+            a[i] = -r;
+            b[i] = 1.0 + 2*r;
+            c[i] = -r;
+
+            if (i == 0){
+              y[i] =  beta*v[m][i] + gamma*v[m][i+1];
+
+            } else if (i == gridpoints-1){
+              y[i] =  beta*v[m][i] + alpha*v[m][i-1];
+
+            } else {
+
+              y[i] = beta*v[m][i] + gamma*v[m][i+1] + alpha*v[m][i-1];
+
+            }
+
+        }
+
+      Forward_substitution(a, b, c, y, gridpoints);
+      Back_substitution(v[m+1], b, c, y, gridpoints);
       }
 
 
@@ -106,17 +164,21 @@ int main(int nargs, char* args[]){
       }
 
 
-      cout << "t[10] = " << t[0] << endl;
+      cout << "t[10] = " << t[1000] << endl;
 
       ofile.open(outfilename);
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v[0][i] << endl;
+        ofile << x[i] << " " << v[1000][i] << endl;
       }
 
       ofile.close();
 */
     }
 
+
   }
+
+
+
   return 0;
 }
