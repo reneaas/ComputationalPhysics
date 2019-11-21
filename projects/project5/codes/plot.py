@@ -23,9 +23,9 @@ def exact(x, t, N = 100):
     return sum + x
 
 xx = np.linspace(0,1,1001)
-t = 0.45
+t = 0.005
 
 plt.plot(x,u, label = "ikke eksakt")
-plt.plot(xx, exact(xx, t))
+#plt.plot(xx, exact(xx, t))
 plt.legend()
 plt.show()
