@@ -64,7 +64,7 @@ int main(int nargs, char* args[]){
       }
 
 
-      cout << "t[10] = " << t[100] << endl;
+      cout << "t[100] = " << t[100] << endl;
       ofile.open(outfilename);
       for (int i = 0; i < gridpoints; i++){
         ofile << x[i] << " " << v[100][i] << endl;
@@ -99,10 +99,10 @@ int main(int nargs, char* args[]){
       }
 
 
-      cout << "t[10] = " << t[10] << endl;
+      cout << "t[100] = " << t[100] << endl;
       ofile.open(outfilename);
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v[10][i] << endl;
+        ofile << x[i] << " " << v[100][i] << endl;
       }
       ofile.close();
     }
@@ -146,14 +146,14 @@ int main(int nargs, char* args[]){
       }
 
 
-      cout << "t[10] = " << t[10] << endl;
+      cout << "t[100] = " << t[100] << endl;
       ofile.open(outfilename);
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v[10][i] << endl;
+        ofile << x[i] << " " << v[100][i] << endl;
       }
       ofile.close();
     }
   }
-  
+
   return 0;
 }

@@ -31,10 +31,7 @@ void Explicit_scheme(double **v, double *x , double r, int gridpoints, int times
 void Forward_substitution(double* a, double* b, double* c, double* y, int n){
   for (int i = 1; i < n; i++){
     b[i] -= a[i-1]*c[i-1]/b[i-1];
-    //cout << b[i] << endl;
     y[i] -= a[i-1]*y[i-1]/b[i-1];
-    cout << y[i] << endl;
-
   }
   //delete[] a;
   return;
@@ -45,12 +42,10 @@ void Back_substitution(double* x, double* b, double* c, double* y, int n){
   for (int i = n-1; i >= 0; i--){
     if (i == n-1){
       x[i] = y[i]/b[i];
-      cout <<b[i]<<" "<<y[i]<< endl;
     }
     else{
       x[i] = (y[i]-c[i]*x[i+1])/b[i];
     }
-    //cout << x[i] << endl;
   }
 
   //delete[] b;
