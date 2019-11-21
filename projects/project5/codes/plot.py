@@ -25,7 +25,7 @@ def exact(x, t, N = 1000):
 dx = 0.01
 
 xx = np.linspace(dx,1-dx,1001)
-t = 0.001
+t = 0.005
 
 plt.plot(x,u, label = "approximation")
 plt.plot(xx, exact(xx, t), "--", label = "exact")
