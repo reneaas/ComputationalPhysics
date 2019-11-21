@@ -8,7 +8,7 @@
 
 using namespace std;
 
-
+//Algorithm for forward Euler method
 void Explicit_scheme(double **v, double *x , double r, int gridpoints, int timesteps){
 
   for (int m = 0; m < timesteps-1; m++){

@@ -68,6 +68,10 @@ int main(int nargs, char* args[]){
 
     }
 
+    if (method == "implicit"){
+      
+    }
+
 
 
   }
