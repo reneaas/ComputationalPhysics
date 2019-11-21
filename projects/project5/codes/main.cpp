@@ -29,7 +29,7 @@ int main(int nargs, char* args[]){
 
     start_x = 0.;
     end_x = 1.;
-    r = 1;
+    r = 0.01;
     total_time = 0.1;
     dt = r*dx*dx;
     gridpoints = int((end_x - start_x)/dx - 2);
@@ -87,17 +87,21 @@ int main(int nargs, char* args[]){
 
       for (int m = 0; m < timesteps - 1; m++){
         for (int i = 0; i < gridpoints; i++){
-          a[i] = -1.0;
+          a[i] = -r;
           b[i] = 1.0 + 2*r;
-          c[i] = -1.0;
-          //cout << y[i] << endl;
+          c[i] = -r;
           y[i] = v[m][i];
+<<<<<<< HEAD
           cout << y[i] << endl;
         }
 
 
         *y = *v[m];
 
+=======
+        }
+
+>>>>>>> 280a0c3419352a54dbfe711b5ed4fa7c58595d2c
         Forward_substitution(a, b, c, y, gridpoints);
         Back_substitution(v[m+1], b, c, y, gridpoints);
       }
@@ -120,6 +124,68 @@ int main(int nargs, char* args[]){
 
     }
 
+
+    if (method == "CN"){
+      double *a, *b, *c;
+      double alpha, beta, gamma;
+
+      double *y;
+
+      a = new double[gridpoints];
+      b = new double[gridpoints];
+      c = new double[gridpoints];
+      y = new double[gridpoints];
+
+      alpha = r; beta = 1 - 2*r; gamma = r;
+
+
+      for (int m = 0; m < timesteps - 1; m++){
+        for (int i = 0; i < gridpoints; i++){
+            a[i] = -r;
+            b[i] = 1.0 + 2*r;
+            c[i] = -r;
+
+            if (i == 0){
+              y[i] =  beta*v[m][i] + gamma*v[m][i+1];
+
+            } else if (i == gridpoints-1){
+              y[i] =  beta*v[m][i] + alpha*v[m][i-1];
+
+            } else {
+
+              y[i] = beta*v[m][i] + gamma*v[m][i+1] + alpha*v[m][i-1];
+
+            }
+
+        }
+
+      Forward_substitution(a, b, c, y, gridpoints);
+      Back_substitution(v[m+1], b, c, y, gridpoints);
+      }
+
+
+      for (int m = 0; m < timesteps; m++){
+        for (int j = 0; j < gridpoints; j++){
+          v[m][j] += x[j];
+        }
+      }
+
+
+      cout << "t[10] = " << t[1000] << endl;
+
+      ofile.open(outfilename);
+      for (int i = 0; i < gridpoints; i++){
+        ofile << x[i] << " " << v[1000][i] << endl;
+      }
+
+      ofile.close();
+
+    }
+
+
   }
+
+  
+
   return 0;
 }

@@ -15,7 +15,7 @@ with open(infilename, "r") as infile:
         u.append(float(values[1]))
 
 
-def exact(x, t, N = 100):
+def exact(x, t, N = 1000):
     sum = 0
     for i in range(1,N+1):
         sum += ((-1)**i)/i * np.sin(i*np.pi*x)*np.exp(-(i*np.pi)**2 * t)
