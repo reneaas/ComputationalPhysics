@@ -78,44 +78,32 @@ int main(int nargs, char* args[]){
     }
 
     if (method == "implicit"){
-<<<<<<< HEAD
-      
-    }
-=======
-      double *a, *b, *c, *a_init, *b_init, *c_init;
+      double *a, *b, *c;
       double *y;
 
       a = new double[gridpoints];
       b = new double[gridpoints];
       c = new double[gridpoints];
-
-      for (int i = 0; i < gridpoints; i++){
-        a[i] = -1;
-        b[i] = 1 + 2*r;
-        c[i] = -1;
-      }
-
-      a_init = a; b_init = b; c_init = c;
+      y = new double[gridpoints];
 
       for (int m = 0; m < 2; m++){
-        a = a_init; b = b_init; c = c_init;
-        cout << "simulering " << m << endl;
-        for (int k = 0; k < gridpoints; k++) cout << b[k] << endl;
-        y = v[m];
+        for (int j = 0; j < gridpoints; j++){
+          a[j] = -1;
+          b[j] = 1 + 2*r;
+          c[j] = -1;
+          y[j] = v[m][j];
+        }
         Forward_substitution(a, b, c, y, gridpoints);
         Back_substitution(v[m+1], b, c, y, gridpoints);
-
       }
-      cout << "etter simulering" << endl;
 
-      for (int i = 0; i < gridpoints; i++) cout << v[0][i] << endl;
 
+/*
       for (int m = 0; m < timesteps; m++){
         for (int j = 0; j < gridpoints; j++){
           v[m][j] += x[j];
         }
       }
->>>>>>> fac0faf669cf2bef55fce7ddfc36dc41411e3a3d
 
 
       cout << "t[10] = " << t[0] << endl;
@@ -126,7 +114,7 @@ int main(int nargs, char* args[]){
       }
 
       ofile.close();
-
+*/
     }
 
   }
