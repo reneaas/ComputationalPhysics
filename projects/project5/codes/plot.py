@@ -1,11 +1,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
+import os
+
+method = str(sys.argv[1])
 
 
 x = []
 u = []
 
-infilename = "test.txt"
+infilename = "test_" + str(method) + ".txt"
 
 with open(infilename, "r") as infile:
     lines = infile.readlines()
