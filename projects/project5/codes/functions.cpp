@@ -32,14 +32,6 @@ void Forward_substitution(double* a, double* b, double* c, double* y, int n){
   for (int i = 1; i < n; i++){
     b[i] -= a[i-1]*c[i-1]/b[i-1];
     y[i] -= a[i-1]*y[i-1]/b[i-1];
-<<<<<<< HEAD
-    cout << y[i] << endl;
-<<<<<<< HEAD
-=======
-
->>>>>>> 280a0c3419352a54dbfe711b5ed4fa7c58595d2c
-=======
->>>>>>> a15da60c796c311b3739c16b980af8300374a251
   }
   return;
 }
@@ -54,9 +46,5 @@ void Back_substitution(double* x, double* b, double* c, double* y, int n){
       x[i] = (y[i]-c[i]*x[i+1])/b[i];
     }
   }
-
-  delete[] b;
-  delete[] c;
-  delete[] y;
   return;
 }

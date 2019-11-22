@@ -10,7 +10,7 @@ print("Compilation finished, executing program...")
 
 d = 1
 dx = 0.01
-method = "CN"
+method = "implicit"
 outfilename = "test_" + str(method) + ".txt"
 
 os.system("./main.exe" + " " + str(d) + " " + str(dx) + " " + method + " " + outfilename)
