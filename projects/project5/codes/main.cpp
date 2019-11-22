@@ -156,10 +156,5 @@ int main(int nargs, char* args[]){
     }
   }
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 73ba8fd8012063974e501baf823c832d34e49e41
   return 0;
 }
