@@ -9,22 +9,30 @@ os.system("c++ -O3 -Wall -o main.exe main.o functions.o")
 print("Compilation finished, executing program...")
 
 
-method = str(input("Specify method: [explicit, implicit, CN, 2D] \n"))
+methods = ["explicit", "implicit", "CN"]
 
+path = "results/1D"
+if not os.path.exists(path):
+    os.makedirs(path)
 
-if method != "2D":
-    d = 1
-    dx = float(input("Give dx: [0.1, 0.01] \n"))
-    if dx == 0.1:
-        time_index = [4,17]
-        for t in time_index:
-            outfilename = str(method) + "_dx_" + str(dx) + "_time_" + str(t) + ".txt"
+d = 1
+dx = [0.1, 0.01]
 
-            os.system("./main.exe" + " " + str(d) + " " + str(dx) + " " + method + " " + outfilename + " " + str(t))
+for method in methods:
+    print("Running method: " + method)
+    for i in dx:
+        if i  == 0.1:
+            time_index = [4,17]
+            for t in range(len(time_index)):
+                outfilename = str(method) + "_dx_" + str(i) + "_time_" + str(t+1) + ".txt"
 
-    if dx == 0.01:
-        time_index = [10,1800]
-        for t in time_index:
-            outfilename = str(method) + "_dx_" + str(dx) + "_time_" + str(t) + ".txt"
+                os.system("./main.exe" + " " + str(d) + " " + str(i) + " " + method + " " + outfilename + " " + str(time_index[t]))
+                os.system("mv" + " " + outfilename +" "+ path)
 
-            os.system("./main.exe" + " " + str(d) + " " + str(dx) + " " + method + " " + outfilename + " " + str(t))
+        if i == 0.01:
+            time_index = [10,1800]
+            for t in range(len(time_index)):
+                outfilename = str(method) + "_dx_" + str(i) + "_time_" + str(t+1) + ".txt"
+
+                os.system("./main.exe" + " " + str(d) + " " + str(i) + " " + method + " " + outfilename + " " + str(time_index[t]))
+                os.system("mv" + " " + outfilename + " " + path)

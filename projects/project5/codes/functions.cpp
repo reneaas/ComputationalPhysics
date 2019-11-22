@@ -46,9 +46,5 @@ void Back_substitution(double* x, double* b, double* c, double* y, int n){
       x[i] = (y[i]-c[i]*x[i+1])/b[i];
     }
   }
-
-  delete[] b;
-  delete[] c;
-  delete[] y;
   return;
 }

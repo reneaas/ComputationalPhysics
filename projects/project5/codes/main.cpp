@@ -68,6 +68,7 @@ int main(int nargs, char* args[]){
 
       printf("Writing to file for time-element t[%d]. \n", time_index);
       ofile.open(outfilename);
+      ofile << t[time_index] << endl;
       for (int i = 0; i < gridpoints; i++){
         ofile << x[i] << " " << v[time_index][i] << endl;
       }
@@ -103,6 +104,7 @@ int main(int nargs, char* args[]){
 
       printf("Writing to file for time-element t[%d]. \n", time_index);
       ofile.open(outfilename);
+      ofile << t[time_index] << endl;
       for (int i = 0; i < gridpoints; i++){
         ofile << x[i] << " " << v[time_index][i] << endl;
       }
@@ -150,6 +152,7 @@ int main(int nargs, char* args[]){
 
       printf("Writing to file for time-element t[%d]. \n", time_index);
       ofile.open(outfilename);
+      ofile << t[time_index] << endl;
       for (int i = 0; i < gridpoints; i++){
         ofile << x[i] << " " << v[time_index][i] << endl;
       }
