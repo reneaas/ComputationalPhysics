@@ -153,17 +153,8 @@ int main(int nargs, char* args[]){
         ofile << x[i] << " " << v[100][i] << endl;
       }
       ofile.close();
-<<<<<<< HEAD
-*/
-=======
->>>>>>> a15da60c796c311b3739c16b980af8300374a251
     }
   }
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> a15da60c796c311b3739c16b980af8300374a251
   return 0;
 }
