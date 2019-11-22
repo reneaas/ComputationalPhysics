@@ -1,4 +1,5 @@
 #include <cmath>
+#include <stdio.h>
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
@@ -18,7 +19,7 @@ int main(int nargs, char* args[]){
   if(d == 1){
     //Declaration of variables.
     double **v, *t, *x;
-    int timesteps, gridpoints;
+    int timesteps, gridpoints, time_index;
     double r, dt, dx, total_time;
     double start_x, end_x;
     string method, outfilename;
@@ -27,6 +28,7 @@ int main(int nargs, char* args[]){
     dx = atof(args[2]);
     method = string(args[3]);
     outfilename = string(args[4]);
+    time_index = atoi(args[5]);
 
     //Hardcode variables.
     start_x = 0.;
@@ -64,10 +66,11 @@ int main(int nargs, char* args[]){
       }
 
 
-      cout << "t[100] = " << t[100] << endl;
+      printf("Writing to file for time-element t[%d]. \n", time_index);
       ofile.open(outfilename);
+      ofile << t[time_index] << endl;
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v[100][i] << endl;
+        ofile << x[i] << " " << v[time_index][i] << endl;
       }
       ofile.close();
 
@@ -99,10 +102,11 @@ int main(int nargs, char* args[]){
       }
 
 
-      cout << "t[100] = " << t[100] << endl;
+      printf("Writing to file for time-element t[%d]. \n", time_index);
       ofile.open(outfilename);
+      ofile << t[time_index] << endl;
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v[100][i] << endl;
+        ofile << x[i] << " " << v[time_index][i] << endl;
       }
       ofile.close();
     }
@@ -146,15 +150,14 @@ int main(int nargs, char* args[]){
         }
       }
 
-
-      cout << "t[100] = " << t[100] << endl;
+      printf("Writing to file for time-element t[%d]. \n", time_index);
       ofile.open(outfilename);
+      ofile << t[time_index] << endl;
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v[100][i] << endl;
+        ofile << x[i] << " " << v[time_index][i] << endl;
       }
       ofile.close();
     }
   }
-
   return 0;
 }
