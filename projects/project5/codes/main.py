@@ -48,6 +48,6 @@ if d == 2:
         os.makedirs(path)
     h = 0.01
     outfilename = "2D_Results.txt"
-    time_index = 1
+    time_index = 300
     os.system("./main.exe" + " " + str(d) + " " + str(h) + " " + outfilename + " " + str(time_index))
     os.system("mv" + " " + outfilename +" "+ path)

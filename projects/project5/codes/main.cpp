@@ -232,7 +232,7 @@ if (d == 2){
   for (int m = 0; m < timesteps; m++){
     for (int i = 0; i < gridpoints; i++){
       for (int j = 0; j < gridpoints; j++){
-        v[m][i][j] += y[j];
+        v[m][i][j] += (b-a)*y[j] + a;
       }
     }
   }
@@ -250,6 +250,7 @@ if (d == 2){
   ofile.close();
 
 
-}
-return 0;
+  }
+
+  return 0;
 }
