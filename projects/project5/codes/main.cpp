@@ -139,7 +139,7 @@ int main(int nargs, char* args[]){
       }
 
 
-/*
+
       for (int m = 0; m < timesteps; m++){
         for (int j = 0; j < gridpoints; j++){
           v[m][j] += x[j];
