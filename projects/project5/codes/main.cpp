@@ -65,12 +65,11 @@ int main(int nargs, char* args[]){
         }
       }
 
-      cout << "printf suger" << endl;
-      printf("%d", time_index);
-      //printf("Writing to file for time t[%d]", time_index);
+
+      printf("Writing to file for time-element t[%d]. \n", time_index);
       ofile.open(outfilename);
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v[100][i] << endl;
+        ofile << x[i] << " " << v[time_index][i] << endl;
       }
       ofile.close();
 
@@ -102,10 +101,10 @@ int main(int nargs, char* args[]){
       }
 
 
-      cout << "t[100] = " << t[100] << endl;
+      printf("Writing to file for time-element t[%d]. \n", time_index);
       ofile.open(outfilename);
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v[100][i] << endl;
+        ofile << x[i] << " " << v[time_index][i] << endl;
       }
       ofile.close();
     }
@@ -148,10 +147,11 @@ int main(int nargs, char* args[]){
           v[m][j] += x[j];
         }
       }
-      cout << "t[100] = " << t[100] << endl;
+
+      printf("Writing to file for time-element t[%d]. \n", time_index);
       ofile.open(outfilename);
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v[100][i] << endl;
+        ofile << x[i] << " " << v[time_index][i] << endl;
       }
       ofile.close();
     }
