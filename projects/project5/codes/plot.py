@@ -1,19 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
-
-x = []
-u = []
-
-infilename = "test.txt"
-
-with open(infilename, "r") as infile:
-    lines = infile.readlines()
-    for line in lines:
-        values = line.split()
-        x.append(float(values[0]))
-        u.append(float(values[1]))
-
+import sys
+import os
 
 def exact(x, t, N = 1000):
     sum = 0
@@ -22,12 +10,25 @@ def exact(x, t, N = 1000):
     sum *= 2/np.pi
     return sum + x
 
+
 dx = 0.01
-
 xx = np.linspace(dx,1-dx,1001)
-t = 0.001
+t = 0.005
 
-plt.plot(x,u, label = "approximation")
+methods = ["explicit", "implicit", "CN"]
+
+for method in methods:
+    x = []
+    u = []
+    infilename = "test_" + str(method) + ".txt"
+    with open(infilename, "r") as infile:
+        lines = infile.readlines()
+        for line in lines:
+            values = line.split()
+            x.append(float(values[0]))
+            u.append(float(values[1]))
+
+    plt.plot(x,u, label = str(method))
 plt.plot(xx, exact(xx, t), "--", label = "exact")
 plt.legend()
 plt.show()
