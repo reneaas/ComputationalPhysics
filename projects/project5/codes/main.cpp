@@ -114,19 +114,20 @@ int main(int nargs, char* args[]){
 
     if (method == "CN"){
       double *a, *b, *c, *q;
-      double alpha, beta, gamma;
+      double alpha, beta, gamma, rho;
       a = new double[gridpoints];
       b = new double[gridpoints];
       c = new double[gridpoints];
       q = new double[gridpoints];
+      rho = r/2;                              //In the Crank-Nicolson scheme, r is half of the r used in the two other 1D schemes.
 
       //Hardcode variables
-      alpha = r; beta = 1 - 2*r; gamma = r;
+      alpha = rho; beta = 1 - 2*rho; gamma = rho;
       for (int m = 0; m < timesteps - 1; m++){
         for (int i = 0; i < gridpoints; i++){
-            a[i] = -r;
-            b[i] = 1.0 + 2*r;
-            c[i] = -r;
+            a[i] = -rho;
+            b[i] = 1.0 + 2*rho;
+            c[i] = -rho;
             if (i == 0){
               q[i] =  beta*v[m][i] + gamma*v[m][i+1];
             }

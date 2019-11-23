@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import os
 from mpl_toolkits import mplot3d
+plt.rc("text", usetex = True)
 
 d = int(input("d?"))
 
@@ -67,20 +68,27 @@ if d == 2:
             values = lines[i].split()
             for j in range(len(values)):
                 u[i,j] = float(values[j])
-    u = u.T;
-
-    x = [(i+1)*0.1 for i in range(gridpoints)]
-    y = [(i+1)*0.1 for i in range(gridpoints)]
 
 
+    u = u.T                     #Transposes the data to order the matrix correctly for plotting.
+    x = [(i+1)*0.01 for i in range(gridpoints)]
+    y = [(i+1)*0.01 for i in range(gridpoints)]
+    print(x)
+
+
+    #Plots the numerical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
     X,Y = np.meshgrid(x,y)
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     surf = ax.contour3D(x, y, u, 98)
     ax.set_zlim(0, 1)
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel(r"$u(x,y,t_0)$")
     fig.colorbar(surf, shrink=0.5, aspect=5)
     plt.show()
 
+    #Plots the analytical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
     xx = np.linspace(0,1,41)
     yy = np.linspace(0,1,41)
     X,Y = np.meshgrid(xx,yy)
@@ -88,7 +96,15 @@ if d == 2:
     print(Z)
     fig = plt.figure()
     ax = plt.axes(projection='3d')
-    surf = ax.contour3D(X, Y, Z, 41)
+    surf = ax.contour3D(X, Y, Z, 98)
     ax.set_zlim(0, 1)
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel(r"$u(x,y,t_0)$")
     fig.colorbar(surf, shrink=0.5, aspect=5)
+    plt.show()
+
+    #Plots a contour plot of the numerical solution z = u(x,y,t) for a specific time t.
+    plt.contourf(x,y,u)
+    plt.colorbar()
     plt.show()
