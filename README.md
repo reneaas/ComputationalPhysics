@@ -38,3 +38,10 @@ In [project 4](https://github.com/reneaas/ComputationalPhysics/tree/master/proje
 We implement a Monte Carlo simulation of the system using the Metropolis algorithm as a sampling rule. We perform several tests to check that the codes work properly before we proceed to optimize the codes through parallelization with MPI and proper chosen compiler flags. We then move on to perform the bigger simulations which are used to confirm the predicted phase transition.
 
 The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project4/report/Project_4.pdf). The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project4/codes).
+
+
+### Project 5: Diffusion equation and finite difference schemes to solve partial differential equations (PDEs) numerically
+In [project 5](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project5), we study the diffusion equation and solve it in 1D and 2D by application of several different algorithms which we present in its entirety.
+We solve the PDEs with certain chosen boundary- and initial conditions analytically which serves as benchmarking tools to assert the validity of our implementation.
+We further perform von Neumann stability analysis of the various finite difference methods to which we test the validity of numerically.
+The endgame of the project is to simulate the temperature distribution in the lithosphere over a period of 1 billion years using the heat equation. More on this later..
