@@ -58,7 +58,7 @@ int main(int nargs, char* args[]){
     for (int i = 0; i < gridpoints; i++) v[0][i] = -x[i];           //Initial condition
 
     if (method == "explicit"){
-      Explicit_scheme(v, x, r, gridpoints, timesteps);
+      Explicit_scheme(v, r, gridpoints, timesteps);
       for (int m = 0; m < timesteps; m++){
         for (int j = 0; j < gridpoints; j++){
           v[m][j] += x[j];
