@@ -58,7 +58,7 @@ int main(int nargs, char* args[]){
     for (int i = 0; i < gridpoints; i++) v[0][i] = -x[i];           //Initial condition
 
     if (method == "explicit"){
-      Explicit_scheme(v, r, gridpoints, timesteps);
+      Explicit_scheme_1D(v, r, gridpoints, timesteps);
       for (int m = 0; m < timesteps; m++){
         for (int j = 0; j < gridpoints; j++){
           v[m][j] += x[j];
@@ -78,22 +78,22 @@ int main(int nargs, char* args[]){
 
     if (method == "implicit"){
       double *a, *b, *c;
-      double *y;
+      double *q;
 
       a = new double[gridpoints];
       b = new double[gridpoints];
       c = new double[gridpoints];
-      y = new double[gridpoints];
+      q = new double[gridpoints];
 
       for (int m = 0; m < timesteps - 1; m++){
         for (int i = 0; i < gridpoints; i++){
           a[i] = -r;
           b[i] = 1.0 + 2*r;
           c[i] = -r;
-          y[i] = v[m][i];
+          q[i] = v[m][i];
         }
-        Forward_substitution(a, b, c, y, gridpoints);
-        Back_substitution(v[m+1], b, c, y, gridpoints);
+        Forward_substitution(a, b, c, q, gridpoints);
+        Back_substitution(v[m+1], b, c, q, gridpoints);
       }
       for (int m = 0; m < timesteps; m++){
         for (int j = 0; j < gridpoints; j++){
@@ -113,33 +113,34 @@ int main(int nargs, char* args[]){
 
 
     if (method == "CN"){
-      double *a, *b, *c, *y;
-      double alpha, beta, gamma;
+      double *a, *b, *c, *q;
+      double alpha, beta, gamma, rho;
       a = new double[gridpoints];
       b = new double[gridpoints];
       c = new double[gridpoints];
-      y = new double[gridpoints];
+      q = new double[gridpoints];
+      rho = r/2;                              //In the Crank-Nicolson scheme, r is half of the r used in the two other 1D schemes.
 
       //Hardcode variables
-      alpha = r; beta = 1 - 2*r; gamma = r;
+      alpha = rho; beta = 1 - 2*rho; gamma = rho;
       for (int m = 0; m < timesteps - 1; m++){
         for (int i = 0; i < gridpoints; i++){
-            a[i] = -r;
-            b[i] = 1.0 + 2*r;
-            c[i] = -r;
+            a[i] = -rho;
+            b[i] = 1.0 + 2*rho;
+            c[i] = -rho;
             if (i == 0){
-              y[i] =  beta*v[m][i] + gamma*v[m][i+1];
+              q[i] =  beta*v[m][i] + gamma*v[m][i+1];
             }
             else if (i == gridpoints-1){
-              y[i] =  beta*v[m][i] + alpha*v[m][i-1];
+              q[i] =  beta*v[m][i] + alpha*v[m][i-1];
             }
             else{
-              y[i] = beta*v[m][i] + gamma*v[m][i+1] + alpha*v[m][i-1];
+              q[i] = beta*v[m][i] + gamma*v[m][i+1] + alpha*v[m][i-1];
             }
         }
         //Solving the matrix equation Mv[m+1] = Nv[m] = y
-        Forward_substitution(a, b, c, y, gridpoints);
-        Back_substitution(v[m+1], b, c, y, gridpoints);
+        Forward_substitution(a, b, c, q, gridpoints);
+        Back_substitution(v[m+1], b, c, q, gridpoints);
       }
 
 
@@ -159,5 +160,98 @@ int main(int nargs, char* args[]){
       ofile.close();
     }
   }
+
+
+if (d == 2){
+
+  double ***v, *t, *x, *y;
+  int timesteps, gridpoints, time_index;
+  double r, dt, h, total_time;
+  double start_x, end_x;
+  string method, outfilename;
+  double a,b;
+
+  a = 0.; b = 1;
+
+
+  //Command line arguments
+  h = atof(args[2]);
+  outfilename = string(args[3]);
+  time_index = atoi(args[4]);
+
+  //Hardcode variables.
+  start_x = 0.;
+  end_x = 1.;
+  r = 0.25;
+  total_time = 0.1;
+  dt = r*h*h;
+  gridpoints = int((end_x - start_x)/h - 2);
+  timesteps = int(total_time/dt - 1);
+
+  //Initiate empty solution matrix.
+  v = new double**[timesteps];
+  for (int i = 0; i < timesteps; i++){
+    v[i] = new double*[gridpoints];
+    for (int j = 0; j < gridpoints; j++){
+      v[i][j] = new double[gridpoints];
+    }
+  }
+
+  for (int m = 0; m < timesteps; m++){
+    for (int i = 0; i < gridpoints; i++){
+      for (int j = 0; j < gridpoints; j++){
+        v[m][i][j] = 0.;
+      }
+    }
+  }
+
+  x = new double[gridpoints];
+  y = new double[gridpoints];
+  t = new double[timesteps];
+
+  for (int i = 0; i < gridpoints; i++){
+    x[i] = h*(i+1);                                             //Position array x-direction
+    y[i] = h*(i+1);                                             //Position array y-direction
+  }
+
+  for (int i = 0; i < timesteps; i++) t[i] = dt*i;                //Time array
+
+
+  //Initial condition
+  for (int i = 0; i < gridpoints; i++){
+    for (int j = 0; j < gridpoints; j++){
+      v[0][i][j] = (a-b)*y[j] - a;
+    }
+  }
+
+
+  Explicit_scheme_2D(v, r, gridpoints, timesteps);
+
+
+
+
+  for (int m = 0; m < timesteps; m++){
+    for (int i = 0; i < gridpoints; i++){
+      for (int j = 0; j < gridpoints; j++){
+        v[m][i][j] += (b-a)*y[j] + a;
+      }
+    }
+  }
+
+  printf("Writing to file for time-element t[%d]. \n", time_index);
+  ofile.open(outfilename);
+  ofile << t[time_index] << endl;
+  for (int i = 0; i < gridpoints; i++){
+    for (int j = 0; j < gridpoints; j++){
+    //ofile << x[i] << " " << y[j] << " " << v[time_index][i][j] << endl;
+    ofile << v[time_index][i][j] << " ";
+    }
+    ofile << " " << endl;
+  }
+  ofile.close();
+
+
+  }
+
   return 0;
 }
