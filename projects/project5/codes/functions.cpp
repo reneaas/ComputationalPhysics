@@ -9,11 +9,7 @@
 using namespace std;
 
 //Algorithm for forward Euler method
-<<<<<<< HEAD
-void Explicit_scheme(double **v , double r, int gridpoints, int timesteps){
-=======
 void Explicit_scheme_1D(double **v , double r, int gridpoints, int timesteps){
->>>>>>> f1f4ec545d668aab837a32811a65f4b9372a3a9e
 
   for (int m = 0; m < timesteps-1; m++){
     for (int j = 0; j < gridpoints; j++){

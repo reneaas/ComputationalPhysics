@@ -218,8 +218,8 @@ if (d == 2){
 
 
   //Initial condition
-  for (int i = 0; i < gridpoints; i++){
-    for (int j = 0; j < gridpoints; j++){
+  for (int i = 1; i < gridpoints-1; i++){
+    for (int j = 1; j < gridpoints-1; j++){
       v[0][i][j] = (a-b)*y[j] - a;
     }
   }

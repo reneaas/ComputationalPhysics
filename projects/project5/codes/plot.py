@@ -5,7 +5,7 @@ import os
 from mpl_toolkits import mplot3d
 plt.rc("text", usetex = True)
 
-d = int(input("d?"))
+d = int(input("d? \n"))
 
 if d == 1:
     def exact_1D(x, t, N = 1000):
@@ -45,7 +45,7 @@ if d == 1:
     plt.show()
 
 if d == 2:
-    def exact_2D(x, y, t, terms = 41, a = 0, b = 1):
+    def exact_2D(x, y, t, terms = 1001, a = 0, b = 1):
         """
         Analytic solution in the 2D-case.
         """

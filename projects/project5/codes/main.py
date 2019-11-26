@@ -4,17 +4,20 @@ import sys
 
 
 
-print("Compiling code...")
-os.system("c++ -O3 -Wall -c main.cpp functions.cpp")
-os.system("c++ -O3 -Wall -o main.exe main.o functions.o")
-print("Compilation finished, executing program...")
-
-
+d = int(input("d? \n"))
 methods = ["explicit", "implicit", "CN"]
 
+if d != 22:
+    print("Compiling code...")
+    os.system("c++ -O3 -Wall -c main.cpp functions.cpp")
+    os.system("c++ -O3 -Wall -o main.exe main.o functions.o")
+    print("Compilation finished, executing program...")
+else:
+    print("Compiling code...")
+    os.system("mpicxx -O2 -Wall -c main_mpi.cpp")
+    os.system("mpicxx -O2 -o main_mpi.exe main_mpi.o")
+    print("Compilation finished, executing program...")
 
-
-d = int(input("d?"))
 
 
 if d == 1:
@@ -51,3 +54,6 @@ if d == 2:
     time_index = 300
     os.system("./main.exe" + " " + str(d) + " " + str(h) + " " + outfilename + " " + str(time_index))
     os.system("mv" + " " + outfilename +" "+ path)
+
+if d == 22:
+    os.system("mpirun -np 2 ./main_mpi.exe")
