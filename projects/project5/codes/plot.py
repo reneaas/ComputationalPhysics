@@ -141,15 +141,12 @@ if d == 2:
     y = [(i+1)*0.01 for i in range(gridpoints)]
 
 
-    fig1 = plt.figure(); figurename1 = "numerical_2D.pdf"
-    fig2 = plt.figure(); figurename2 = "analytical_2D.pdf"
+    figurename1 = "numerical_2D.pdf"
+    figurename2 = "analytical_2D.pdf"
 
-    ax1 = fig1.add_subplot(111);
-    ax2 = fig2.add_subplot(111);
-
+    """
     #Plots the numerical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
     X,Y = np.meshgrid(x,y)
-    fig = plt.figure()
     ax1 = plt.axes(projection='3d')
     surf = ax1.contour3D(x, y, u, 98)
     ax1.set_zlim(0, 1)
@@ -161,12 +158,14 @@ if d == 2:
     fig1.savefig(figurename1)
     plt.close()
 
+
+
+
     #Plots the analytical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
     xx = np.linspace(0,1,41)
     yy = np.linspace(0,1,41)
     X,Y = np.meshgrid(xx,yy)
     Z = exact_2D(X, Y,t = 0.0075, terms = 100)
-    fig2 = plt.figure()
     ax2 = plt.axes(projection='3d')
     surf = ax2.contour3D(X, Y, Z, 98)
     ax2.set_zlim(0, 1)
@@ -177,12 +176,42 @@ if d == 2:
     fig2.colorbar(surf, shrink=0.5, aspect=5)
     fig2.savefig(figurename2)
     plt.close()
+    """
+
+    #Plots the numerical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
+    X,Y = np.meshgrid(x,y)
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    surf = ax.contour3D(x, y, u, 98)
+    ax.set_zlim(0, 1)
+    ax.set_title("Time = {0}, r = 0.25".format(t))
+    ax.set_xlabel("$x$", size = 14)
+    ax.set_ylabel("$y$", size = 14)
+    ax.set_zlabel(r"$u(x,y,t_0)$", size = 14)
+    fig.colorbar(surf, shrink=0.5, aspect=5)
+    fig.savefig(figurename1)
+    plt.close()
+
+    #Plots the analytical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
+    xx = np.linspace(0,1,41)
+    yy = np.linspace(0,1,41)
+    X,Y = np.meshgrid(xx,yy)
+    Z = exact_2D(X, Y,t = 0.0075, terms = 100)
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    surf = ax.contour3D(X, Y, Z, 98)
+    ax.set_zlim(0, 1)
+    ax.set_title("Time = {0}, r = 0.25".format(t))
+    ax.set_xlabel("$x$", size = 14)
+    ax.set_ylabel("$y$", size = 14)
+    ax.set_zlabel(r"$u(x,y,t_0)$", size = 14)
+    fig.colorbar(surf, shrink=0.5, aspect=5)
+    fig.savefig(figurename2)
+    plt.close()
+
 
     #Plots a contour plot of the numerical solution z = u(x,y,t) for a specific time t.
     figurename3 = "contour_2D.pdf"
-
-    figurenames = [figurename1, figurename2]
-    figurenames.append(figurename3)
 
     plt.contourf(x,y,u)
     plt.xlabel("$x$", fontsize = 14)
@@ -191,6 +220,6 @@ if d == 2:
     plt.colorbar().set_label("$u(x,y,t_0)$", size = 14)
     plt.savefig(figurename3)
 
+
     path = "results/2D/"
-    for figurename in figurenames:
-        os.system("mv" + " " + figurename + " " + path)
+    os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + path)
