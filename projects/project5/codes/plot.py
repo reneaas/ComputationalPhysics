@@ -146,39 +146,6 @@ if d == 2:
     figurename1 = "numerical_2D.pdf"
     figurename2 = "analytical_2D.pdf"
 
-    """
-    #Plots the numerical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
-    X,Y = np.meshgrid(x,y)
-    ax1 = plt.axes(projection='3d')
-    surf = ax1.contour3D(x, y, u, 98)
-    ax1.set_zlim(0, 1)
-    ax1.set_title("Time = {0}, r = 0.25".format(t))
-    ax1.set_xlabel("x", size = 14)
-    ax1.set_ylabel("y", size = 14)
-    ax1.set_zlabel(r"$u(x,y,t_0)$", size = 14)
-    fig1.colorbar(surf, shrink=0.5, aspect=5)
-    fig1.savefig(figurename1)
-    plt.close()
-
-
-
-
-    #Plots the analytical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
-    xx = np.linspace(0,1,41)
-    yy = np.linspace(0,1,41)
-    X,Y = np.meshgrid(xx,yy)
-    Z = exact_2D(X, Y,t = 0.0075, terms = 100)
-    ax2 = plt.axes(projection='3d')
-    surf = ax2.contour3D(X, Y, Z, 98)
-    ax2.set_zlim(0, 1)
-    ax2.set_title("Time = {0}, r = 0.25".format(t))
-    ax2.set_xlabel("x", size = 14)
-    ax2.set_ylabel("y", size = 14)
-    ax2.set_zlabel(r"$u(x,y,t_0)$", size = 14)
-    fig2.colorbar(surf, shrink=0.5, aspect=5)
-    fig2.savefig(figurename2)
-    plt.close()
-    """
 
     #Plots the numerical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
     X,Y = np.meshgrid(x,y)
