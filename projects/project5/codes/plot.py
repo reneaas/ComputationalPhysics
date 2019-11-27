@@ -8,6 +8,7 @@ plt.rc("text", usetex = True)
 d = int(input("d? \n"))
 
 if d == 1:
+
     def exact_1D(x, t, N = 1000):
         """
         Analytical solution in the 1D-case.
@@ -18,31 +19,92 @@ if d == 1:
         sum *= 2/np.pi
         return sum + x
 
-    dx = float(input("Give dx: [0.1 or 0.01] \n"))
-    time = int(input("Initial time [type 1] or steady state [type 2]: \n"))
-    xx = np.linspace(dx,1-dx,1001)
+
+
+    fig1 = plt.figure(); figurename1 = "dx_0.1_time_1.pdf"
+    fig2 = plt.figure(); figurename2 = "dx_0.1_time_2.pdf"
+    fig3 = plt.figure(); figurename3 = "dx_0.01_time_1.pdf"
+    fig4 = plt.figure(); figurename4 = "dx_0.01_time_2.pdf"
+
+    ax1 = fig1.add_subplot(111)
+    ax2 = fig2.add_subplot(111)
+    ax3 = fig3.add_subplot(111)
+    ax4 = fig4.add_subplot(111)
 
 
     methods = ["explicit", "implicit", "CN"]
     path = "results/1D/"
 
+    dx = [0.1, 0.01]
 
-    for method in methods:
-        x = []
-        u = []
-        infilename = str(method) + "_dx_" + str(dx) + "_time_" + str(time) + ".txt"
-        with open(path + infilename, "r") as infile:
-            t = float(infile.readline().split()[0])
-            lines = infile.readlines()
-            for line in lines:
-                values = line.split()
-                x.append(float(values[0]))
-                u.append(float(values[1]))
+    dx1 = {}
+    dx2 = {}
+    t = []
 
-        plt.plot(x,u, label = str(method))
-    plt.plot(xx, exact_1D(xx, t), "--", label = "exact")
-    plt.legend()
-    plt.show()
+    for i in range(len(dx)):
+        for j in range(1,3):
+            for method in methods:
+                x = []
+                u = []
+                infilename = method + "_dx_" + str(dx[i]) + "_time_" + str(j) + ".txt"
+                with open(path + infilename, "r") as infile:
+                    t.append(float(infile.readline().split()[0]))
+                    lines = infile.readlines()
+                    for line in lines:
+                        values = line.split()
+                        x.append(float(values[0]))
+                        u.append(float(values[1]))
+                if i == 0:
+                    dx1["x_" + method + "_time_{0}".format(j)] = x
+                    dx1["u_" + method + "_time_{0}".format(j)] = u
+                else:
+                    dx2["x_" + method + "_time_{0}".format(j)] = x
+                    dx2["u_" + method + "_time_{0}".format(j)] = u
+
+    time = t[::3]
+    x1 = np.linspace(dx[0],1-dx[0],1001)
+    x2 = np.linspace(dx[1],1-dx[1],1001)
+
+    for i in range(3):
+        ax1.plot(dx1["x_" + methods[i] + "_time_1"], dx1["u_" + methods[i] + "_time_1"], label = methods[i])
+        ax1.set_xlabel("$x$", size = 14)
+        ax1.set_ylabel("$u(x,t)$")
+        ax1.tick_params(labelsize = 15)
+
+        ax2.plot(dx1["x_" + methods[i] + "_time_2"], dx1["u_" + methods[i] + "_time_2"], label = methods[i])
+        ax2.set_xlabel("$x$", size = 14)
+        ax2.set_ylabel("$u(x,t)$")
+        ax2.tick_params(labelsize = 15)
+
+        ax3.plot(dx2["x_" + methods[i] + "_time_1"], dx2["u_" + methods[i] + "_time_1"], label = methods[i])
+        ax3.set_xlabel("$x$", size = 14)
+        ax3.set_ylabel("$u(x,t)$")
+        ax3.tick_params(labelsize = 15)
+
+        ax4.plot(dx2["x_" + methods[i] + "_time_2"], dx2["u_" + methods[i] + "_time_2"], label = methods[i])
+        ax4.set_xlabel("$x$", size = 14)
+        ax4.set_ylabel("$u(x,t)$")
+        ax4.tick_params(labelsize = 15)
+
+    ax1.plot(x1, exact_1D(x1,time[0]), "--", label = "exact")
+    ax1.legend(fontsize = 12)
+    fig1.savefig(figurename1)
+
+    ax2.plot(x1, exact_1D(x1,time[1]), "--", label = "exact")
+    ax2.legend(fontsize = 12)
+    fig2.savefig(figurename2)
+
+    ax3.plot(x2, exact_1D(x2,time[2]), "--", label = "exact")
+    ax3.legend(fontsize = 12)
+    fig3.savefig(figurename3)
+
+    ax4.plot(x2, exact_1D(x2,time[3]), "--", label = "exact")
+    ax4.legend(fontsize = 12)
+    fig4.savefig(figurename4)
+
+
+    os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + figurename4 + " " + path)
+
 
 if d == 2:
     def exact_2D(x, y, t, terms = 1001, a = 0, b = 1):
