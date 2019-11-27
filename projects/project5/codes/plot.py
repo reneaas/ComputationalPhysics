@@ -65,25 +65,27 @@ if d == 1:
     x1 = np.linspace(dx[0],1-dx[0],1001)
     x2 = np.linspace(dx[1],1-dx[1],1001)
 
+
+
     for i in range(3):
         ax1.plot(dx1["x_" + methods[i] + "_time_1"], dx1["u_" + methods[i] + "_time_1"], label = methods[i])
         ax1.set_xlabel("$x$", size = 14)
-        ax1.set_ylabel("$u(x,t)$")
+        ax1.set_ylabel("$u(x,t)$", size = 14)
         ax1.tick_params(labelsize = 15)
 
         ax2.plot(dx1["x_" + methods[i] + "_time_2"], dx1["u_" + methods[i] + "_time_2"], label = methods[i])
         ax2.set_xlabel("$x$", size = 14)
-        ax2.set_ylabel("$u(x,t)$")
+        ax2.set_ylabel("$u(x,t)$", size = 14)
         ax2.tick_params(labelsize = 15)
 
         ax3.plot(dx2["x_" + methods[i] + "_time_1"], dx2["u_" + methods[i] + "_time_1"], label = methods[i])
         ax3.set_xlabel("$x$", size = 14)
-        ax3.set_ylabel("$u(x,t)$")
+        ax3.set_ylabel("$u(x,t)$", size = 14)
         ax3.tick_params(labelsize = 15)
 
         ax4.plot(dx2["x_" + methods[i] + "_time_2"], dx2["u_" + methods[i] + "_time_2"], label = methods[i])
         ax4.set_xlabel("$x$", size = 14)
-        ax4.set_ylabel("$u(x,t)$")
+        ax4.set_ylabel("$u(x,t)$", size = 14)
         ax4.tick_params(labelsize = 15)
 
     ax1.plot(x1, exact_1D(x1,time[0]), "--", label = "exact")
@@ -93,12 +95,12 @@ if d == 1:
 
     ax2.plot(x1, exact_1D(x1,time[1]), "--", label = "exact")
     ax2.legend(fontsize = 12)
-    ax1.set_title("Time = {0}, r = 0.5".format(time[1]))
+    ax2.set_title("Time = {0}, r = 0.5".format(time[1]))
     fig2.savefig(figurename2)
 
     ax3.plot(x2, exact_1D(x2,time[2]), "--", label = "exact")
     ax3.legend(fontsize = 12)
-    ax3.set_title("Time = {0}, r = 0.5".format([2]))
+    ax3.set_title("Time = {0}, r = 0.5".format(time[2]))
     fig3.savefig(figurename3)
 
     ax4.plot(x2, exact_1D(x2,time[3]), "--", label = "exact")

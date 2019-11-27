@@ -9,21 +9,14 @@
 using namespace std;
 
 //Algorithm for forward Euler method
-void Explicit_scheme_1D(double **v , double r, int gridpoints, int timesteps){
+void Explicit_scheme_1D(double *v_new, double *v_old , double r, int gridpoints, double dt, double total_time, double &t){
 
-  for (int m = 0; m < timesteps-1; m++){
-    for (int j = 0; j < gridpoints; j++){
-      if (j == 0){
-        v[m+1][j] = (1-2*r)*v[m][j] + r*v[m][j+1];
-      }
-      else if (j == gridpoints - 1){
-        v[m+1][j] = (1-2*r)*v[m][j] + r*v[m][j-1];
-      }
-      else{
-        v[m+1][j] = (1-2*r)*v[m][j] + r*(v[m][j+1] + v[m][j-1]);
-      }
-
+  while (t < total_time){
+    for (int j = 1; j < gridpoints-1; j++){
+      v_new[j] = (1-2*r)*v_old[j] + r*(v_old[j+1] + v_old[j-1]);
     }
+    for (int k = 0; k < gridpoints; k++) v_old[k] = v_new[k];
+    t += dt;
   }
 }
 
@@ -50,14 +43,13 @@ void Back_substitution(double* x, double* b, double* c, double* y, int n){
 }
 
 //Algorithm for forward Euler method in 2D
-void  Explicit_scheme_2D(double ***v, double r, int gridpoints, int timesteps){
-  cout << "Nå er vi inne i Explicit Scheme" << endl;
-  cout << timesteps << endl;
-  for (int m = 0; m < timesteps-1; m++){
+void  Explicit_scheme_2D(double **v_new, double **v_old, double r, int gridpoints, double dt, double total_time, double& t){
+  while (t < total_time){
     for (int i = 1; i < gridpoints-1; i++){
       for (int j = 1; j < gridpoints-1; j++){
-          v[m+1][i][j] = (1-4*r)*v[m][i][j] + r*(v[m][i+1][j] + v[m][i-1][j] + v[m][i][j+1] + v[m][i][j-1]);
+          v_new[i][j] = (1-4*r)*v_old[i][j] + r*(v_old[i+1][j] + v_old[i-1][j] + v_old[i][j+1] + v_old[i][j-1]);
         }
       }
+      t += dt;
     }
   }
