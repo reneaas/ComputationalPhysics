@@ -45,7 +45,7 @@ int main(int nargs, char* args[]){
 
     }
     else{
-      gridpoints = int((end_x - start_x)/dx - 1);
+      gridpoints = (int) ((end_x - start_x)/dx - 1);
       x = new double[gridpoints];
       for (int i = 0; i < gridpoints; i++) x[i] = dx*(i+1);           //Position array.
     }
@@ -113,9 +113,11 @@ int main(int nargs, char* args[]){
       cout << "Writing to file for t = " << t << endl;
       ofile.open(outfilename);
       ofile << t << endl;
+      ofile << 0.0 << " " <<  0.0 << endl;                                    //writes boundary condition at x = 0: u(0,t) = 0
       for (int i = 0; i < gridpoints; i++){
         ofile << x[i] << " " << v_new[i] << endl;
       }
+      ofile << 1.0 << " " << 1.0 << endl;                                    //Writes the boundary condition at x = 1: u(1,t) = 1
       ofile.close();
     }
 
@@ -161,9 +163,11 @@ int main(int nargs, char* args[]){
       cout << "Writing to file for t = " << t << endl;
       ofile.open(outfilename);
       ofile << t << endl;
+      ofile << 0.0 << " " << 0.0 << endl;                                    //writes boundary condition at x = 0: u(0,t) = 0
       for (int i = 0; i < gridpoints; i++){
         ofile << x[i] << " " << v_new[i] << endl;
       }
+      ofile << 1.0 << " " << 1.0 << endl;                                    //Writes the boundary condition at x = 1: u(1,t) = 1
       ofile.close();
     }
   }
