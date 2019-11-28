@@ -287,12 +287,13 @@ if d == 4:
         #U = np.transpose(U)
         U = U
 
-        plt.contourf(X, T, U, levels = 100, cmap = "inferno")
-        plt.xlabel("$x$", size = 16)
-        plt.ylabel("$t$", size = 16)
+        plt.contourf(X, T, U, levels = 100, cmap = "inferno")       #The best colormap, like plasma even compares..
+        plt.xlabel("$x$", size = 18)
+        plt.ylabel("$t$", size = 18)
         plt.xticks(size = 14); plt.yticks(size = 14)
-        plt.colorbar().set_label("$u(x,t)$", size = 16)
-        plt.colorbar().tick_params(labelsize = 14)
+        cbar = plt.colorbar()                                       #Defines a colobar object
+        cbar.set_label("$u(x,t)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
+        cbar.ax.tick_params(labelsize = 16)                         #Fixes the tick size on the colorbar
         plt.show()
 
 
