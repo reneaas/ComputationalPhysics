@@ -31,7 +31,7 @@ if d == 1:   #1D case
         os.makedirs(path)
 
     dx = [0.1, 0.01]
-    total_time = [0.02, 0.085]
+    total_time = [0.02, 1]
     r = 0.5
     for method in methods:
         print("Running method: " + method)
@@ -50,7 +50,7 @@ if d == 1:   #1D case
                     os.system("./main.exe" + " " + str(d) + " " + str(i) + " " + method + " " + outfilename + " " + str(total_time[t]) + " " + str(r))
                     os.system("mv" + " " + outfilename + " " + path)
 
-
+    os.system("mv contour_data.txt" + " " + path)
 if d == 2:   #2D case
     path = "results/2D/"
     if not os.path.exists(path):

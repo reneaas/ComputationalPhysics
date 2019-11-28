@@ -125,6 +125,9 @@ int main(int nargs, char* args[]){
     if (method == "CN"){
       double *a, *b, *c, *q;
       double alpha, beta, gamma, rho;
+      string outfilename2;
+      outfilename2 = "contour_data.txt";
+
       a = new double[gridpoints];
       b = new double[gridpoints];
       c = new double[gridpoints];
@@ -133,7 +136,11 @@ int main(int nargs, char* args[]){
 
       //Hardcode variables
       alpha = rho; beta = 1 - 2*rho; gamma = rho;
+      ofile.open(outfilename2);
       while (t < total_time){
+        ofile << t << " ";
+        for (int k = 0; k < gridpoints; k++) ofile << v_old[k]+x[k] << " ";
+        ofile << endl;
         for (int i = 0; i < gridpoints; i++){
             a[i] = -rho;
             b[i] = 1.0 + 2*rho;
@@ -152,10 +159,13 @@ int main(int nargs, char* args[]){
         Forward_substitution(a, b, c, q, gridpoints);
         Back_substitution(v_new, b, c, q, gridpoints);
 
+
         for (int k = 0; k < gridpoints; k++) v_old[k] = v_new[k];
+
+
         t += dt;
       }
-
+      ofile.close();
       for (int j = 0; j < gridpoints; j++){
         v_new[j] += x[j];
       }

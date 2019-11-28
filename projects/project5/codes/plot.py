@@ -117,7 +117,6 @@ if d == 1:
 
     os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + figurename4 + " " + path)
 
-
 if d == 2:
     def exact_2D(x, y, t, terms = 1001, a = 0, b = 1):
         """
@@ -266,3 +265,37 @@ if d == 3:
     ax3.set_title("Crank-Nicolson, for t = 0.02", size = 18)
     ax3.tick_params(labelsize = 16)
     fig3.savefig(figurename3)
+
+if d == 4:
+    path = "results/1D/contour_data.txt"
+    dx = 0.01
+    t = []
+    with open(path, "r") as infile:
+        lines = infile.readlines()
+        gridpoints = len(lines[0].split())-1
+        timesteps = len(lines)
+        U = np.zeros((timesteps,gridpoints))
+        for i in range(len(lines)):
+            values = lines[i].split()
+            t.append(float(values[0]))
+            del values[0]
+            U[i,:] = np.array([float(value) for value in values])
+
+        x = [(1+i)*dx for i in range(gridpoints)]
+        x = np.array(x); t = np.array(t)
+        X, T = np.meshgrid(x, t)
+        #U = np.transpose(U)
+        U = U
+
+        plt.contourf(X, T, U, levels = 100, cmap = "inferno")
+        plt.xlabel("$x$", size = 16)
+        plt.ylabel("$t$", size = 16)
+        plt.xticks(size = 14); plt.yticks(size = 14)
+        plt.colorbar().set_label("$u(x,t)$", size = 16)
+        plt.colorbar().tick_params(labelsize = 14)
+        plt.show()
+
+
+
+
+        #
