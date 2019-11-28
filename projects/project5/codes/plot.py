@@ -5,21 +5,27 @@ import os
 from mpl_toolkits import mplot3d
 plt.rc("text", usetex = True)
 
-d = int(input("d? \n"))
+print("__________________________________________")
+print("Which part would you like to plot?")
+print("1-dimensional schemes          --> Type 1")
+print("2-dimensional scheme           --> Type 2")
+print("Stability analysis for 1D-case --> Type 3")
+print("__________________________________________")
+
+d = int(input())
+
+def exact_1D(x, t, N = 1000):
+    """
+    Analytical solution in the 1D-case.
+    """
+    sum = 0
+    for i in range(1,N+1):
+        sum += ((-1)**i)/i * np.sin(i*np.pi*x)*np.exp(-(i*np.pi)**2 * t)
+    sum *= 2/np.pi
+    return sum + x
+
 
 if d == 1:
-
-    def exact_1D(x, t, N = 1000):
-        """
-        Analytical solution in the 1D-case.
-        """
-        sum = 0
-        for i in range(1,N+1):
-            sum += ((-1)**i)/i * np.sin(i*np.pi*x)*np.exp(-(i*np.pi)**2 * t)
-        sum *= 2/np.pi
-        return sum + x
-
-
 
     fig1 = plt.figure(); figurename1 = "dx_0.1_time_1.pdf"
     fig2 = plt.figure(); figurename2 = "dx_0.1_time_2.pdf"
@@ -192,3 +198,71 @@ if d == 2:
 
     path = "results/2D/"
     os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + path)
+
+if d == 3:
+
+    path = "results/1D/Stability/"
+
+    fig1 = plt.figure(); figurename1 = "explicit_stability.pdf"
+    fig2 = plt.figure(); figurename2 = "implicit_stability.pdf"
+    fig3 = plt.figure(); figurename3 = "CN_stability.pdf"
+
+    ax1 = fig1.add_subplot(111)
+    ax2 = fig2.add_subplot(111)
+    ax3 = fig3.add_subplot(111)
+
+    r = [0.5, 0.505]
+    methods = ["explicit", "implicit", "CN"]
+    style = [":", "-"]
+    color = ["k", "darkred"]
+
+    for method in methods:
+        for R in range(len(r)):
+            x = []
+            u = []
+            infilename = method + "_r_" + str(r[R]) + "_tot_time_0.02.txt"
+            with open(path + infilename) as infile:
+                infile.readline()
+                lines = infile.readlines()
+                for line in lines:
+                    values = line.split()
+                    x.append(float(values[0]))
+                    u.append(float(values[1]))
+            if method == methods[0]:
+                if R == 0:
+                    ax1.plot(x,u, label = "r = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]))
+                else:
+                    ax1.plot(x,u, label = "r = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]), alpha = 0.5)
+            elif method == methods[1]:
+                if R == 0:
+                    ax2.plot(x,u, label = "r = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]))
+                else:
+                    ax2.plot(x,u, label = "r = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]), alpha = 0.5)
+            else:
+                if R == 0:
+                    ax3.plot(x,u, label = "r = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]))
+                else:
+                    ax3.plot(x,u, label = "r = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]), alpha = 0.5)
+
+
+
+    ax1.set_xlabel("$x$", size = 18)
+    ax1.set_ylabel("$u(x,t)$", size = 18)
+    ax1.legend(fontsize = 16)
+    ax1.set_title("Explicit scheme, for t = 0.02", size = 18)
+    ax1.tick_params(labelsize = 16)
+    fig1.savefig(figurename1)
+
+    ax2.set_xlabel("$x$", size = 18)
+    ax2.set_ylabel("$u(x,t)$", size = 18)
+    ax2.legend(fontsize = 16)
+    ax2.set_title("Implicit scheme, for t = 0.02", size = 18)
+    ax2.tick_params(labelsize = 16)
+    fig2.savefig(figurename2)
+
+    ax3.set_xlabel("$x$", size = 18)
+    ax3.set_ylabel("$u(x,t)$", size = 18)
+    ax3.legend(fontsize = 16)
+    ax3.set_title("Crank-Nicolson, for t = 0.02", size = 18)
+    ax3.tick_params(labelsize = 16)
+    fig3.savefig(figurename3)

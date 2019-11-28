@@ -2,9 +2,14 @@ import numpy as np
 import os
 import sys
 
+print("__________________________________________")
+print("Which part would you like to run?")
+print("1-dimensional schemes          --> Type 1")
+print("2-dimensional scheme           --> Type 2")
+print("Stability analysis for 1D-case --> Type 3")
+print("__________________________________________")
 
-
-d = int(input("d? \n"))
+d = int(input())
 methods = ["explicit", "implicit", "CN"]
 
 if d != 22:
@@ -59,3 +64,18 @@ if d == 2:   #2D case
 
 if d == 22:   #MPI dritt som ikke funker
     os.system("mpirun -np 2 ./main_mpi.exe")
+
+if d == 3:    #Stability analysis
+    path = "results/1D/Stability"
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    d = "1"
+    dx = 0.01
+    total_time = 0.02
+    r = [0.5, 0.505]
+    for R in r:
+        for method in methods:
+            outfilename = str(method) + "_r_" + str(R) + "_tot_time_" + str(total_time) + ".txt"
+            os.system("./main.exe" + " " + d + " " + str(dx) + " " + method + " " + outfilename + " " + str(total_time) + " " + str(R))
+            os.system("mv" + " " + outfilename + " " + path)
