@@ -190,7 +190,7 @@ int main(int nargs, char* args[]){
     double r, t, dt, h, total_time;
     double start_x, end_x;
     string method, outfilename;
-    double a,b;
+    double a,b, sigma, A;
 
     a = 0.; b = 1;
 
@@ -207,6 +207,10 @@ int main(int nargs, char* args[]){
     r = 0.25;
     dt = r*h*h;
     gridpoints = int((end_x - start_x)/h + 1);
+    sigma = 0.5;
+    A = 0.0;
+    total_time = 1;
+
 
     //Initiate empty solution matrix.
     v_new = new double*[gridpoints];
@@ -233,23 +237,40 @@ int main(int nargs, char* args[]){
       y[i] = h*(i);                                             //Position array y-direction
     }
 
-
+    /*
     //Initial condition
     for (int i = 1; i < gridpoints-1; i++){
       for (int j = 1; j < gridpoints-1; j++){
         v_old[i][j] = (a-b)*y[j] - a;
       }
     }
+    */
+
+    //initial condition
+    for (int i = 1; i < gridpoints - 1 ; i++){
+      for (int j = 1; j < gridpoints -1; j++){
+        v_old[i][j] = exp(-(abs(x[i]-0.5) + abs(y[j]-0.5))/sigma);
+      }
+    }
+
 
 
     Explicit_scheme_2D(v_new, v_old, r, gridpoints, dt, total_time, t);
 
-
+    /*
     for (int i = 0; i < gridpoints; i++){
       for (int j = 0; j < gridpoints; j++){
         v_new[i][j] += (b-a)*y[j] + a;
       }
     }
+    */
+
+    for (int i = 0; i < gridpoints; i++){
+      for (int j = 0; j < gridpoints; j++){
+        v_new[i][j] += A;
+      }
+    }
+
 
 
 

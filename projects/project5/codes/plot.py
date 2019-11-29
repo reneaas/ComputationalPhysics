@@ -5,12 +5,13 @@ import os
 from mpl_toolkits import mplot3d
 plt.rc("text", usetex = True)
 
-print("__________________________________________")
+print("______________________________________________________")
 print("Which part would you like to plot?")
-print("1-dimensional schemes          --> Type 1")
-print("2-dimensional scheme           --> Type 2")
-print("Stability analysis for 1D-case --> Type 3")
-print("__________________________________________")
+print("1-dimensional schemes                    --> Type 1")
+print("2-dimensional scheme                     --> Type 2")
+print("Stability analysis for 1D-schemes        --> Type 3")
+print("Contour plot for Crank-Nicolson scheme   --> Type 4")
+print("______________________________________________________")
 
 d = int(input())
 
@@ -23,6 +24,24 @@ def exact_1D(x, t, N = 1000):
         sum += ((-1)**i)/i * np.sin(i*np.pi*x)*np.exp(-(i*np.pi)**2 * t)
     sum *= 2/np.pi
     return sum + x
+
+
+
+def Coolfunc(x,y):
+    return np.exp((-abs((x-0.5)) - abs((y-0.5)))/0.001)
+
+x = np.linspace(0,1,41)
+X,Y = np.meshgrid(x,x)
+Z = Coolfunc(X,Y)
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+surf = ax.contour3D(X, Y, Z, 98)
+ax.set_zlim(0, 1)
+ax.set_xlabel("$x$", size = 14)
+ax.set_ylabel("$y$", size = 14)
+ax.set_zlabel(r"$u(x,y,t_0)$", size = 14)
+plt.show()
+
 
 
 if d == 1:
@@ -187,7 +206,7 @@ if d == 2:
     #Plots a contour plot of the numerical solution z = u(x,y,t) for a specific time t.
     figurename3 = "contour_2D.pdf"
 
-    plt.contourf(x,y,u)
+    plt.contourf(x,y,u, levels = 100, cmap = "inferno")
     plt.xlabel("$x$", fontsize = 14)
     plt.title(("Time = {0}, r = 0.25".format(t)), fontsize = 14)
     plt.ylabel("$y$", fontsize = 14)
@@ -267,10 +286,12 @@ if d == 3:
     fig3.savefig(figurename3)
 
 if d == 4:
-    path = "results/1D/contour_data.txt"
+    path = "results/1D/"
+    infilename = "contour_data.txt"
+    figurename = "contour_1D.pdf"
     dx = 0.01
     t = []
-    with open(path, "r") as infile:
+    with open(path + infilename, "r") as infile:
         lines = infile.readlines()
         gridpoints = len(lines[0].split())-1
         timesteps = len(lines)
@@ -294,9 +315,6 @@ if d == 4:
         cbar = plt.colorbar()                                       #Defines a colobar object
         cbar.set_label("$u(x,t)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
         cbar.ax.tick_params(labelsize = 16)                         #Fixes the tick size on the colorbar
-        plt.show()
+        plt.savefig(figurename)
 
-
-
-
-        #
+        os.system("mv" + " " + figurename + " " + path)
