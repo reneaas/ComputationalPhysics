@@ -136,7 +136,7 @@ int main(int nargs, char* args[]){
 
       //Hardcode variables
       alpha = rho; beta = 1 - 2*rho; gamma = rho;
-      ofile.open(outfilename2);,
+      ofile.open(outfilename2);
       while (t < total_time){
         ofile << t << " ";
         for (int k = 0; k < gridpoints; k++) ofile << v_old[k]+x[k] << " ";

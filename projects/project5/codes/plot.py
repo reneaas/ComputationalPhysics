@@ -25,7 +25,7 @@ def exact_1D(x, t, terms = 1001):
     sum *= 2/np.pi
     return sum + x
 
-def exact_2D(x, y ,t = 0.01, terms = 1001, alpha = 20, A = 0.0):
+def exact_2D(x, y ,t = 0.0, terms = 100, alpha = 20, A = 0.0):
     S = 0
     for n in range(1,terms+1):
         for m in range(1,terms+1):
@@ -39,8 +39,6 @@ def exact_2D(x, y ,t = 0.01, terms = 1001, alpha = 20, A = 0.0):
             k = (n+m)*np.pi
             S += coeff*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-k**2*t)
     return S
-
-
 
 if d == 1:
 
@@ -148,22 +146,6 @@ if d == 2:
                 s += coeff*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-t*(n**2 + m**2)*np.pi**2)
         return s + (b-a)*y + a;
 
-
-
-    def exact_2D_kasp(x,y,t=1, terms = 100, alpha = 2, A = 0.0):
-        s = 0
-        for n in range(1,terms+1):
-            for m in range(1,terms+1):
-                Ix = (2*alpha*np.sin(n*np.pi/2) + (n*np.pi)*(alpha/2 - (-1)**n))/(alpha**2 + (n*np.pi)**2)
-                Iy = (2*alpha*np.sin(m*np.pi/2) + (m*np.pi)*(alpha/2 - (-1)**m))/(alpha**2 + (m*np.pi)**2)
-                s += 4*Ix*Iy*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-(m**2 + n**2)*np.pi**2*t)
-
-        s += A
-        return s
-
-
-
-
     infilename = "results/2D/2D_Results.txt"
     with open(infilename, "r") as infile:
         t = float(infile.readline().split()[0])
@@ -200,8 +182,8 @@ if d == 2:
     plt.show()
 
     #Plots the analytical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
-    xx = np.linspace(0,1,41)
-    yy = np.linspace(0,1,41)
+    xx = np.array(x)
+    yy = np.array(y)
     X,Y = np.meshgrid(xx,yy)
     Z = exact_2D(X, Y)
     fig = plt.figure()

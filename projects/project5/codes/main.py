@@ -57,7 +57,7 @@ if d == 2:   #2D case
         os.makedirs(path)
     h = 0.01
     outfilename = "2D_Results.txt"
-    total_time = 0.01
+    total_time = 0.005
     r = 0.25
     os.system("./main.exe" + " " + str(d) + " " + str(h) + " " + outfilename + " " + str(total_time) + " " + str(r))
     os.system("mv" + " " + outfilename +" "+ path)
