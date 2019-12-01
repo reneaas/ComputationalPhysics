@@ -50,6 +50,11 @@ void  Explicit_scheme_2D(double **v_new, double **v_old, double r, int gridpoint
           v_new[i][j] = (1-4*r)*v_old[i][j] + r*(v_old[i+1][j] + v_old[i-1][j] + v_old[i][j+1] + v_old[i][j-1]);
         }
       }
+      for (int i = 0; i < gridpoints; i++){
+        for (int j = 0; j < gridpoints; j++){
+          v_old[i][j] = v_new[i][j];
+        }
+      }
       t += dt;
     }
   }

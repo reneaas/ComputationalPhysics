@@ -15,32 +15,30 @@ print("______________________________________________________")
 
 d = int(input())
 
-def exact_1D(x, t, N = 1000):
+def exact_1D(x, t, terms = 1001):
     """
     Analytical solution in the 1D-case.
     """
     sum = 0
-    for i in range(1,N+1):
+    for i in range(1,terms+1):
         sum += ((-1)**i)/i * np.sin(i*np.pi*x)*np.exp(-(i*np.pi)**2 * t)
     sum *= 2/np.pi
     return sum + x
 
-
-
-def Coolfunc(x,y):
-    return np.exp((-abs((x-0.5)) - abs((y-0.5)))/0.001)
-
-x = np.linspace(0,1,41)
-X,Y = np.meshgrid(x,x)
-Z = Coolfunc(X,Y)
-fig = plt.figure()
-ax = plt.axes(projection='3d')
-surf = ax.contour3D(X, Y, Z, 98)
-ax.set_zlim(0, 1)
-ax.set_xlabel("$x$", size = 14)
-ax.set_ylabel("$y$", size = 14)
-ax.set_zlabel(r"$u(x,y,t_0)$", size = 14)
-plt.show()
+def exact_2D(x, y ,t = 0.01, terms = 1001, alpha = 20, A = 0.0):
+    S = 0
+    for n in range(1,terms+1):
+        for m in range(1,terms+1):
+            denom_n = alpha**2 + (n*np.pi)**2
+            denom_m = alpha**2 + (m*np.pi)**2
+            I_n = 2*alpha*np.sin(n*np.pi/2) + n*np.pi*np.exp(-alpha/2)*(1-(-1)**n)
+            I_n = I_n/denom_n
+            I_m = 2*alpha*np.sin(m*np.pi/2) + m*np.pi*np.exp(-alpha/2)*(1-(-1)**m)
+            I_m = I_m/denom_m
+            coeff = 4*I_n*I_m
+            k = (n+m)*np.pi
+            S += coeff*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-k**2*t)
+    return S
 
 
 
@@ -137,7 +135,8 @@ if d == 1:
     os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + figurename4 + " " + path)
 
 if d == 2:
-    def exact_2D(x, y, t, terms = 1001, a = 0, b = 1):
+
+    def exact_2D_old(x, y, t, terms = 101, a = 0, b = 1):
         """
         Analytic solution in the 2D-case.
         """
@@ -148,6 +147,21 @@ if d == 2:
                         - 4*a/(n*m*np.pi**2)*(1 - (-1)**m)*(1 - (-1)**n);
                 s += coeff*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-t*(n**2 + m**2)*np.pi**2)
         return s + (b-a)*y + a;
+
+
+
+    def exact_2D_kasp(x,y,t=1, terms = 100, alpha = 2, A = 0.0):
+        s = 0
+        for n in range(1,terms+1):
+            for m in range(1,terms+1):
+                Ix = (2*alpha*np.sin(n*np.pi/2) + (n*np.pi)*(alpha/2 - (-1)**n))/(alpha**2 + (n*np.pi)**2)
+                Iy = (2*alpha*np.sin(m*np.pi/2) + (m*np.pi)*(alpha/2 - (-1)**m))/(alpha**2 + (m*np.pi)**2)
+                s += 4*Ix*Iy*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-(m**2 + n**2)*np.pi**2*t)
+
+        s += A
+        return s
+
+
 
 
     infilename = "results/2D/2D_Results.txt"
@@ -183,13 +197,13 @@ if d == 2:
     ax.set_zlabel(r"$u(x,y,t_0)$", size = 14)
     fig.colorbar(surf, shrink=0.5, aspect=5)
     fig.savefig(figurename1)
-    plt.close()
+    plt.show()
 
     #Plots the analytical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
     xx = np.linspace(0,1,41)
     yy = np.linspace(0,1,41)
     X,Y = np.meshgrid(xx,yy)
-    Z = exact_2D(X, Y,t = 0.0075, terms = 100)
+    Z = exact_2D(X, Y)
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     surf = ax.contour3D(X, Y, Z, 98)
@@ -210,12 +224,28 @@ if d == 2:
     plt.xlabel("$x$", fontsize = 14)
     plt.title(("Time = {0}, r = 0.25".format(t)), fontsize = 14)
     plt.ylabel("$y$", fontsize = 14)
-    plt.colorbar().set_label("$u(x,y,t_0)$", size = 14)
+    cbar = plt.colorbar()                                       #Defines a colobar object
+    cbar.set_label("$u(x,y,t_0)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
+    cbar.ax.tick_params(labelsize = 16)                         #Fixes the tick size on the colorbar
     plt.savefig(figurename3)
+    plt.close()
+
+    #contour plot of the analytical solution
+    figurename4 = "contour_2D_analytical.pdf"
+    plt.contourf(X,Y,Z, levels = 100, cmap = "inferno")
+    plt.xlabel("$x$", fontsize = 14)
+    #plt.title(("Time = {0}, r = 0.25".format(t)), fontsize = 14)
+    plt.ylabel("$y$", fontsize = 14)
+    cbar = plt.colorbar()                                       #Defines a colobar object
+    cbar.set_label("$u(x,y,t_0)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
+    cbar.ax.tick_params(labelsize = 16)                         #Fixes the tick size on the colorbar
+    plt.savefig(figurename4)
+    plt.close()
+
 
 
     path = "results/2D/"
-    os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + path)
+    os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + figurename4 + " " + path)
 
 if d == 3:
 
@@ -306,7 +336,7 @@ if d == 4:
         x = np.array(x); t = np.array(t)
         X, T = np.meshgrid(x, t)
         #U = np.transpose(U)
-        U = U
+        #U = U
 
         plt.contourf(X, T, U, levels = 100, cmap = "inferno")       #The best colormap, like plasma even compares..
         plt.xlabel("$x$", size = 18)
@@ -318,3 +348,19 @@ if d == 4:
         plt.savefig(figurename)
 
         os.system("mv" + " " + figurename + " " + path)
+    plt.close()
+    #Plots the analytical solution with a contour plot:
+    figurename = "contour_1D_analytical.pdf"
+    x = np.linspace(0,1,41)
+    t = np.linspace(0,1,41)
+    X, T = np.meshgrid(x,t)
+    Z = exact_1D(X, T, terms = 1001)
+    plt.contourf(X, T, Z, levels = 100, cmap = "inferno")       #The best colormap, like plasma even compares..
+    plt.xlabel("$x$", size = 18)
+    plt.ylabel("$t$", size = 18)
+    plt.xticks(size = 14); plt.yticks(size = 14)
+    cbar = plt.colorbar()                                       #Defines a colobar object
+    cbar.set_label("$u(x,t)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
+    cbar.ax.tick_params(labelsize = 16)                         #Fixes the tick size on the colorbar
+    plt.savefig(figurename)
+    os.system("mv" + " " + figurename + " " + path)

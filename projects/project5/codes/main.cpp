@@ -136,7 +136,7 @@ int main(int nargs, char* args[]){
 
       //Hardcode variables
       alpha = rho; beta = 1 - 2*rho; gamma = rho;
-      ofile.open(outfilename2);
+      ofile.open(outfilename2);,
       while (t < total_time){
         ofile << t << " ";
         for (int k = 0; k < gridpoints; k++) ofile << v_old[k]+x[k] << " ";
@@ -190,7 +190,7 @@ int main(int nargs, char* args[]){
     double r, t, dt, h, total_time;
     double start_x, end_x;
     string method, outfilename;
-    double a,b, sigma, A;
+    double a,b, alpha, A;
 
     a = 0.; b = 1;
 
@@ -204,12 +204,11 @@ int main(int nargs, char* args[]){
     //Hardcode variables.
     start_x = 0.;
     end_x = 1.;
-    r = 0.25;
+    r = 0.1;
     dt = r*h*h;
-    gridpoints = int((end_x - start_x)/h + 1);
-    sigma = 0.5;
+    gridpoints = (int) ((end_x - start_x)/h) + 1;
+    alpha = 20;
     A = 0.0;
-    total_time = 1;
 
 
     //Initiate empty solution matrix.
@@ -246,12 +245,15 @@ int main(int nargs, char* args[]){
     }
     */
 
+
     //initial condition
     for (int i = 1; i < gridpoints - 1 ; i++){
       for (int j = 1; j < gridpoints -1; j++){
-        v_old[i][j] = exp(-(abs(x[i]-0.5) + abs(y[j]-0.5))/sigma);
+        v_old[i][j] = exp(-alpha*(fabs(x[i]-0.5) + fabs(y[j]-0.5)));
+        //v_old[i][j] = exp(-alpha*((x[i]-0.5)*(x[i]-0.5) + (y[j]-0.5)*(y[j]-0.5)));
       }
     }
+
 
 
 
@@ -265,8 +267,9 @@ int main(int nargs, char* args[]){
     }
     */
 
-    for (int i = 0; i < gridpoints; i++){
-      for (int j = 0; j < gridpoints; j++){
+
+    for (int i = 1; i < gridpoints-1; i++){
+      for (int j = 1; j < gridpoints-1; j++){
         v_new[i][j] += A;
       }
     }
