@@ -324,7 +324,7 @@ if d == 4:
         plt.xlabel("$x$", size = 18)
         plt.ylabel("$t$", size = 18)
         plt.xticks(size = 14); plt.yticks(size = 14)
-        cbar = plt.colorbar()                                       #Defines a colobar object
+        cbar = plt.colorbar()                                       #Defines a colorbar object
         cbar.set_label("$u(x,t)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
         cbar.ax.tick_params(labelsize = 16)                         #Fixes the tick size on the colorbar
         plt.savefig(figurename)
