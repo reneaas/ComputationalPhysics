@@ -249,7 +249,7 @@ int main(int nargs, char* args[]){
     //initial condition
     for (int i = 1; i < gridpoints - 1 ; i++){
       for (int j = 1; j < gridpoints -1; j++){
-        v_old[i][j] = exp(-alpha*(fabs(x[i]-0.5) + fabs(y[j]-0.5)));
+        v_old[i][j] = exp(-alpha*(abs(x[i]-0.5) + abs(y[j]-0.5)));
         //v_old[i][j] = exp(-alpha*((x[i]-0.5)*(x[i]-0.5) + (y[j]-0.5)*(y[j]-0.5)));
       }
     }

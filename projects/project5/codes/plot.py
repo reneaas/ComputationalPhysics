@@ -25,7 +25,7 @@ def exact_1D(x, t, terms = 1001):
     sum *= 2/np.pi
     return sum + x
 
-def exact_2D(x, y ,t = 0.0, terms = 100, alpha = 20, A = 0.0):
+def exact_2D(x, y ,t = 0.5, terms = 1000, alpha = 20, A = 0.0):
     S = 0
     for n in range(1,terms+1):
         for m in range(1,terms+1):
