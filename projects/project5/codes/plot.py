@@ -15,7 +15,7 @@ print("______________________________________________________")
 
 d = int(input())
 
-def exact_1D(x, t, terms = 1001):
+def exact_1D(x, t, terms = 1000):
     """
     Analytical solution in the 1D-case.
     """
@@ -24,6 +24,11 @@ def exact_1D(x, t, terms = 1001):
         sum += ((-1)**i)/i * np.sin(i*np.pi*x)*np.exp(-(i*np.pi)**2 * t)
     sum *= 2/np.pi
     return sum + x
+
+x = np.linspace(0,1,101)
+F = exact_1D(x,t=0)
+plt.plot(x,F)
+plt.show()
 
 def exact_2D(x, y ,t = 0.5, terms = 1000, alpha = 20, A = 0.0):
     S = 0
@@ -276,26 +281,33 @@ if d == 3:
 
 
 
-    ax1.set_xlabel("$x$", size = 18)
-    ax1.set_ylabel("$u(x,t)$", size = 18)
-    ax1.legend(fontsize = 16)
-    ax1.set_title("Explicit scheme, for t = 0.02", size = 18)
-    ax1.tick_params(labelsize = 16)
+
+    ax1.set_xlabel("$x$", size = 22)
+    ax1.set_ylabel("$u(x,t)$", size = 22)
+    ax1.legend(fontsize = 20)
+    ax1.set_title("Explicit scheme, for t = 0.02", size = 22)
+    ax1.tick_params(labelsize = 20)
+    fig1.subplots_adjust(left=0.17, bottom=0.13, right=0.98, top=0.91, wspace=0.20, hspace=0.20)
     fig1.savefig(figurename1)
 
-    ax2.set_xlabel("$x$", size = 18)
-    ax2.set_ylabel("$u(x,t)$", size = 18)
-    ax2.legend(fontsize = 16)
-    ax2.set_title("Implicit scheme, for t = 0.02", size = 18)
-    ax2.tick_params(labelsize = 16)
+    ax2.set_xlabel("$x$", size = 22)
+    ax2.set_ylabel("$u(x,t)$", size = 22)
+    ax2.legend(fontsize = 20)
+    ax2.set_title("Implicit scheme, for t = 0.02", size = 22)
+    ax2.tick_params(labelsize = 20)
+    fig2.subplots_adjust(left=0.13, bottom=0.13, right=0.98, top=0.91, wspace=0.20, hspace=0.20)
     fig2.savefig(figurename2)
 
-    ax3.set_xlabel("$x$", size = 18)
-    ax3.set_ylabel("$u(x,t)$", size = 18)
-    ax3.legend(fontsize = 16)
-    ax3.set_title("Crank-Nicolson, for t = 0.02", size = 18)
-    ax3.tick_params(labelsize = 16)
+    ax3.set_xlabel("$x$", size = 22)
+    ax3.set_ylabel("$u(x,t)$", size = 22)
+    ax3.legend(fontsize = 20)
+    ax3.set_title("Crank-Nicolson, for t = 0.02", size = 22)
+    ax3.tick_params(labelsize = 20)
+    fig3.subplots_adjust(left=0.13, bottom=0.13, right=0.98, top=0.91, wspace=0.20, hspace=0.20)
     fig3.savefig(figurename3)
+    #plt.show()
+
+    os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + path)
 
 if d == 4:
     path = "results/1D/"
