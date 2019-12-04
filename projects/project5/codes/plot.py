@@ -73,7 +73,7 @@ if d == 2:
     u = u.T                     #Transposes the data to order the matrix correctly for plotting.
     x = [(i+1)*0.01 for i in range(gridpoints)]
     y = [(i+1)*0.01 for i in range(gridpoints)]
-    print(x)
+
 
 
     #Plots the numerical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
@@ -93,7 +93,6 @@ if d == 2:
     yy = np.linspace(0,1,41)
     X,Y = np.meshgrid(xx,yy)
     Z = exact_2D(X, Y,t = 0.0075, terms = 100)
-    print(Z)
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     surf = ax.contour3D(X, Y, Z, 98)
