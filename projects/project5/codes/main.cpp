@@ -204,10 +204,9 @@ int main(int nargs, char* args[]){
     //Hardcode variables.
     start_x = 0.;
     end_x = 1.;
-    r = 0.1;
     dt = r*h*h;
     gridpoints = (int) ((end_x - start_x)/h) + 1;
-    alpha = 20;
+    alpha = 5;
     A = 0.0;
 
 
@@ -232,8 +231,8 @@ int main(int nargs, char* args[]){
     y = new double[gridpoints];
 
     for (int i = 0; i < gridpoints; i++){
-      x[i] = h*(i);                                             //Position array x-direction
-      y[i] = h*(i);                                             //Position array y-direction
+      x[i] = (double) h*i;                                             //Position array x-direction
+      y[i] = (double) h*i;                                             //Position array y-direction
     }
 
     /*
@@ -249,7 +248,8 @@ int main(int nargs, char* args[]){
     //initial condition
     for (int i = 1; i < gridpoints - 1 ; i++){
       for (int j = 1; j < gridpoints -1; j++){
-        v_old[i][j] = exp(-alpha*(abs(x[i]-0.5) + abs(y[j]-0.5)));
+        //v_old[i][j] = exp(-alpha*(fabs(x[i]-0.5) + fabs(y[j]-0.5)));
+        v_old[i][j] = sin(M_PI*x[i])*sin(M_PI*y[j]);
         //v_old[i][j] = exp(-alpha*((x[i]-0.5)*(x[i]-0.5) + (y[j]-0.5)*(y[j]-0.5)));
       }
     }

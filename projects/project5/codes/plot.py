@@ -17,7 +17,7 @@ d = int(input())
 
 def exact_1D(x, t, terms = 1001):
     """
-    Analytical solution in the 1D-case.
+    Analytical solution of the PDE in the 1D-case.
     """
     sum = 0
     for i in range(1,terms+1):
@@ -25,20 +25,8 @@ def exact_1D(x, t, terms = 1001):
     sum *= 2/np.pi
     return sum + x
 
-def exact_2D(x, y ,t = 0.5, terms = 1000, alpha = 20, A = 0.0):
-    S = 0
-    for n in range(1,terms+1):
-        for m in range(1,terms+1):
-            denom_n = alpha**2 + (n*np.pi)**2
-            denom_m = alpha**2 + (m*np.pi)**2
-            I_n = 2*alpha*np.sin(n*np.pi/2) + n*np.pi*np.exp(-alpha/2)*(1-(-1)**n)
-            I_n = I_n/denom_n
-            I_m = 2*alpha*np.sin(m*np.pi/2) + m*np.pi*np.exp(-alpha/2)*(1-(-1)**m)
-            I_m = I_m/denom_m
-            coeff = 4*I_n*I_m
-            k = (n+m)*np.pi
-            S += coeff*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-k**2*t)
-    return S
+def exact_2D(x,y,t = 0.001025):
+    return np.sin(np.pi*x)*np.sin(np.pi*y)*np.exp(-2*np.pi**2*t)
 
 if d == 1:
 
@@ -159,8 +147,9 @@ if d == 2:
 
 
     u = u.T                     #Transposes the data to order the matrix correctly for plotting.
-    x = [(i+1)*0.01 for i in range(gridpoints)]
-    y = [(i+1)*0.01 for i in range(gridpoints)]
+    x = [i*0.01 for i in range(gridpoints)]
+    y = [i*0.01 for i in range(gridpoints)]
+
 
 
     figurename1 = "numerical_2D.pdf"
@@ -202,7 +191,7 @@ if d == 2:
     #Plots a contour plot of the numerical solution z = u(x,y,t) for a specific time t.
     figurename3 = "contour_2D.pdf"
 
-    plt.contourf(x,y,u, levels = 100, cmap = "inferno")
+    plt.contourf(x,y,u, levels = 40, cmap = "inferno")
     plt.xlabel("$x$", fontsize = 14)
     plt.title(("Time = {0}, r = 0.25".format(t)), fontsize = 14)
     plt.ylabel("$y$", fontsize = 14)
@@ -214,9 +203,9 @@ if d == 2:
 
     #contour plot of the analytical solution
     figurename4 = "contour_2D_analytical.pdf"
-    plt.contourf(X,Y,Z, levels = 100, cmap = "inferno")
+    plt.contourf(X,Y,Z, levels = 40, cmap = "inferno")
     plt.xlabel("$x$", fontsize = 14)
-    #plt.title(("Time = {0}, r = 0.25".format(t)), fontsize = 14)
+    plt.title("Analytical, t = 0.001", fontsize = 14)
     plt.ylabel("$y$", fontsize = 14)
     cbar = plt.colorbar()                                       #Defines a colobar object
     cbar.set_label("$u(x,y,t_0)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
@@ -224,6 +213,9 @@ if d == 2:
     plt.savefig(figurename4)
     plt.close()
 
+    print("max value numerical = ", np.max(u))
+    print("max value analytical = ", np.max(Z))
+    print("max value of the closed-form solution: ", f(0.5,0.5))
 
 
     path = "results/2D/"

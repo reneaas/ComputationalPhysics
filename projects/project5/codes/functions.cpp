@@ -42,12 +42,14 @@ void Back_substitution(double* x, double* b, double* c, double* y, int n){
   return;
 }
 
+
 //Algorithm for forward Euler method in 2D
 void  Explicit_scheme_2D(double **v_new, double **v_old, double r, int gridpoints, double dt, double total_time, double& t){
+
   while (t < total_time){
-    for (int i = 1; i < gridpoints-1; i++){
-      for (int j = 1; j < gridpoints-1; j++){
-          v_new[i][j] = (1-4*r)*v_old[i][j] + r*(v_old[i+1][j] + v_old[i-1][j] + v_old[i][j+1] + v_old[i][j-1]);
+      for (int i = 1; i < gridpoints-1; i++){
+        for (int j = 1; j < gridpoints-1; j++){
+            v_new[i][j] = (1-4*r)*v_old[i][j] + r*(v_old[i+1][j] + v_old[i-1][j] + v_old[i][j+1] + v_old[i][j-1]);
         }
       }
       for (int i = 0; i < gridpoints; i++){
@@ -55,6 +57,6 @@ void  Explicit_scheme_2D(double **v_new, double **v_old, double r, int gridpoint
           v_old[i][j] = v_new[i][j];
         }
       }
-      t += dt;
-    }
+    t += dt;
   }
+}
