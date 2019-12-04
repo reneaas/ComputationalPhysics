@@ -190,10 +190,7 @@ int main(int nargs, char* args[]){
     double r, t, dt, h, total_time;
     double start_x, end_x;
     string method, outfilename;
-    double a,b, alpha, A;
-
-    a = 0.; b = 1;
-
+    double n, m;
 
     //Command line arguments
     h = atof(args[2]);
@@ -206,8 +203,8 @@ int main(int nargs, char* args[]){
     end_x = 1.;
     dt = r*h*h;
     gridpoints = (int) ((end_x - start_x)/h) + 1;
-    alpha = 5;
-    A = 0.0;
+    n = 2;
+    m = 2;
 
 
     //Initiate empty solution matrix.
@@ -235,46 +232,15 @@ int main(int nargs, char* args[]){
       y[i] = (double) h*i;                                             //Position array y-direction
     }
 
-    /*
-    //Initial condition
-    for (int i = 1; i < gridpoints-1; i++){
-      for (int j = 1; j < gridpoints-1; j++){
-        v_old[i][j] = (a-b)*y[j] - a;
-      }
-    }
-    */
-
-
     //initial condition
     for (int i = 1; i < gridpoints - 1 ; i++){
       for (int j = 1; j < gridpoints -1; j++){
         //v_old[i][j] = exp(-alpha*(fabs(x[i]-0.5) + fabs(y[j]-0.5)));
-        v_old[i][j] = sin(M_PI*x[i])*sin(M_PI*y[j]);
-        //v_old[i][j] = exp(-alpha*((x[i]-0.5)*(x[i]-0.5) + (y[j]-0.5)*(y[j]-0.5)));
+        v_old[i][j] = sin(n*M_PI*x[i])*sin(m*M_PI*y[j]);
       }
     }
-
-
-
 
     Explicit_scheme_2D(v_new, v_old, r, gridpoints, dt, total_time, t);
-
-    /*
-    for (int i = 0; i < gridpoints; i++){
-      for (int j = 0; j < gridpoints; j++){
-        v_new[i][j] += (b-a)*y[j] + a;
-      }
-    }
-    */
-
-
-    for (int i = 1; i < gridpoints-1; i++){
-      for (int j = 1; j < gridpoints-1; j++){
-        v_new[i][j] += A;
-      }
-    }
-
-
 
 
     cout << "Writing to file for t = " << t << endl;
