@@ -203,8 +203,8 @@ int main(int nargs, char* args[]){
     end_x = 1.;
     dt = r*h*h;
     gridpoints = (int) ((end_x - start_x)/h) + 1;
-    n = 2;
-    m = 2;
+    n = 1;
+    m = 1;
 
 
     //Initiate empty solution matrix.

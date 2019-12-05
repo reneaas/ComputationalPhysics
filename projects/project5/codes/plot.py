@@ -25,7 +25,7 @@ def exact_1D(x, t, terms = 1001):
     sum *= 2/np.pi
     return sum + x
 
-def exact_2D(x,y,t, n=2, m=2):
+def exact_2D(x,y,t, n=1, m=1):
     return np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-(n**2 + m**2)*np.pi**2*t)
 
 if d == 1:
@@ -205,7 +205,7 @@ if d == 2:
     figurename4 = "contour_2D_analytical_t_" + str(t) +  ".pdf"
     plt.contourf(X,Y,Z, levels = 40, cmap = "inferno")
     plt.xlabel("$x$", fontsize = 14)
-    plt.title("Time = {0}, r = 0.25".format(t))
+    plt.title("Time = {0}".format(t))
     plt.ylabel("$y$", fontsize = 14)
     cbar = plt.colorbar()                                       #Defines a colobar object
     cbar.set_label("$u(x,y,t_0)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
