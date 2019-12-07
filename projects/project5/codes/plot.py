@@ -25,8 +25,8 @@ def exact_1D(x, t, terms = 1001):
     sum *= 2/np.pi
     return sum + x
 
-def exact_2D(x,y,t = 0.001025):
-    return np.sin(np.pi*x)*np.sin(np.pi*y)*np.exp(-2*np.pi**2*t)
+def exact_2D(x,y,t, n=1, m=1):
+    return np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-(n**2 + m**2)*np.pi**2*t)
 
 if d == 1:
 
@@ -168,13 +168,13 @@ if d == 2:
     ax.set_zlabel(r"$u(x,y,t_0)$", size = 14)
     fig.colorbar(surf, shrink=0.5, aspect=5)
     fig.savefig(figurename1)
-    plt.show()
+    plt.close()
 
     #Plots the analytical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
     xx = np.array(x)
     yy = np.array(y)
     X,Y = np.meshgrid(xx,yy)
-    Z = exact_2D(X, Y)
+    Z = exact_2D(X, Y, t = t)
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     surf = ax.contour3D(X, Y, Z, 98)
@@ -189,7 +189,7 @@ if d == 2:
 
 
     #Plots a contour plot of the numerical solution z = u(x,y,t) for a specific time t.
-    figurename3 = "contour_2D.pdf"
+    figurename3 = "contour_2D_t_" + str(t) + ".pdf"
 
     plt.contourf(x,y,u, levels = 40, cmap = "inferno")
     plt.xlabel("$x$", fontsize = 14)
@@ -202,10 +202,10 @@ if d == 2:
     plt.close()
 
     #contour plot of the analytical solution
-    figurename4 = "contour_2D_analytical.pdf"
+    figurename4 = "contour_2D_analytical_t_" + str(t) +  ".pdf"
     plt.contourf(X,Y,Z, levels = 40, cmap = "inferno")
     plt.xlabel("$x$", fontsize = 14)
-    plt.title("Analytical, t = 0.001", fontsize = 14)
+    plt.title("Time = {0}".format(t))
     plt.ylabel("$y$", fontsize = 14)
     cbar = plt.colorbar()                                       #Defines a colobar object
     cbar.set_label("$u(x,y,t_0)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
@@ -215,7 +215,6 @@ if d == 2:
 
     print("max value numerical = ", np.max(u))
     print("max value analytical = ", np.max(Z))
-    print("max value of the closed-form solution: ", f(0.5,0.5))
 
 
     path = "results/2D/"
