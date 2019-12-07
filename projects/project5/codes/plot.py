@@ -25,30 +25,8 @@ def exact_1D(x, t, terms = 1000):
     sum *= 2/np.pi
     return sum + x
 
-<<<<<<< HEAD
-x = np.linspace(0,1,101)
-F = exact_1D(x,t=0)
-plt.plot(x,F)
-plt.show()
-
-def exact_2D(x, y ,t = 0.5, terms = 1000, alpha = 20, A = 0.0):
-    S = 0
-    for n in range(1,terms+1):
-        for m in range(1,terms+1):
-            denom_n = alpha**2 + (n*np.pi)**2
-            denom_m = alpha**2 + (m*np.pi)**2
-            I_n = 2*alpha*np.sin(n*np.pi/2) + n*np.pi*np.exp(-alpha/2)*(1-(-1)**n)
-            I_n = I_n/denom_n
-            I_m = 2*alpha*np.sin(m*np.pi/2) + m*np.pi*np.exp(-alpha/2)*(1-(-1)**m)
-            I_m = I_m/denom_m
-            coeff = 4*I_n*I_m
-            k = (n+m)*np.pi
-            S += coeff*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-k**2*t)
-    return S
-=======
 def exact_2D(x,y,t = 0.001025):
     return np.sin(np.pi*x)*np.sin(np.pi*y)*np.exp(-2*np.pi**2*t)
->>>>>>> 41a4857b36afd598ac11428295f50601c8e68709
 
 if d == 1:
 
