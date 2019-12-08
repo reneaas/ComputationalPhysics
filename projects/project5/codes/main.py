@@ -31,7 +31,7 @@ if d == 1:   #1D case
         os.makedirs(path)
 
     dx = [0.1, 0.01]
-    total_time = [0.02, 1]
+    total_time = [0.02, 0.1]
     r = 0.5
     for method in methods:
         print("Running method: " + method)

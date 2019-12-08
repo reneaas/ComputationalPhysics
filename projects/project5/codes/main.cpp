@@ -59,7 +59,6 @@ int main(int nargs, char* args[]){
         v_new[i] = 0.;
       }
 
-
     for (int i = 0; i < gridpoints; i++) v_old[i] = -x[i];           //Initial condition
 
 
@@ -79,7 +78,6 @@ int main(int nargs, char* args[]){
       ofile.close();
 
     }
-
 
 
     if (method == "implicit"){
@@ -132,8 +130,8 @@ int main(int nargs, char* args[]){
       b = new double[gridpoints];
       c = new double[gridpoints];
       q = new double[gridpoints];
-      rho = r/2;                              //In the Crank-Nicolson scheme, r is half of the r used in the two other 1D schemes.
-
+      rho = r;                              //In the Crank-Nicolson scheme, r is half of the r used in the two other 1D schemes.
+      dt = 2*r*dx*dx;
       //Hardcode variables
       alpha = rho; beta = 1 - 2*rho; gamma = rho;
       ofile.open(outfilename2);
