@@ -70,10 +70,10 @@ if d == 1:
                     dx2["x_" + method + "_time_{0}".format(j)] = x
                     dx2["u_" + method + "_time_{0}".format(j)] = u
 
-    time = t[::3]
-    x1 = np.linspace(dx[0],1-dx[0],1001)
-    x2 = np.linspace(dx[1],1-dx[1],1001)
 
+    time = t[::3]
+    x1 = np.linspace(0,1,11)
+    x2 = np.linspace(0,1,101)
 
 
     for i in range(3):
@@ -261,9 +261,9 @@ if d == 3:
                     ax2.plot(x,u, label = "r = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]), alpha = 0.5)
             else:
                 if R == 0:
-                    ax3.plot(x,u, label = "r = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]))
+                    ax3.plot(x,u, label = "$\\rho$ = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]))
                 else:
-                    ax3.plot(x,u, label = "r = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]), alpha = 0.5)
+                    ax3.plot(x,u, label = "$\\rho$ = {0}".format(r[R]), ls = "{0}".format(style[R]), color = "{0}".format(color[R]), alpha = 0.5)
 
 
 

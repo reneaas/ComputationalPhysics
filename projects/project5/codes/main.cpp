@@ -73,7 +73,7 @@ int main(int nargs, char* args[]){
       ofile.open(outfilename);
       ofile << t << endl;
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v_new[i] << endl;
+        ofile << x[i] << " " << setprecision(16) << v_new[i] << endl;
       }
       ofile.close();
 
@@ -113,7 +113,7 @@ int main(int nargs, char* args[]){
       ofile << t << endl;
       ofile << 0.0 << " " <<  0.0 << endl;                                    //writes boundary condition at x = 0: u(0,t) = 0
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v_new[i] << endl;
+        ofile << x[i] << " " << setprecision(16) << v_new[i] << endl;
       }
       ofile << 1.0 << " " << 1.0 << endl;                                    //Writes the boundary condition at x = 1: u(1,t) = 1
       ofile.close();
@@ -173,7 +173,7 @@ int main(int nargs, char* args[]){
       ofile << t << endl;
       ofile << 0.0 << " " << 0.0 << endl;                                    //writes boundary condition at x = 0: u(0,t) = 0
       for (int i = 0; i < gridpoints; i++){
-        ofile << x[i] << " " << v_new[i] << endl;
+        ofile << x[i] << " " << setprecision(16) << v_new[i] << endl;
       }
       ofile << 1.0 << " " << 1.0 << endl;                                    //Writes the boundary condition at x = 1: u(1,t) = 1
       ofile.close();
