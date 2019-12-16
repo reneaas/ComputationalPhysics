@@ -53,7 +53,7 @@ if d == 2:   #2D case
     h = 0.01
     outfilename = "2D_Results.txt"
     total_time = 0.5
-    r = 0.25
+    r = 0.251
     os.system("./main.exe" + " " + str(d) + " " + str(h) + " " + outfilename + " " + str(total_time) + " " + str(r))
     os.system("mv" + " " + outfilename +" "+ path)
 if d == 3:    #Stability analysis

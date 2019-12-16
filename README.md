@@ -44,4 +44,5 @@ The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/project
 In [project 5](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project5), we study the diffusion equation and solve it in 1D and 2D by application of several different algorithms which we present in its entirety.
 We solve the PDEs with certain chosen boundary- and initial conditions analytically which serves as benchmarking tools to assert the validity of our implementation.
 We further perform von Neumann stability analysis of the various finite difference methods to which we test the validity of numerically.
-The endgame of the project is to simulate the temperature distribution in the lithosphere over a period of 1 billion years using the heat equation. More on this later..
+
+The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project5/codes).

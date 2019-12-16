@@ -121,19 +121,6 @@ if d == 1:
     os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + figurename4 + " " + path)
 
 if d == 2:
-
-    def exact_2D_old(x, y, t, terms = 101, a = 0, b = 1):
-        """
-        Analytic solution in the 2D-case.
-        """
-        s = 0
-        for n in range(1,terms+1):
-            for m in range(1,terms+1):
-                coeff = 4*(a-b)*((-1)**(m+n) - (-1)**m)/(m*n*np.pi**2)\
-                        - 4*a/(n*m*np.pi**2)*(1 - (-1)**m)*(1 - (-1)**n);
-                s += coeff*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)*np.exp(-t*(n**2 + m**2)*np.pi**2)
-        return s + (b-a)*y + a;
-
     infilename = "results/2D/2D_Results.txt"
     with open(infilename, "r") as infile:
         t = float(infile.readline().split()[0])
@@ -152,73 +139,44 @@ if d == 2:
 
 
 
-    figurename1 = "numerical_2D.pdf"
-    figurename2 = "analytical_2D.pdf"
-
-
-    #Plots the numerical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
-    X,Y = np.meshgrid(x,y)
-    fig = plt.figure()
-    ax = plt.axes(projection='3d')
-    surf = ax.contour3D(x, y, u, 98)
-    ax.set_zlim(0, 1)
-    ax.set_title("Time = {0}, r = 0.25".format(t))
-    ax.set_xlabel("$x$", size = 14)
-    ax.set_ylabel("$y$", size = 14)
-    ax.set_zlabel(r"$u(x,y,t_0)$", size = 14)
-    fig.colorbar(surf, shrink=0.5, aspect=5)
-    fig.savefig(figurename1)
-    plt.close()
-
-    #Plots the analytical solution z = u(x,y,t) as a surface plot in 3D for a specific time t.
-    xx = np.array(x)
-    yy = np.array(y)
-    X,Y = np.meshgrid(xx,yy)
-    Z = exact_2D(X, Y, t = t)
-    fig = plt.figure()
-    ax = plt.axes(projection='3d')
-    surf = ax.contour3D(X, Y, Z, 98)
-    ax.set_zlim(0, 1)
-    ax.set_title("Time = {0}, r = 0.25".format(t))
-    ax.set_xlabel("$x$", size = 14)
-    ax.set_ylabel("$y$", size = 14)
-    ax.set_zlabel(r"$u(x,y,t_0)$", size = 14)
-    fig.colorbar(surf, shrink=0.5, aspect=5)
-    fig.savefig(figurename2)
-    plt.close()
-
-
     #Plots a contour plot of the numerical solution z = u(x,y,t) for a specific time t.
-    figurename3 = "contour_2D_t_" + str(t) + ".pdf"
+    figurename1 = "contour_2D_t_" + str(t) + ".pdf"
 
     plt.contourf(x,y,u, levels = 40, cmap = "inferno")
-    plt.xlabel("$x$", fontsize = 14)
-    plt.title(("Time = {0}, r = 0.25".format(t)), fontsize = 14)
-    plt.ylabel("$y$", fontsize = 14)
+    plt.xlabel("$x$", fontsize = 18)
+    plt.title("Numerical solution, r = 0.251", fontsize = 16)
+    plt.ylabel("$y$", fontsize = 18)
+    plt.xticks(size = 18)
+    plt.yticks(size = 18)
     cbar = plt.colorbar()                                       #Defines a colobar object
-    cbar.set_label("$u(x,y,t_0)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
+    cbar.set_label("$v(x,y,t = {0})$".format(t), size = 18)                       #Fixes the fontsize of the colorbar labeltext
     cbar.ax.tick_params(labelsize = 16)                         #Fixes the tick size on the colorbar
-    plt.savefig(figurename3)
-    plt.close()
+    #plt.savefig(figurename1)
+    #plt.close()
+    plt.show()
 
+    """
     #contour plot of the analytical solution
-    figurename4 = "contour_2D_analytical_t_" + str(t) +  ".pdf"
+    X,Y = np.meshgrid(x,y)
+    Z = exact_2D(X, Y, t = t)
+    figurename2 = "contour_2D_analytical_t_" + str(t) +  ".pdf"
     plt.contourf(X,Y,Z, levels = 40, cmap = "inferno")
-    plt.xlabel("$x$", fontsize = 14)
-    plt.title("Time = {0}".format(t))
-    plt.ylabel("$y$", fontsize = 14)
+    plt.xlabel("$x$", fontsize = 20)
+    plt.xticks(size = 18)
+    plt.yticks(size = 18)
+    plt.title("Analytical solution", fontsize = 16)
+    plt.ylabel("$y$", fontsize = 20)
     cbar = plt.colorbar()                                       #Defines a colobar object
-    cbar.set_label("$u(x,y,t_0)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
+    cbar.set_label("$v(x,y,t={0})$".format(t), size = 18)                       #Fixes the fontsize of the colorbar labeltext
     cbar.ax.tick_params(labelsize = 16)                         #Fixes the tick size on the colorbar
-    plt.savefig(figurename4)
-    plt.close()
+    #plt.savefig(figurename2)
+    #plt.close()
+    plt.show()
+    """
 
-    print("max value numerical = ", np.max(u))
-    print("max value analytical = ", np.max(Z))
 
-
-    path = "results/2D/"
-    os.system("mv" + " " + figurename1 + " " + figurename2 + " " + figurename3 + " " + figurename4 + " " + path)
+    #path = "results/2D/"
+    #os.system("mv" + " " + figurename1 + " " + figurename2 + " " + path)
 
 if d == 3:
 
@@ -318,7 +276,7 @@ if d == 4:
         #U = np.transpose(U)
         #U = U
 
-        plt.contourf(X, T, U, levels = 100, cmap = "inferno")       #The best colormap, like plasma even compares..
+        plt.contourf(X[::100], T[::100], U[:][::100], levels = 100, cmap = "inferno")       #The best colormap, like plasma even compares..
         plt.xlabel("$x$", size = 18)
         plt.ylabel("$t$", size = 18)
         plt.xticks(size = 14); plt.yticks(size = 14)
@@ -342,5 +300,5 @@ if d == 4:
     cbar = plt.colorbar()                                       #Defines a colobar object
     cbar.set_label("$u(x,t)$", size = 18)                       #Fixes the fontsize of the colorbar labeltext
     cbar.ax.tick_params(labelsize = 16)                         #Fixes the tick size on the colorbar
-    plt.savefig(figurename)
+    plt.savefig(figurename, dpi = 200, quality = 60)
     os.system("mv" + " " + figurename + " " + path)
