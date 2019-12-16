@@ -1,7 +1,7 @@
 # Project 5: The Diffusion Equation
 
 ## The report
-The [report](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project5).
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project5/report/Project_5.pdf).
 The results were computed on three different computers:
 1. Computer 1:
   - CPU: Intel i7-8565U (8)
