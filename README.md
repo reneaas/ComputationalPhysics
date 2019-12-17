@@ -43,6 +43,6 @@ The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/project
 ### Project 5: Diffusion equation and finite difference schemes to solve partial differential equations (PDEs) numerically
 In [project 5](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project5), we study the diffusion equation and solve it in 1D and 2D by application of several different algorithms which we present in its entirety.
 We solve the PDEs with certain chosen boundary- and initial conditions analytically which serves as benchmarking tools to assert the validity of our implementation.
-We further perform von Neumann stability analysis of the various finite difference methods to which we test the validity of numerically.
+We further perform von Neumann stability analysis of the various finite difference methods which we test the validity of numerically.
 
-The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project5/codes).
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project5/report/Project_5.pdf). The [codes](https://github.com/reneaas/ComputationalPhysics/tree/master/projects/project5/codes).
