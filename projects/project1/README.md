@@ -1,8 +1,10 @@
 # Project 5: The Diffusion Equation
 
 ## The report
-The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project5/report/Project_5.pdf)
-outlines the mathemathical background of the diffusion equation.
+The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project5/report/Project_1.pdf)
+provides a review of the mathematics behind the Thomas Algorithm,
+an algorithm designed to solve matrix equations Ax = b where A is tridiagonal.
+We also provide a review of LU-decomposition specialized for tridiagonal matrices.
 
 
 ## Codes (Documentation)
