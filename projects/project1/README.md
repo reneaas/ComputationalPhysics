@@ -1,4 +1,4 @@
-# Project 5: The Diffusion Equation
+# Project 1: Tridiagonal matrix equations
 
 ## The report
 The [report](https://github.com/reneaas/ComputationalPhysics/blob/master/projects/project5/report/Project_1.pdf)
